@@ -17,118 +17,102 @@ function verifyToken(req) {
   }
 }
 
+// HELPER: Build order items from kit + customizations
+async function buildOrderItems(kit_id, customizations) {
+  const { data: kitItems, error } = await supabase
+    .from('kit_items')
+    .select('quantity, products(id, name, price_cents)')
+    .eq('kit_id', kit_id);
+
+  if (error || !kitItems.length) return null;
+
+  let orderItems = kitItems.map(item => ({
+    product_id: item.products.id,
+    name: item.products.name,
+    quantity: item.quantity,
+    price_cents: item.products.price_cents
+  }));
+
+  if (customizations) {
+    if (customizations.remove_items?.length) {
+      orderItems = orderItems.filter(
+        item => !customizations.remove_items.includes(item.product_id)
+      );
+    }
+    if (customizations.add_items?.length) {
+      for (const productId of customizations.add_items) {
+        const { data: product } = await supabase
+          .from('products')
+          .select('id, name, price_cents')
+          .eq('id', productId)
+          .single();
+        if (product) {
+          orderItems.push({ product_id: product.id, name: product.name, quantity: 1, price_cents: product.price_cents });
+        }
+      }
+    }
+  }
+
+  let total_cents = orderItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
+  if (customizations?.bag_size) {
+    const adj = { S: -0.15, M: 0, L: 0.20, XL: 0.30 }[customizations.bag_size] || 0;
+    total_cents = Math.round(total_cents * (1 + adj));
+  }
+
+  return { orderItems, total_cents };
+}
+
 // -------------------------------------------------------
-// ENDPOINT 1: Create a New Order
+// ENDPOINT 1: Create a New Order (guest or logged-in)
 // POST /api/orders
-// Requires: logged-in user (Authorization header)
+// Logged-in users: send Authorization header
+// Guests: send { guest_email } in body
 // -------------------------------------------------------
 router.post('/orders', async (req, res) => {
   try {
-    // Verify the user is logged in
     const userId = verifyToken(req);
-    if (!userId) {
-      return res.status(401).json({ error: 'You must be logged in to place an order' });
+    const { kit_id, customizations, shipping_address, guest_email } = req.body;
+
+    // Must have either a logged-in account or a guest email
+    if (!userId && !guest_email) {
+      return res.status(400).json({ error: 'Please provide an email address to continue as a guest.' });
     }
-
-    const { kit_id, customizations, shipping_address } = req.body;
-
     if (!kit_id || !shipping_address) {
       return res.status(400).json({ error: 'kit_id and shipping_address are required' });
     }
 
-    // Fetch the kit and its items
-    const { data: kitItems, error: kitError } = await supabase
-      .from('kit_items')
-      .select('quantity, products(id, name, price_cents)')
-      .eq('kit_id', kit_id);
+    const built = await buildOrderItems(kit_id, customizations);
+    if (!built) return res.status(404).json({ error: 'Kit not found or has no items' });
 
-    if (kitError || !kitItems.length) {
-      return res.status(404).json({ error: 'Kit not found or has no items' });
-    }
+    const { orderItems, total_cents } = built;
 
-    // Start with all default kit items
-    let orderItems = kitItems.map(item => ({
-      product_id: item.products.id,
-      name: item.products.name,
-      quantity: item.quantity,
-      price_cents: item.products.price_cents
-    }));
+    // Store guest email inside customizations JSONB so we don't need a schema change
+    const storedCustomizations = {
+      ...(customizations || {}),
+      ...(guest_email ? { guest_email } : {})
+    };
 
-    // Apply customizations if provided
-    if (customizations) {
-      // Remove items the user opted out of
-      if (customizations.remove_items && customizations.remove_items.length) {
-        orderItems = orderItems.filter(
-          item => !customizations.remove_items.includes(item.product_id)
-        );
-      }
-
-      // Add extra items the user selected
-      if (customizations.add_items && customizations.add_items.length) {
-        for (const productId of customizations.add_items) {
-          const { data: product } = await supabase
-            .from('products')
-            .select('id, name, price_cents')
-            .eq('id', productId)
-            .single();
-
-          if (product) {
-            orderItems.push({
-              product_id: product.id,
-              name: product.name,
-              quantity: 1,
-              price_cents: product.price_cents
-            });
-          }
-        }
-      }
-    }
-
-    // Calculate total price
-    let total_cents = orderItems.reduce(
-      (sum, item) => sum + item.price_cents * item.quantity, 0
-    );
-
-    // Apply bag size adjustment if selected
-    if (customizations && customizations.bag_size) {
-      const sizeAdjustments = { S: -0.15, M: 0, L: 0.20, XL: 0.30 };
-      const adjustment = sizeAdjustments[customizations.bag_size] || 0;
-      total_cents = Math.round(total_cents * (1 + adjustment));
-    }
-
-    // Save the order to the database
     const { data: newOrder, error: orderError } = await supabase
       .from('orders')
       .insert([{
-        user_id: userId,
+        user_id: userId || null,
         kit_id,
-        customizations: customizations || {},
+        customizations: storedCustomizations,
         total_cents,
         status: 'placed',
         shipping_address
       }])
       .select();
 
-    if (orderError) {
-      return res.status(500).json({ error: 'Failed to create order' });
-    }
+    if (orderError) return res.status(500).json({ error: 'Failed to create order' });
 
     const orderId = newOrder[0].id;
 
-    // Save each order item
-    const orderItemRows = orderItems.map(item => ({
-      order_id: orderId,
-      product_id: item.product_id,
-      quantity: item.quantity
-    }));
-
     const { error: itemsError } = await supabase
       .from('order_items')
-      .insert(orderItemRows);
+      .insert(orderItems.map(item => ({ order_id: orderId, product_id: item.product_id, quantity: item.quantity })));
 
-    if (itemsError) {
-      return res.status(500).json({ error: 'Order created but failed to save items' });
-    }
+    if (itemsError) return res.status(500).json({ error: 'Order created but failed to save items' });
 
     res.status(201).json({
       order_id: orderId,
@@ -144,27 +128,64 @@ router.post('/orders', async (req, res) => {
 });
 
 // -------------------------------------------------------
-// ENDPOINT 2: Get All Orders for Logged-In User
+// ENDPOINT 2: Public Order Lookup by Order ID
+// GET /api/orders/lookup/:id
+// No auth required — anyone with the order ID can check status
+// -------------------------------------------------------
+router.get('/orders/lookup/:id', async (req, res) => {
+  try {
+    const { data: order, error } = await supabase
+      .from('orders')
+      .select('id, status, total_cents, created_at, shipped_at, kit_id, kits(name)')
+      .eq('id', req.params.id)
+      .single();
+
+    if (error || !order) {
+      return res.status(404).json({ error: 'Order not found. Please check your order number and try again.' });
+    }
+
+    const statusLabels = {
+      placed: 'Order Received — we are preparing your kit.',
+      paid: 'Payment Confirmed — your kit is being packed.',
+      packed: 'Packed — your kit is ready to ship.',
+      shipped: 'Shipped — your kit is on its way!',
+      delivered: 'Delivered — enjoy your kit!'
+    };
+
+    res.status(200).json({
+      order_id: order.id,
+      kit_name: order.kits?.name || 'Custom Kit',
+      status: order.status,
+      status_message: statusLabels[order.status] || order.status,
+      total_cents: order.total_cents,
+      created_at: order.created_at,
+      shipped_at: order.shipped_at
+    });
+
+  } catch (error) {
+    console.error('Order lookup error:', error);
+    res.status(500).json({ error: 'Server error looking up order' });
+  }
+});
+
+// -------------------------------------------------------
+// ENDPOINT 3: Get All Orders for Logged-In User
 // GET /api/orders
 // -------------------------------------------------------
 router.get('/orders', async (req, res) => {
   try {
     const userId = verifyToken(req);
-    if (!userId) {
-      return res.status(401).json({ error: 'You must be logged in to view orders' });
-    }
+    if (!userId) return res.status(401).json({ error: 'You must be logged in to view orders' });
 
     const { data: orders, error } = await supabase
       .from('orders')
-      .select('id, kit_id, status, total_cents, created_at, shipped_at')
+      .select('id, kit_id, status, total_cents, created_at, shipped_at, kits(name)')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
-    if (error) {
-      return res.status(500).json({ error: 'Failed to fetch orders' });
-    }
+    if (error) return res.status(500).json({ error: 'Failed to fetch orders' });
 
-    res.status(200).json(orders);
+    res.status(200).json(orders.map(o => ({ ...o, kit_name: o.kits?.name || 'Custom Kit' })));
 
   } catch (error) {
     console.error('Get orders error:', error);
@@ -173,15 +194,13 @@ router.get('/orders', async (req, res) => {
 });
 
 // -------------------------------------------------------
-// ENDPOINT 3: Get One Order by ID
+// ENDPOINT 4: Get One Order by ID (logged-in user only)
 // GET /api/orders/:id
 // -------------------------------------------------------
 router.get('/orders/:id', async (req, res) => {
   try {
     const userId = verifyToken(req);
-    if (!userId) {
-      return res.status(401).json({ error: 'You must be logged in to view an order' });
-    }
+    if (!userId) return res.status(401).json({ error: 'You must be logged in to view an order' });
 
     const { data: order, error } = await supabase
       .from('orders')
@@ -190,11 +209,8 @@ router.get('/orders/:id', async (req, res) => {
       .eq('user_id', userId)
       .single();
 
-    if (error || !order) {
-      return res.status(404).json({ error: 'Order not found' });
-    }
+    if (error || !order) return res.status(404).json({ error: 'Order not found' });
 
-    // Fetch order items
     const { data: items } = await supabase
       .from('order_items')
       .select('quantity, products(id, name, price_cents)')
