@@ -43,6 +43,10 @@ export const login = (email, password) =>
 
 export const getMe = () => apiFetch('/auth/me');
 
+// Products
+export const getProducts = () => apiFetch('/products');
+export const getProduct = (id) => apiFetch(`/products/${id}`);
+
 // Kits
 export const getKits = () => apiFetch('/kits');
 export const getKit = (id) => apiFetch(`/kits/${id}`);

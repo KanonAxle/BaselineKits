@@ -20,21 +20,27 @@ export default function Navbar() {
 
   return (
     <nav className="flex items-center justify-between px-8 py-5 border-b border-stone-800">
-      <Link href="/" className="text-xl font-bold tracking-tight hover:text-orange-500 transition-colors">
-        BaselineKits
-      </Link>
-
-      <div className="flex items-center gap-4">
+      {/* Left: Logo + nav links */}
+      <div className="flex items-center gap-6">
+        <Link href="/" className="text-xl font-bold tracking-tight hover:text-orange-500 transition-colors">
+          BaselineKits
+        </Link>
+        <Link href="/quiz" className="text-stone-400 hover:text-white transition-colors text-sm">
+          Build My Kit
+        </Link>
+        <Link href="/products" className="text-stone-400 hover:text-white transition-colors text-sm">
+          Products
+        </Link>
         <Link href="/track" className="text-stone-400 hover:text-white transition-colors text-sm">
           Track Order
         </Link>
+      </div>
 
+      {/* Right: Auth */}
+      <div className="flex items-center gap-4">
         {loggedIn ? (
           <>
-            <Link
-              href="/account"
-              className="text-stone-400 hover:text-white transition-colors text-sm"
-            >
+            <Link href="/account" className="text-stone-400 hover:text-white transition-colors text-sm">
               My Account
             </Link>
             <button

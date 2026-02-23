@@ -24,10 +24,10 @@ export default function Home() {
             Build My Kit →
           </Link>
           <Link
-            href="/track"
+            href="/products"
             className="border border-stone-700 hover:border-stone-500 text-stone-300 hover:text-white text-lg px-8 py-4 rounded-lg transition-colors"
           >
-            Track My Order
+            Browse Products
           </Link>
         </div>
       </section>
