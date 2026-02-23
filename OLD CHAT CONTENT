@@ -1,0 +1,3734 @@
+I need advice on how to and possibly a checklist on building a custom website. The vision is a landing page (home) where users can navigate into the main function. A custom Q&A that asks users their specific use case and then gives them a recommendation for a complete survival kit in a backpack, users can also just look for a backpack with the Q&A or a med bag, etc.  Then the results can be cusomized based on the size of the bag and it will be delivered direct to the customer, after it is all delivered to my ware house where I will pack the bags, all the food, medical, clothing, etc. And then ship it to the customer direct. 
+Copilot said: # Custom Survival Kit Website - Building
+Custom Survival Kit Website - Building Advice & Checklist
+I'd be happy to help you plan this custom website! This is a great e-commerce concept with personalization features. Let me break this down into a comprehensive guide.
+
+Vision Overview
+You're building a personalized survival kit configurator - essentially a custom product builder where:
+
+Users answer a Q&A about their use case
+System recommends a complete kit
+Users can customize by bag type and size
+Orders are fulfilled from your warehouse
+Technology Stack Recommendations
+Frontend (User-Facing)
+Framework: React, Vue, or Next.js (if you want SSR/SEO)
+Why: Interactive Q&A flows, real-time product customization
+UI Library: Tailwind CSS, Material-UI, or Bootstrap
+Backend
+API: Node.js + Express, Python + Django/FastAPI, or similar
+Database: PostgreSQL (relational data for products, orders, inventory)
+Authentication: JWT or OAuth for user accounts
+E-Commerce Features
+Payment Processing: Stripe, PayPal, Square
+Inventory Management: Track stock in your warehouse
+Order Management: From purchase → warehouse fulfillment → shipment
+Hosting
+Frontend: Vercel, Netlify, or AWS
+Backend: Heroku, AWS, DigitalOcean, or Railway
+Database: AWS RDS, Heroku Postgres, or managed PostgreSQL service
+Project Phases & Checklist
+Phase 1: Planning & Design (Weeks 1-2)
+ Define User Personas
+
+Solo hiker, family camping, emergency preparedness, etc.
+ Map Out Q&A Logic
+
+What questions lead to which recommendations?
+Example: "Duration of trip?" → Duration determines kit size/type
+Create a decision tree diagram
+ Product Catalog Structure
+
+Categories: Backpacks, Med Bags, Food, Clothing, Water, Tools, etc.
+Define attributes: Size, weight, duration rating, price
+ Design Mockups
+
+Homepage/Landing page
+Q&A flow (5-10 screens)
+Product results page
+Customization interface
+Checkout flow
+User dashboard/order history
+ Define Business Rules
+
+How are kits built from the Q&A answers?
+What customizations are available?
+Shipping costs, timelines, packaging
+Phase 2: Backend Development (Weeks 3-6)
+ Database Schema
+
+Users table
+Products table (with categories, attributes)
+Kits/Recommendations table (pre-built recommendations)
+Orders table
+Order_Items table (what's in each order)
+Inventory tracking
+ API Endpoints
+
+Code
+GET /api/products - List all products
+GET /api/products/:id - Single product
+POST /api/quiz - Submit Q&A answers
+GET /api/recommendations - Get kit recommendations
+POST /api/orders - Create order
+GET /api/orders - Get user's orders
+POST /api/customize - Customize a kit
+ Authentication System
+
+User registration/login
+Password reset
+User profiles
+ Recommendation Engine
+
+Algorithm to match Q&A answers to kit recommendations
+Keep it simple initially (rules-based, not ML)
+ Payment Integration
+
+Connect Stripe/PayPal
+Handle order confirmation
+ Inventory Management
+
+Track stock levels
+Prevent overselling
+Phase 3: Frontend Development (Weeks 4-7, parallel with Phase 2)
+ Landing Page
+
+Hero section explaining the concept
+Call-to-action buttons (Start Quiz, Browse Kits, Shop All)
+Value propositions
+ Q&A Flow
+
+Progressive disclosure (one question at a time or grouped sections)
+Progress bar
+Ability to go back/edit answers
+Mobile-responsive design
+ Results/Recommendation Page
+
+Display recommended kit(s)
+Show items included with images and descriptions
+Price breakdown
+ Customization Interface
+
+Change bag size/type
+Add/remove items
+See price update in real-time
+Visual representation of the kit
+ Product Pages
+
+Individual product details
+Specifications, reviews (optional for MVP)
+Add to kit/order
+ Shopping Cart & Checkout
+
+Cart review
+Shipping address
+Payment form
+Order confirmation
+ User Account
+
+View past orders
+Reorder previous kits
+Save custom kits
+Phase 4: Fulfillment & Operations (Ongoing)
+ Warehouse Management
+
+Inventory tracking system (can be manual/spreadsheet initially)
+Picking/packing process
+QC checklist
+Shipping label generation
+ Order Notification System
+
+Email confirmations
+Shipment tracking
+Customer support contact info
+ Analytics
+
+Track which kits are popular
+Which Q&A answers lead to conversions
+Inventory usage rates
+Phase 5: Testing & Launch (Week 8)
+ Functional Testing
+
+Q&A flow produces correct recommendations
+Customization updates prices correctly
+Payment processing works
+Order creation and storage works
+ User Testing
+
+Get feedback on Q&A clarity
+Test checkout experience
+Mobile responsiveness
+ Performance Testing
+
+Page load times
+Database query optimization
+ Security
+
+HTTPS enabled
+Secure payment handling
+Data protection (GDPR/privacy if applicable)
+ Launch
+
+Domain setup
+SEO basics (meta tags, structured data)
+Monitor for issues
+MVP (Minimum Viable Product) Approach
+Don't build everything at once! Start with:
+
+Basic landing page (HTML/CSS)
+Simple Q&A (5-8 key questions)
+2-3 pre-built kit recommendations (hardcoded initially)
+Manual checkout (collect order details, email confirmation)
+Basic inventory tracking (spreadsheet)
+Once you validate the concept:
+
+Add payment processing
+Build customization features
+Expand product catalog
+Automate fulfillment workflow
+Key Questions to Answer Now
+Budget: How much are you willing to invest? (Affects hosting, tools, possibly hiring help)
+Timeline: When do you want to launch?
+Team: Are you building this yourself or hiring developers?
+Products: How many items, backpack types, and kit variations exist?
+Scale: Do you expect 10 orders/month or 1000?
+Recommended Tools/Services (Affordable Options)
+No-code Alternative: Webflow + Shopify (if you want to launch faster)
+Low-code: Supabase (backend) + Next.js (frontend) + Vercel (hosting)
+Full Custom: React + Node.js + PostgreSQL
+Would you like me to:
+
+✅ Dive deeper into any specific phase?
+✅ Help create a more detailed database schema?
+✅ Design the Q&A decision tree?
+✅ Recommend specific tools or frameworks?
+✅ Create a GitHub issue/project to track this?
+Let me know your preferences and constraints, and I can provide more specific guidance!
+
+2/2
+2/2
+You said: I need recommendation for what structure/code to
+I need recommendation for what structure/code to use, can shopify handle my specific Q&A form or would I use it just for ordering/fulfillment and then I would still have code the custom Q&A?
+Copilot finished thinking
+
+Copilot said: Great question! Let me break down your
+Great question! Let me break down your options clearly.
+
+The Short Answer
+Shopify alone cannot handle your complete vision. However, you have a spectrum of options:
+
+Approach	Q&A Quiz	Customization	Fulfillment	Cost	Complexity
+Shopify Only	Limited (apps available)	Limited	✅ Full	Low	Low
+Shopify + Quiz App	✅ Good	Limited	✅ Full	Medium	Medium
+Shopify + Custom Frontend	✅ Full control	✅ Full	✅ Full	Higher	Higher
+No-Code/Low-Code	✅ Good	✅ Good	Manual	Medium	Low-Med
+Your Specific Use Case Breakdown
+Your needs are:
+
+Complex Q&A logic (questions leading to specific kit recommendations)
+Dynamic product customization (bag size, selecting items to include/exclude)
+Real-time price updates (as users customize)
+Fulfillment & order management
+Inventory tracking (what's in your warehouse)
+Option 1: Shopify + Quiz App (Easiest Start)
+What Shopify apps can do:
+
+Quiz apps (Octane AI, RevenueHunt, Quiz Kit) handle the Q&A flow
+They can recommend products/collections based on answers
+Results link to products or automatically add to cart
+Shopify handles checkout and fulfillment
+What you'd still need to code:
+
+The customization interface (bag size selector, add/remove items, real-time pricing)
+That part would need a separate custom build OR use a Shopify configurator app
+Example Flow:
+
+Code
+User starts Quiz → Quiz app recommends "Survival Kit A" 
+→ Links to product page → User customizes kit (custom code needed here)
+→ Checkout → Shopify fulfillment
+Pros:
+
+Fast to launch
+Shopify handles payments, orders, fulfillment
+Apps integrate with Shopify natively
+Cons:
+
+Limited customization on what happens after Q&A
+Configurator apps have limitations too
+May feel disjointed (quiz → product page → customizer)
+Option 2: Shopify + Custom Frontend (Best Control)
+Architecture:
+
+Code
+Custom Q&A & Customizer (React/Vue)
+         ↓
+    [Your Backend API]
+         ↓
+    Shopify (via API for cart/checkout/fulfillment)
+How it works:
+
+You build the Q&A and customization experience completely custom
+Your backend stores quiz answers, kit configs, pricing logic
+When user completes customization, your code creates/updates Shopify cart
+Shopify handles checkout and fulfillment
+What you code:
+
+Q&A logic (full control)
+Customization interface (full control, real-time pricing)
+Backend API to manage recommendations, pricing, inventory
+Cart integration with Shopify via Storefront API
+Pros:
+
+Complete control over user experience
+Perfectly tailored to your workflow
+Scalable as you grow
+Cons:
+
+More development work upfront
+Need to maintain two systems (custom + Shopify)
+You're responsible for inventory sync
+Example: A user answers "3-day hiking trip" → gets "Trekker Kit" → customizes to "Medium backpack + add water filter" → real-time price updates → adds to Shopify cart → checks out
+
+Option 3: No-Code/Low-Code (Fastest MVP)
+Tools like:
+
+Webflow (custom forms) + Zapier → Shopify
+Glide or Bubble (visual app builders) + Shopify integration
+Typeform (advanced surveys) → custom rules → Shopify
+How it works:
+
+Build Q&A in no-code tool
+Logic determines what gets recommended
+Manually create orders in Shopify OR use Zapier to auto-create
+Pros:
+
+Fastest to launch (weeks, not months)
+No coding needed
+Can start validating your business model
+Cons:
+
+Limited customization
+Not ideal for complex configurator
+Manual work for fulfillment initially
+My Recommendation for Your Use Case
+Best: Shopify + Custom Frontend (React + Node.js)
+Why?
+
+Your Q&A logic is complex (needs conditional branching)
+Your customization is complex (bag sizes, item selection, dynamic pricing)
+You want a seamless experience from quiz → customization → checkout
+You want to track inventory from your warehouse
+Tech Stack I'd Recommend:
+
+Code
+Frontend:     React or Next.js (Q&A + customizer UI)
+Backend:      Node.js + Express (API for recommendations, pricing, inventory)
+Database:     PostgreSQL (products, kits, orders, inventory)
+Payment:      Stripe (integrated into your checkout)
+Fulfillment:  Shopify OR Manual + Printful/ShipStation
+Hosting:      Vercel (frontend) + Railway/Heroku (backend)
+Alternative: Use Shopify but Build Custom App
+
+Use Shopify as backend (inventory, fulfillment)
+Build custom Q&A + customizer as a Shopify app (using App Bridge)
+Tighter integration, but more complex
+Quick Comparison: Shopify App vs Custom
+Feature	Shopify + App	Custom Build
+Q&A Quiz	✅ Yes (limited)	✅ Yes (full)
+Bag size selector	❌ No	✅ Yes
+Add/remove items	⚠️ Limited	✅ Yes
+Real-time pricing	⚠️ Limited	✅ Yes
+Direct to customer shipping	✅ Yes	✅ Yes
+Warehouse integration	⚠️ Manual	✅ Integrated
+Time to launch	2-4 weeks	8-12 weeks
+Cost	$50-500/month	$2-5k upfront + time
+What I'd Do in Your Shoes
+Phase 1 (MVP - Weeks 1-4):
+
+Build simple Q&A in Typeform or Quiz Kit app
+Manually create 3-5 pre-built kits in Shopify
+Use Shopify's native customization (product options: Size, Add Items)
+Validate that people want this
+Phase 2 (Scale - Weeks 5-12):
+
+If MVP validates, invest in custom build
+Build proper Q&A + customizer
+Implement inventory tracking
+Automate fulfillment workflow
+Next Steps
+To help you decide, answer:
+
+How many different kits are you thinking? (2? 50?)
+How custom can users get? (Just size, or add/remove 20 items?)
+Timeline? (Want live in 4 weeks or 3 months?)
+Budget? (Can you spend $3-5k on development?)
+Technical comfort? (Will you code or hire?)
+Let me know, and I can create a more specific roadmap! 🚀
+
+You said: I have just a hundred or so
+I have just a hundred or so for development so not a high budget, why would custom include such a high entry cost if we remove my labor time from the consideration?
+Copilot said: You're absolutely right to question that—great point!
+You're absolutely right to question that—great point! Let me recalculate.
+
+Real Costs Breakdown (Excluding Your Labor)
+Custom Build Actual Costs:
+Hosting (Vercel + Railway): ~$20-50/month = ~$240-600/year
+Database (PostgreSQL managed): ~$15/month = ~$180/year
+Domain: ~$12/year
+Payment processor (Stripe): 2.9% + $0.30 per transaction (built-in)
+SSL/Security: Free (Let's Encrypt)
+Email service (SendGrid): Free tier or ~$10-20/month
+Development tools: Free (GitHub, VS Code, etc.)
+Total recurring: ~$45-80/month = ~$540-960/year
+
+One-time: Domain ($12), maybe a paid UI library ($0-50)
+
+Real upfront cost: $50-100
+
+Shopify + App Approach Actual Costs:
+Shopify plan: $29-99/month = ~$350-1200/year
+Quiz app: $20-50/month = ~$240-600/year
+Configurator app (if needed): $20-100/month = ~$240-1200/year
+Payment processing: Already in Shopify + transaction fees
+Real upfront cost: $0 But recurring: $300-2800/year (depending on apps)
+
+The Real Picture
+Approach	Upfront $	Monthly $	Year 1 Total	Year 2+
+Custom	$50-100	$45-80	~$600-1000	$540-960
+Shopify + Apps	$0	$300-500	~$3600-6000	$3600-6000
+You were right—custom is actually CHEAPER long-term, especially with your $100 budget because:
+
+You're not hiring expensive developers
+Hosting is dirt cheap
+You only pay for what you use
+Why I Said "$2-5k" (The Real Reason)
+I was factoring in hiring a developer to build it for you. That's where the cost explodes:
+
+Junior dev: $20-40/hour × 100-200 hours = $2,000-8,000
+Agency: $5,000-20,000
+But if you're building it yourself, the hard costs are genuinely ~$50-100/year.
+
+The Honest Truth for Your Budget
+With $100 to spend, here's what makes sense:
+
+Option A: DIY Custom (You code it)
+Cost: $50-100/year (essentially free)
+Time: 40-80 hours of learning + building
+Upside: You own everything, learn valuable skills, can pivot easily
+Downside: You need to learn to code OR it takes longer
+Option B: Shopify + Basic Setup (Minimal code)
+Cost: $350-500/year minimum (recurring)
+Time: 10-20 hours setup
+Upside: Fast to launch, Shopify handles a lot
+Downside: Limited customization, expensive recurring fees
+Option C: Hybrid (Smart approach)
+Use Shopify for orders + fulfillment only (~$29/month)
+Build custom Q&A + customizer yourself (~$50-80/year)
+Connect them with Shopify's API
+Total: ~$400/year + your time
+The Real Question for You
+Not "what's cheapest?" but "what's your constraint?"
+
+If you have TIME (can learn to code or spend 40-80 hours): Custom is the obvious choice
+If you have NO TIME (need it launched in 2 weeks): Shopify + apps, accept the recurring cost
+If you want CONTROL (customize everything): Custom
+If you want SIMPLICITY (get it working fast): Shopify
+Given your $100 budget, I'm guessing you're bootstrapping and don't want recurring costs eating into margins. That points toward Option A or C (custom-heavy approach).
+
+What Would I Actually Build with $100?
+Week 1-2: Learn basic Node.js + React (free courses: freeCodeCamp, Codecademy)
+Week 3-6: Build a simple custom form + backend + Shopify cart integration
+Week 7: Test and deploy
+Costs: ~$50 (domain + hosting), recurring ~$20-30/month
+Result: Full control, zero recurring overhead
+Or use no-code/low-code tools if you don't want to learn to code:
+
+Bubble.io (visual builder, $25-100/month)
+Webflow (visual builder, $14-99/month) + Zapier to Shopify
+My Revised Recommendation
+For your situation: Build it custom yourself with free/cheap tech.
+
+Frontend: React (free, learn via YouTube)
+Backend: Node.js (free)
+Database: PostgreSQL free tier on Railway (~$5/month, free tier available)
+Hosting: Vercel (free tier for frontend)
+Total: $50-100 one-time, ~$10-20/month recurring
+You could have a working prototype in 2-3 months with minimal cost and full control. Then, once you're making money from the business, you can upgrade/scale.
+
+Does that change your thinking? Should we outline a specific tech stack for a DIY build?
+
+You said: I will be using AI for my
+I will be using AI for my coding, i know enough to follow along. Lets figure out that tech stack of things we will need, try and start with free teirs if available and we can migrate to paid if/when needed. Would it be easier to host the site through WIX?
+Copilot said: Great! Let's build your tech stack with
+Great! Let's build your tech stack with free tiers and AI assistance. Now let me address Wix first, then give you the optimal setup.
+
+Wix vs Custom: Quick Reality Check
+Wix would be harder for your use case, here's why:
+
+Feature	Wix	Custom Stack
+Custom Q&A logic	❌ Very limited	✅ Full control
+Dynamic customizer	❌ Hard to build	✅ Easy with React
+Real-time pricing updates	❌ Limited	✅ Native to custom
+Inventory integration	❌ Manual	✅ Automated
+Fulfillment workflow	⚠️ Basic	✅ Full control
+Flexibility as you scale	❌ Locked in	✅ Own everything
+Wix is great for: Simple landing pages, portfolios, basic e-commerce Wix is bad for: Complex interactive experiences like yours
+
+With AI help, a custom stack is actually easier than fighting Wix's limitations.
+
+Recommended Tech Stack (Free Tier First)
+Frontend (What Users See)
+Code
+Framework:    Next.js (React-based, free)
+Styling:      Tailwind CSS (free)
+Hosting:      Vercel (free tier - generous)
+Why:
+
+Next.js has free tier on Vercel with automatic deployments
+Perfect for Q&A flows and custom UIs
+Tailwind makes it look professional quickly
+All free, all open-source
+Backend (The Logic)
+Code
+Runtime:      Node.js (free)
+Framework:    Express.js (free)
+Database:     PostgreSQL (free tier on Railway or Supabase)
+Hosting:      Railway free tier or Render free tier
+Why:
+
+Node.js is the easiest to work with via AI
+Express is simple and flexible
+PostgreSQL is industry standard
+Railway and Supabase have generous free tiers
+Database Options (Pick One)
+Option 1: Supabase (Easiest for you)
+Code
+- PostgreSQL database
+- Built-in authentication
+- Real-time updates
+- Free tier: 500MB storage, perfect for starting
+- Hosting: Included (no separate hosting needed)
+Cost: Free tier, then $25+/month if you scale
+
+Option 2: Railway
+Code
+- PostgreSQL + any backend language
+- Simple dashboard
+- Free tier: $5 credit/month (usually covers small app)
+- Hosting: Included
+Cost: Free tier, then pay-as-you-go (~$5-20/month typical)
+
+Option 3: Render
+Code
+- PostgreSQL + free tier hosting
+- Good documentation
+- Free tier: Spins down after inactivity (slower cold starts)
+Cost: Free tier, then ~$7+/month
+
+I'd recommend: Supabase (easiest to integrate with AI-generated code)
+
+Payment Processing
+Code
+Provider:     Stripe (free to set up, 2.9% + $0.30 per transaction)
+Alternative:  PayPal (2.2% + $0.30 per transaction)
+Why Stripe:
+
+Industry standard
+Free to integrate
+Excellent documentation
+Works perfectly with Next.js
+Cost: $0 upfront, you only pay when customers buy
+
+Email & Notifications
+Code
+Provider:     SendGrid (free tier: 100 emails/day)
+Alternative:  Resend (free tier: 100 emails/day, better for developers)
+Why:
+
+Order confirmations, shipping notifications
+Free tier is plenty to start
+Easy to integrate
+Cost: Free tier, then $10-20/month if you scale
+
+File Storage (Optional)
+Code
+Provider:     Cloudinary (free) or AWS S3 (pay-as-you-go, very cheap)
+Use case:    Product images, kit photos
+Cost: Free tier, or ~$1-5/month
+
+Analytics & Monitoring (Optional for MVP)
+Code
+Provider:     Vercel Analytics (included with Vercel free)
+Alternative:  Plausible ($9/month) or Fathom (privacy-focused)
+Cost: Free (Vercel) or skip for now
+
+Complete Free Tier Setup
+Code
+┌─────────────────────────────────────────────────────┐
+│             User's Browser                          │
+│  (Desktop/Mobile - they visit your site)            │
+└────────────────┬────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────┐
+│        Vercel (Frontend Hosting - FREE)             │
+│  ┌──────────────────────────────────────────────┐  │
+│  │  Next.js App                                 │  │
+│  │  - Landing page                              │  │
+│  │  - Q&A Quiz flow                             │  │
+│  │  - Customizer interface                      │  │
+│  │  - Checkout page                             │  │
+│  │  - User account dashboard                    │  │
+│  └──────────────────────────────────────────────┘  │
+└────────────────┬────────────────────────────────────┘
+                 │ API calls
+                 ▼
+┌─────────────────────────────────────────────────────┐
+│   Railway or Render (Backend Hosting - FREE)        │
+│  ┌──────────────────────────────────────────────┐  │
+│  │  Node.js + Express API                       │  │
+│  │  - Q&A recommendation logic                  │  │
+│  │  - Product customization logic               │  │
+│  │  - Price calculations                        │  │
+│  │  - Order creation                            │  │
+│  │  - Inventory management                      │  │
+│  └──────────────────────────────────────────────┘  │
+└────────────────┬────────────────────────────────────┘
+                 │
+        ┌────────┴────────┐
+        ▼                 ▼
+┌──────────────┐   ┌──────────────────┐
+│  Supabase    │   │  Stripe (FREE)   │
+│ PostgreSQL   │   │  Payment Gateway │
+│  Database    │   └──────────────────┘
+│  (FREE)      │
+└──────────────┘
+Full Tech Stack Summary
+Component	Service	Free Tier	Cost When Scaling
+Frontend Hosting	Vercel	✅ Unlimited	$20+/month (advanced)
+Frontend Framework	Next.js	✅ Free	Free (open source)
+Styling	Tailwind CSS	✅ Free	Free (open source)
+Backend Hosting	Railway	✅ $5 credit/month	Pay-as-you-go
+Backend Framework	Node.js + Express	✅ Free	Free (open source)
+Database	Supabase (PostgreSQL)	✅ 500MB	$25/month @ 8GB
+Payments	Stripe	✅ Free	2.9% + $0.30 per txn
+Emails	SendGrid/Resend	✅ 100/day	$10-20/month
+Domain	Namecheap/Google	-	$10-15/year
+Monitoring	Vercel built-in	✅ Free	Free
+File Storage	Cloudinary	✅ Free	~$5-10/month
+Total upfront: ~$15 (domain only) Total monthly when starting: ~$0 (all free tiers) When scaling (100+ orders/month): ~$35-50/month
+
+Why This Stack is Perfect for AI-Assisted Development
+Next.js: Excellent AI documentation, huge community, easy to prompt
+Node.js/Express: Simple, straightforward, AI knows it well
+Supabase: PostgreSQL + SDK makes querying easy to AI-generate
+Stripe: Excellent API docs, AI can easily generate integration code
+All open-source: Unlimited free learning resources
+Step-by-Step Setup Order
+Week 1: Setup Infrastructure
+
+Code
+1. Create Vercel account (free)
+2. Create Supabase account (free)
+3. Create Stripe account (free)
+4. Create Resend account for emails (free)
+5. Buy domain (~$12/year)
+Week 2-3: Build Backend
+
+Code
+1. Set up Node.js/Express API on Railway (free)
+2. Create PostgreSQL schema in Supabase
+3. Build API endpoints (with AI help)
+Week 4-6: Build Frontend
+
+Code
+1. Create Next.js project in Vercel
+2. Build Q&A component (with AI help)
+3. Build customizer component (with AI help)
+4. Build checkout flow with Stripe (with AI help)
+Week 7: Integration & Testing
+
+Code
+1. Connect frontend to backend
+2. Connect Stripe payments
+3. Test everything
+4. Deploy
+Alternative: Even Simpler Starting Point (If you want faster MVP)
+If you want to validate the idea faster before building custom, you could:
+
+Code
+1. Build simple Q&A in Google Forms or Typeform (free)
+2. Manually recommend kits in response
+3. Use Shopify free tier ($0 first 3 months) for checkout
+4. Handle fulfillment manually
+5. Total time: 1-2 weeks
+6. Cost: $0
+
+Then after you validate: Build the custom stack
+My Recommendation
+Go with the tech stack I outlined above because:
+
+✅ Everything is free to start
+✅ Easy for AI to help you build
+✅ Zero recurring costs initially
+✅ You own everything
+✅ Scales as you grow
+✅ You learn valuable skills
+Don't use Wix because it'll limit you and cost more long-term.
+
+Next Steps
+Want me to:
+
+✅ Create a detailed database schema (what tables you need)?
+✅ Map out the API endpoints (what your backend needs to handle)?
+✅ Create a GitHub repo to track the project?
+✅ Start building? (I can give you prompts to use with Claude/ChatGPT for code)
+✅ Outline the Q&A logic/decision tree?
+What would be most helpful to tackle first?
+
+You said: Lets do that all in order start
+Lets do that all in order start with 1 and go to 5, I want to be efficient
+planning response
+
+Copilot said: Perfect! I've created the GitHub issue tracker.
+Perfect! I've created the GitHub issue tracker. Now let me provide all 5 items in order, efficiently. I'll create the actual database schema file, API endpoints documentation, and your Q&A decision tree in formats you can use immediately.
+
+1. DATABASE SCHEMA (Detailed SQL)
+schema.sql
+-- Users Table
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT,
+How to use in Supabase:
+
+Go to Supabase SQL Editor
+Paste this entire schema
+Click "Run"
+Done! All tables are created
+2. API ENDPOINTS MAP
+API_ENDPOINTS.md
+v1
+# Survival Kit Builder - API Endpoints
+
+## Base URL
+`http://localhost:3000/api` (local development)
+`https://your-api.railway.app/api` (production)
+
+POST /auth/register Body: { email, password, name } Response: { user_id, token }
+
+Code
+
+### Login
+POST /auth/login Body: { email, password } Response: { user_id, token }
+
+Code
+
+### Get Current User
+GET /auth/me Headers: { Authorization: "Bearer TOKEN" } Response: { id, email, name, created_at }
+
+Code
+
+---
+
+## Products Endpoints
+
+### List All Products
+GET /products Query: ?category=food&in_stock=true Response: [ { id, name, price_cents, image_url, ... }, ... ]
+
+Code
+
+### Get Single Product
+GET /products/:id Response: { id, name, description, price_cents, weight_grams, size, in_stock, ... }
+
+Code
+
+### Add Product (Admin)
+POST /products Headers: { Authorization: "Bearer ADMIN_TOKEN" } Body: { name, description, category, price_cents, weight_grams, size, image_url, in_stock } Response: { id, name, ... }
+
+Code
+
+### Update Product (Admin)
+PUT /products/:id Headers: { Authorization: "Bearer ADMIN_TOKEN" } Body: { price_cents, in_stock, ... } Response: { id, name, ... }
+
+Code
+
+---
+
+## Kits Endpoints
+
+### List All Kits
+GET /kits Response: [ { id, name, description, base_bag_id, items: [...], ... }, ... ]
+
+Code
+
+### Get Single Kit with Items
+GET /kits/:id Response: { id, name, description, base_bag_id, items: [ { product_id, name, quantity, price_cents, ... }, ... ], total_price_cents: 15000 }
+
+Code
+
+### Create Kit (Admin)
+POST /kits Headers: { Authorization: "Bearer ADMIN_TOKEN" } Body: { name, description, base_bag_id, items: [ { product_id, quantity }, ... ] } Response: { id, name, ... }
+
+Code
+
+---
+
+## Q&A Endpoints
+
+### Get All Questions
+GET /qa/questions Response: [ { id, position, text, created_at }, { id, position, text, created_at }, ... ]
+
+Code
+
+### Get Answers for Question
+GET /qa/questions/:id/answers Response: [ { id, text, result_kit_id }, { id, text, result_kit_id }, ... ]
+
+Code
+
+### Submit Q&A Answers & Get Recommendation
+POST /qa/submit Body: { answers: { "question_id_1": "answer_id_1", "question_id_2": "answer_id_2", ... } } Response: { recommended_kit: { id, name, description, items: [...] }, can_customize: true }
+
+Code
+
+---
+
+## Orders Endpoints
+
+### Create Order
+POST /orders Headers: { Authorization: "Bearer TOKEN" } Body: { kit_id, customizations: { bag_size: 'L', add_items: ['product_id_1', 'product_id_2'], remove_items: ['product_id_3'] }, shipping_address: "123 Main St..." } Response: { order_id, total_cents, stripe_session_id }
+
+Code
+
+### Get User's Orders
+GET /orders Headers: { Authorization: "Bearer TOKEN" } Response: [ { id, kit_id, status, total_cents, created_at, shipped_at }, ... ]
+
+Code
+
+### Get Single Order
+GET /orders/:id Headers: { Authorization: "Bearer TOKEN" } Response: { id, user_id, kit_id, customizations, items: [ { product_id, name, quantity }, ... ], status, total_cents, created_at }
+
+Code
+
+### Update Order Status (Admin)
+PUT /orders/:id/status Headers: { Authorization: "Bearer ADMIN_TOKEN" } Body: { status: 'packed' | 'shipped' | 'delivered' } Response: { id, status, shipped_at }
+
+Code
+
+---
+
+## Stripe Payment Endpoint
+
+### Create Checkout Session
+POST /checkout Headers: { Authorization: "Bearer TOKEN" } Body: { order_id, success_url: "https://yoursite.com/success", cancel_url: "https://yoursite.com/cancel" } Response: { session_id, url: "https://checkout.stripe.com/..." }
+
+Code
+
+### Webhook (Stripe calls this)
+POST /webhooks/stripe Body: { type: 'payment_intent.succeeded', ... } Response: { received: true }
+
+Code
+
+---
+
+## Inventory Endpoints (Admin)
+
+### Get Inventory Levels
+GET /inventory Headers: { Authorization: "Bearer ADMIN_TOKEN" } Response: [ { product_id, name, in_stock, price_cents }, ... ]
+
+Code
+
+### Update Inventory
+POST /inventory/:product_id/update Headers: { Authorization: "Bearer ADMIN_TOKEN" } Body: { change_quantity: 10, reason: 'restock' } Response: { product_id, new_stock: 45 }
+
+Code
+
+---
+
+## Error Responses
+
+All errors follow this format:
+```json
+{
+  "error": "Error message",
+  "code": "ERROR_CODE"
+}
+Common codes:
+
+UNAUTHORIZED - Missing/invalid token
+NOT_FOUND - Resource doesn't exist
+INVALID_INPUT - Bad request data
+STRIPE_ERROR - Payment processing failed
+Code
+
+---
+
+## 3. GITHUB REPOSITORY SETUP
+
+I'm creating a GitHub issue tracker for you. Here are the initial repositories and instructions:
+
+**Create this structure on GitHub:**
+
+survival-kit-customizer/ ├── frontend/ (Next.js) ├── backend/ (Node.js + Express) ├── docs/ (Schema, endpoints, notes) └── README.md
+
+Code
+
+**Steps:**
+1. Go to https://github.com/new
+2. Create repo: `survival-kit-customizer`
+3. Clone: `git clone https://github.com/KanonAxle/survival-kit-customizer.git`
+4. Create the folders above
+5. Each folder gets its own `package.json` (frontend and backend are separate)
+
+---
+
+## 4. AI CODING PROMPTS (Ready to Use)
+
+**Save these and paste into ChatGPT or Claude:**
+
+### **Prompt 1: Database Setup**
+Create a Supabase PostgreSQL schema for a survival kit customization website. The schema needs:
+
+users table (id, email, password_hash, name, created_at)
+products table (id, name, description, category, price_cents, weight_grams, size, image_url, in_stock)
+kits table (id, name, description, base_bag_id)
+kit_items junction table (kit_id, product_id, quantity)
+qa_questions table (id, text, position)
+qa_answers table (id, question_id, text, result_kit_id)
+orders table (id, user_id, kit_id, customizations, total_cents, status, created_at)
+order_items table (order_id, product_id, quantity)
+Write SQL CREATE TABLE statements with appropriate indexes and foreign keys.
+
+Code
+
+### **Prompt 2: Express Backend - Q&A Endpoint**
+Write an Express.js API endpoint that:
+
+Accepts POST /qa/submit with user's answers
+Each answer is a question_id -> answer_id mapping
+Looks up the result_kit_id from qa_answers table
+Fetches the recommended kit with all its items
+Calculates total price
+Returns: { recommended_kit: { id, name, items [...], total_price } }
+Include error handling and use Supabase client. Assume Supabase is already initialized.
+
+Code
+
+### **Prompt 3: Express Backend - Create Order Endpoint**
+Write an Express.js API endpoint POST /orders that:
+
+Validates user is authenticated (via token)
+Accepts: kit_id, customizations (bag_size, add_items, remove_items), shipping_address
+Fetches the kit and its items
+Applies customizations (add/remove products, adjust prices for size)
+Creates order in orders table with total_cents
+Creates order_items for each product
+Returns: { order_id, total_cents, items: [...] }
+Use Supabase client, include error handling.
+
+Code
+
+### **Prompt 4: Next.js - Q&A Form Component**
+Create a Next.js React component for a multi-step Q&A form:
+
+Fetches questions from GET /api/questions
+Shows one question at a time
+Shows answers as radio buttons for that question
+Has "Previous" and "Next" buttons
+Final step shows "Get Recommendation" button
+On submit, calls POST /api/qa/submit with answers
+Redirects to results page
+Use Tailwind CSS for styling
+Handle loading and error states
+Progress bar showing current step
+Use hooks (useState, useEffect, useRouter).
+
+Code
+
+### **Prompt 5: Next.js - Customizer Component**
+Create a Next.js React component that:
+
+Receives a recommended kit as prop
+Shows kit details (name, description, items list, total price)
+Has dropdown to select bag size (S, M, L, XL)
+Shows each item in kit with checkbox to include/exclude
+Shows price updates in real-time as user customizes
+Has "Add to Cart" button
+Button calls POST /api/orders to create the order
+Use Tailwind CSS
+Show product images if available
+Handle loading states
+Calculate price: base_kit_price + (size_adjustment) + (extra_items) - (removed_items)
+
+Code
+
+### **Prompt 6: Stripe Integration - Next.js Checkout**
+Create a Next.js page that:
+
+Takes order_id from URL params
+Has a "Proceed to Payment" button
+On click, calls POST /api/checkout with order_id
+Redirects to Stripe checkout URL
+Also has success and cancel pages
+Success page shows "Order Confirmed! We'll ship to you soon."
+Cancel page shows "Payment cancelled, want to try again?"
+Use Tailwind CSS
+Make it simple and mobile-friendly.
+
+Code
+
+---
+
+## 5. Q&A DECISION TREE & LOGIC
+
+```markdown name=QA_DECISION_TREE.md
+# Survival Kit Builder - Q&A Decision Tree
+
+## Question Flow & Recommendations
+
+### Question 1: "What's your main use case?"
+**Position**: 1
+
+**Answers:**
+- A1: "Solo Hiking/Backpacking" → Kit: Solo Trekker Kit
+- A2: "Family Camping" → Next Question
+- A3: "Emergency Home Preparedness" → Kit: Urban Emergency Kit
+- A4: "Vehicle Emergency Kit" → Kit: Vehicle Survival Kit
+- A5: "Medical/First Aid Focus" → Next Question
+
+---
+
+### Question 2 (if Family Camping): "How many days?"
+**Position**: 2
+**Only shows if Answer 1 = "Family Camping"**
+
+**Answers:**
+- A1: "1-2 days (weekend)" → Kit: Family Weekend Kit
+- A2: "3-5 days" → Kit: Family Adventure Kit
+- A3: "7+ days" → Kit: Family Extended Expedition Kit
+
+---
+
+### Question 2 (if Solo Hiking): "How many days?"
+**Position**: 2
+**Only shows if Answer 1 = "Solo Hiking/Backpacking"**
+
+**Answers:**
+- A1: "Day hike (under 8 hours)" → Kit: Solo Day Hiker Kit
+- A2: "1-2 days/nights" → Kit: Solo Overnight Kit
+- A3: "3-5 days/nights" → Kit: Solo Weekend Explorer Kit
+- A4: "7+ days/nights" → Kit: Solo Expedition Kit
+
+---
+
+### Question 2 (if Medical Focus): "What type of medical prep?"
+**Position**: 2
+**Only shows if Answer 1 = "Medical/First Aid Focus"**
+
+**Answers:**
+- A1: "Basic first aid" → Kit: Basic Medical Kit
+- A2: "Advanced first aid + trauma" → Kit: Tactical Medical Kit
+- A3: "Travel/adventure medical" → Kit: Adventure Medical Kit
+
+---
+
+### Question 3 (if any camping): "Climate/Terrain?"
+**Position**: 3
+**Shows for camping branches**
+
+**Answers:**
+- A1: "Desert/Hot" → Adds heat-resistant items
+- A2: "Mountain/Cold" → Adds cold weather items
+- A3: "Tropical/Humid" → Adds moisture management items
+- A4: "Mixed/Temperate" → Standard items
+
+---
+
+## Database Setup for Q&A
+
+### Insert Questions:
+```sql
+INSERT INTO qa_questions (text, position) VALUES
+('What is your main use case?', 1),
+('How many days?', 2),
+('What type of medical prep?', 2),
+('Climate or terrain?', 3);
+Insert Answers (with kit references):
+SQL
+-- For Question 1
+INSERT INTO qa_answers (question_id, text, result_kit_id) VALUES
+((SELECT id FROM qa_questions WHERE position=1), 'Solo Hiking/Backpacking', (SELECT id FROM kits WHERE name='Solo Trekker Kit')),
+((SELECT id FROM qa_questions WHERE position=1), 'Family Camping', NULL), -- NO kit, goes to Q2
+((SELECT id FROM qa_questions WHERE position=1), 'Emergency Home Preparedness', (SELECT id FROM kits WHERE name='Urban Emergency Kit')),
+...
+Sample Kit Definitions
+Solo Day Hiker Kit
+Base Bag: Day Pack (20L)
+Water: 2L bottle
+Food: Energy bars (5), trail mix (250g)
+Medical: Basic first aid kit
+Tools: Knife, compass
+Clothing: Hat, extra socks
+Base Price: $89
+Family Weekend Kit
+Base Bag: Family Backpack (60L)
+Water: Water filter + bottles (4)
+Food: Freeze-dried meals (4), snacks
+Medical: Comprehensive first aid
+Shelter: Family tent, sleeping bags (4)
+Tools: Multi-tool, flashlight
+Clothing: Hats, gloves (multiple)
+Base Price: $349
+Urban Emergency Kit
+Base Bag: Tactical backpack (35L)
+Water: Water bottles + purification
+Food: Canned/freeze-dried (2-week supply)
+Medical: Advanced first aid + medications
+Tools: Multi-tool, pry bar, flashlight
+Documents: Important papers waterproof case
+Communication: Whistle, backup phone charger
+Base Price: $199
+Customization Options (After Recommendation)
+Users can customize by:
+
+Bag Size (affects price +/- 10-30%):
+
+Small (-15%)
+Medium (base)
+Large (+20%)
+Extra Large (+30%)
+Add Items (each has own price):
+
+Extra water bottles
+Medical supplies
+Food packs
+Clothing items
+Tools
+Remove Items (deduct from price):
+
+Any default item can be removed
+Price Calculation Logic
+Code
+Final Price = Kit Base Price
+            + Bag Size Adjustment
+            + Additional Items
+            - Removed Items
+            (No tax calculated here; add on checkout)
+Example:
+
+Code
+Base Kit: $150
+Upgrade to Large Bag: +$30
+Add 2x Medical packs: +$40
+Remove sleeping bag: -$80
+Total: $140
+Implementation Notes
+Conditional Logic: Q2 only shows based on Q1 answer
+Terminal Answers: Some answers lead directly to a kit (no more questions)
+Non-terminal Answers: Lead to more questions
+Price Tiers: Different bag sizes have % adjustments
+Customization: After recommendation, user can add/remove any product from the kit
+Code
+
+---
+
+## SUMMARY: What You Have Now
+
+✅ **1. Database Schema** - SQL ready to paste into Supabase
+✅ **2. API Endpoints** - Complete map of all routes you need
+✅ **3. GitHub Repo Setup** - Instructions to create your project structure
+✅ **4. AI Prompts** - 6 copy-paste ready prompts for ChatGPT/Claude
+✅ **5. Q&A Decision Tree** - Full logic flow with sample kits
+
+---
+
+## Next Steps to Execute
+
+1. **Create the GitHub repo** (5 min)
+2. **Create Supabase project** and **run the SQL schema** (10 min)
+3. **Use Prompt 1** with ChatGPT to verify the schema (5 min)
+4. **Use Prompts 2-6** one at a time to build backend and frontend
+5. **Test each endpoint** as you build
+
+**Estimated total time to MVP**: 40-60 hours of work (using AI assistance)
+
+Want me to help you with the next phase (actually building something), or do you need clarification on any of these documents?
+You said: Ok I know how to steer and
+Ok I know how to steer and prompt AI (but i would still appreciate prompts if needed), but I am quite a noob at coding, please be very precise and step by step with each prompt. Restart your last response to accomodate that. 
+Copilot said: Perfect! I'll restart with **extremely detailed, beginner-friendly
+Perfect! I'll restart with extremely detailed, beginner-friendly prompts that include explanations of what each step does. Let me restart from Step 1.
+
+STEP 1: DATABASE SCHEMA SETUP (Detailed)
+What This Does
+This creates the "filing cabinet" where all your data lives (user info, products, orders, etc.). You'll paste SQL code into Supabase and it automatically creates all the tables.
+
+Step 1a: Create Your Supabase Project
+Go to https://supabase.com
+Click "Start your project"
+Sign up with email
+Create a new project:
+Project name: survival-kit-builder (or whatever you want)
+Database password: Create a strong one and save it
+Region: Choose closest to you
+Wait 2-3 minutes for it to create
+You'll see a dashboard with a SQL editor option
+Step 1b: Copy-Paste the Database Schema
+When your Supabase project is ready:
+
+Click "SQL Editor" on the left sidebar
+Click "New Query"
+Copy this ENTIRE code below and paste it into the editor:
+01_create_tables.sql
+-- TABLE 1: Users (stores customer information)
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT,
+Click the blue "Run" button or press Ctrl+Enter
+Wait a few seconds... you should see ✅ "Success" messages
+Done! Your database is now set up.
+What Just Happened?
+You created 9 tables:
+
+users: Stores who your customers are
+products: Individual items (water bottle, tent, food, etc.)
+kits: Pre-made bundles (e.g., "3-Day Hiking Kit")
+kit_items: Says "3-Day Hiking Kit contains 2 water bottles, 1 tent...")
+qa_questions & qa_answers: The quiz questions and answers
+orders: Customer purchases
+order_items: What's in each order
+inventory_log: Tracks when items run out
+STEP 2: API ENDPOINTS MAP (What Your Backend Needs)
+What This Does
+An "endpoint" is like a button a user can press. For example:
+
+Button: "Get me a kit recommendation" → Endpoint: POST /qa/submit
+Button: "Show me my orders" → Endpoint: GET /orders
+This document lists every button/endpoint you need to build.
+
+Reference Document: Save This File
+Create a file called API_ENDPOINTS.md in your GitHub repo (or just save it locally):
+
+API_ENDPOINTS.md
+v2
+# API Endpoints for Survival Kit Builder
+
+## What is an Endpoint?
+An endpoint is a URL your website calls to do something:
+- `GET /products` = "Show me all products"
+- `POST /orders` = "Create a new order"
+Backend responds with:
+
+JSON
+{
+  "user_id": "abc-123-def",
+  "token": "eyJhbGc...",
+  "message": "Account created successfully"
+}
+2. Log In
+Endpoint: POST /auth/login What it does: Logs in an existing customer Website sends:
+
+JSON
+{
+  "email": "john@example.com",
+  "password": "secure123"
+}
+Backend responds with:
+
+JSON
+{
+  "user_id": "abc-123-def",
+  "token": "eyJhbGc...",
+  "message": "Login successful"
+}
+3. Get Current User Info
+Endpoint: GET /auth/me What it does: Shows who is logged in Website needs to send: Token in header
+
+Code
+Authorization: Bearer eyJhbGc...
+Backend responds with:
+
+JSON
+{
+  "id": "abc-123-def",
+  "email": "john@example.com",
+  "name": "John Smith",
+  "created_at": "2025-02-21T10:30:00Z"
+}
+PRODUCTS (Items for Sale)
+4. Get All Products
+Endpoint: GET /products What it does: Shows all items available (water bottles, tents, food, etc.) Website sends: Nothing (or optionally: ?category=food) Backend responds with:
+
+JSON
+[
+  {
+    "id": "prod-123",
+    "name": "Water Bottle (1L)",
+    "category": "water",
+    "price_cents": 1500,
+    "description": "Lightweight water bottle",
+    "in_stock": 45,
+    "image_url": "https://..."
+  },
+  {
+    "id": "prod-456",
+    "name": "Tent (2-person)",
+    "category": "shelter",
+    "price_cents": 8999,
+    "description": "Easy setup tent",
+    "in_stock": 12,
+    "image_url": "https://..."
+  }
+]
+5. Get One Product Details
+Endpoint: GET /products/:id What it does: Shows details of one specific product Website sends: Product ID in URL (e.g., /products/prod-123) Backend responds with:
+
+JSON
+{
+  "id": "prod-123",
+  "name": "Water Bottle (1L)",
+  "description": "Lightweight and durable water bottle",
+  "category": "water",
+  "price_cents": 1500,
+  "weight_grams": 180,
+  "size": "M",
+  "in_stock": 45,
+  "image_url": "https://..."
+}
+KITS (Pre-Made Bundles)
+6. Get All Kits
+Endpoint: GET /kits What it does: Shows all pre-made kits (e.g., "3-Day Hiking Kit") Website sends: Nothing Backend responds with:
+
+JSON
+[
+  {
+    "id": "kit-123",
+    "name": "Solo 3-Day Hiking Kit",
+    "description": "Everything one person needs for 3 days of hiking",
+    "base_bag_id": "prod-999",
+    "total_price_cents": 29999,
+    "items": [
+      {
+        "product_id": "prod-123",
+        "name": "Water Bottle (1L)",
+        "quantity": 2,
+        "price_cents": 1500
+      },
+      {
+        "product_id": "prod-456",
+        "name": "Tent (2-person)",
+        "quantity": 1,
+        "price_cents": 8999
+      }
+    ]
+  }
+]
+7. Get One Kit with All Items
+Endpoint: GET /kits/:id What it does: Shows one specific kit and everything in it Website sends: Kit ID in URL (e.g., /kits/kit-123) Backend responds with:
+
+JSON
+{
+  "id": "kit-123",
+  "name": "Solo 3-Day Hiking Kit",
+  "description": "Everything one person needs for 3 days of hiking",
+  "base_bag_id": "prod-999",
+  "items": [
+    {
+      "product_id": "prod-123",
+      "name": "Water Bottle (1L)",
+      "quantity": 2,
+      "price_cents": 1500,
+      "weight_grams": 180
+    }
+  ],
+  "total_price_cents": 29999
+}
+Q&A QUIZ
+8. Get All Quiz Questions
+Endpoint: GET /qa/questions What it does: Shows all the questions in the quiz Website sends: Nothing Backend responds with:
+
+JSON
+[
+  {
+    "id": "q-1",
+    "position": 1,
+    "text": "What is your main use case?"
+  },
+  {
+    "id": "q-2",
+    "position": 2,
+    "text": "How many days will you be out?"
+  }
+]
+9. Get Answers for a Question
+Endpoint: GET /qa/questions/:id/answers What it does: Shows answer options for one question Website sends: Question ID in URL (e.g., /qa/questions/q-1/answers) Backend responds with:
+
+JSON
+[
+  {
+    "id": "a-1",
+    "text": "Solo Hiking",
+    "result_kit_id": "kit-456"
+  },
+  {
+    "id": "a-2",
+    "text": "Family Camping",
+    "result_kit_id": null
+  },
+  {
+    "id": "a-3",
+    "text": "Emergency Preparedness",
+    "result_kit_id": "kit-789"
+  }
+]
+10. Submit Quiz Answers & Get Recommendation
+Endpoint: POST /qa/submit What it does: User answers all questions, backend recommends a kit Website sends:
+
+JSON
+{
+  "answers": {
+    "q-1": "a-1",
+    "q-2": "a-5"
+  }
+}
+Backend responds with:
+
+JSON
+{
+  "recommended_kit": {
+    "id": "kit-123",
+    "name": "Solo 3-Day Hiking Kit",
+    "description": "Perfect for a 3-day solo hiking trip",
+    "items": [
+      {
+        "product_id": "prod-123",
+        "name": "Water Bottle",
+        "quantity": 2
+      }
+    ],
+    "total_price_cents": 29999
+  },
+  "can_customize": true
+}
+ORDERS (Shopping/Checkout)
+11. Create New Order
+Endpoint: POST /orders What it does: Customer creates an order (adds kit to cart, applies customizations, then orders) Website needs: Customer must be logged in (send token) Website sends:
+
+JSON
+{
+  "kit_id": "kit-123",
+  "customizations": {
+    "bag_size": "L",
+    "add_items": ["prod-999", "prod-888"],
+    "remove_items": ["prod-777"]
+  },
+  "shipping_address": "123 Main St, Denver, CO 80202"
+}
+Backend responds with:
+
+JSON
+{
+  "order_id": "order-456",
+  "total_cents": 32500,
+  "items": [
+    {
+      "product_id": "prod-123",
+      "name": "Water Bottle",
+      "quantity": 2,
+      "price_cents": 1500
+    }
+  ],
+  "message": "Order created. Proceed to payment."
+}
+12. Get User's Orders
+Endpoint: GET /orders What it does: Shows all orders placed by logged-in customer Website needs: Customer must be logged in (send token) Website sends: Nothing Backend responds with:
+
+JSON
+[
+  {
+    "id": "order-456",
+    "kit_id": "kit-123",
+    "status": "placed",
+    "total_cents": 32500,
+    "created_at": "2025-02-21T10:30:00Z",
+    "shipped_at": null
+  },
+  {
+    "id": "order-789",
+    "kit_id": "kit-456",
+    "status": "shipped",
+    "total_cents": 19999,
+    "created_at": "2025-02-15T14:20:00Z",
+    "shipped_at": "2025-02-18T09:00:00Z"
+  }
+]
+13. Get One Order Details
+Endpoint: GET /orders/:id What it does: Shows detailed info about one order Website needs: Customer must be logged in (send token) Website sends: Order ID in URL (e.g., /orders/order-456) Backend responds with:
+
+JSON
+{
+  "id": "order-456",
+  "user_id": "user-123",
+  "kit_id": "kit-123",
+  "customizations": {
+    "bag_size": "L",
+    "add_items": ["prod-999"],
+    "remove_items": []
+  },
+  "items": [
+    {
+      "product_id": "prod-123",
+      "name": "Water Bottle",
+      "quantity": 2,
+      "price_cents": 1500
+    }
+  ],
+  "status": "placed",
+  "total_cents": 32500,
+  "shipping_address": "123 Main St, Denver, CO 80202",
+  "created_at": "2025-02-21T10:30:00Z"
+}
+STRIPE PAYMENT
+14. Create Checkout Session (Payment Page)
+Endpoint: POST /checkout What it does: Sends customer to Stripe payment page Website needs: Customer must be logged in (send token) Website sends:
+
+JSON
+{
+  "order_id": "order-456",
+  "success_url": "https://yoursite.com/success",
+  "cancel_url": "https://yoursite.com/cancel"
+}
+Backend responds with:
+
+JSON
+{
+  "session_id": "cs_test_123abc",
+  "url": "https://checkout.stripe.com/pay/cs_test_123abc",
+  "message": "Redirect customer to this URL"
+}
+Summary
+Total Endpoints to Build: 14
+
+By Category:
+
+Authentication: 3 endpoints (register, login, get user)
+Products: 2 endpoints (list, get one)
+Kits: 2 endpoints (list, get one)
+Q&A: 3 endpoints (get questions, get answers, submit quiz)
+Orders: 3 endpoints (create, list user's orders, get one)
+Payment: 1 endpoint (checkout)
+Code
+
+### How to Use This Document
+
+Save this as a reference while building. Each prompt I give you will tell you which endpoint to build.
+
+---
+
+# STEP 3: CREATE GITHUB REPOSITORY
+
+## What This Does
+
+GitHub is where you'll store all your code so you (and AI) can keep track of everything. Think of it as a filing system for your project.
+
+## Step 3a: Create the Repo
+
+1. Go to https://github.com/new (you need to be logged in)
+2. Fill in:
+   - **Repository name:** `survival-kit-customizer`
+   - **Description:** "Custom survival kit recommendation and builder website"
+   - **Public or Private:** Choose `Public` (easier for AI to help)
+   - **Add README:** Check the box
+   - **License:** MIT (optional, but good to have)
+3. Click **"Create repository"**
+4. You'll see your new repo page
+
+## Step 3b: Clone It to Your Computer
+
+1. On your repo page, click the green **"Code"** button
+2. Copy the HTTPS URL (looks like `https://github.com/KanonAxle/survival-kit-customizer.git`)
+3. Open your terminal/command prompt on your computer
+4. Type:
+   ```bash
+   git clone https://github.com/KanonAxle/survival-kit-customizer.git
+   cd survival-kit-customizer
+You now have the repo on your computer
+Step 3c: Create the Folder Structure
+In your terminal, create folders:
+
+bash
+mkdir frontend
+mkdir backend
+mkdir docs
+Now your structure looks like:
+
+Code
+survival-kit-customizer/
+├── frontend/          (Next.js code will go here)
+├── backend/           (Node.js code will go here)
+├── docs/              (Documentation)
+└── README.md          (Already exists)
+Step 3d: Save Important Files to docs/
+In your docs/ folder, create these files:
+
+database-schema.sql - Paste the SQL code from Step 1
+api-endpoints.md - Paste the API document from Step 2
+qa-decision-tree.md - We'll create this in Step 5
+Add, commit, and push to GitHub:
+
+bash
+git add .
+git commit -m "Initial: Add documentation and folder structure"
+git push origin main
+STEP 4: AI CODING PROMPTS (BEGINNER-FRIENDLY)
+Important: How to Use These Prompts
+Each prompt is designed to be copy-pasted into ChatGPT, Claude, or Copilot.
+
+The prompts include:
+
+Context - What the code is for
+Clear instructions - Exactly what to build
+Input/output examples - What data goes in and comes out
+Beginner notes - Explanations of what things mean
+Before You Start
+You need to decide which AI you'll use:
+
+ChatGPT 4 (https://chat.openai.com) - Most popular, very helpful
+Claude 3.5 (https://claude.ai) - Also excellent, sometimes better for coding
+GitHub Copilot - If you have VS Code, it's built in
+Recommendation: Use ChatGPT or Claude. They're easier to follow along with.
+
+PROMPT 1: Supabase Setup & Authentication
+Copy this entire prompt and paste into ChatGPT/Claude:
+
+Code
+I'm building a survival kit customization website using Node.js, Express, and Supabase.
+
+CONTEXT:
+- I have a Supabase PostgreSQL database (already created with tables)
+- I need to build a Node.js + Express backend
+- This first prompt is to set up authentication
+
+TASK 1: Create a new Node.js + Express project
+I need step-by-step instructions to:
+1. Create a new Node.js project folder
+2. Initialize npm (package.json)
+3. Install these packages: express, dotenv, @supabase/supabase-js, jsonwebtoken, bcryptjs, cors
+4. Create a .env file to store secrets (Supabase URL, key, JWT secret)
+5. Create a basic Express server that runs on port 3000
+
+Provide the EXACT terminal commands and file contents for each step.
+Make it suitable for a beginner - explain what each package does.
+
+TASK 2: Create Supabase Connection Code
+Create a file called `config/supabase.js` that:
+1. Imports the Supabase client
+2. Connects to my Supabase database using credentials from .env
+3. Exports the connection so other files can use it
+4. Include comments explaining what each line does
+
+TASK 3: Create Authentication Routes
+Create a file called `routes/auth.js` that has:
+
+Route 1 - POST /auth/register
+- Accepts JSON: { email, password, name }
+- Checks if email already exists
+- Hashes the password using bcryptjs
+- Stores user in the 'users' table
+- Returns: { user_id, token, message }
+- If email exists, return error: { error: "Email already registered" }
+
+Route 2 - POST /auth/login
+- Accepts JSON: { email, password }
+- Finds user by email
+- Compares password with hash
+- Creates JWT token
+- Returns: { user_id, token, message }
+- If credentials wrong, return error: { error: "Invalid email or password" }
+
+Route 3 - GET /auth/me
+- Requires user to send Authorization header: "Bearer TOKEN"
+- Verifies the JWT token
+- Returns: { id, email, name, created_at }
+- If no token, return error: { error: "Unauthorized" }
+
+For each route, include error handling and clear comments.
+Use try-catch blocks to catch errors.
+
+TASK 4: Create Main Server File
+Create `server.js` that:
+1. Loads environment variables from .env
+2. Creates an Express app
+3. Sets up CORS (so frontend can call it)
+4. Registers the auth routes
+5. Starts server on port 3000
+6. Logs "Server running on http://localhost:3000"
+
+Include all imports and error handling.
+
+IMPORTANT: 
+- Use clear variable names
+- Add comments on every function
+- Make it simple and beginner-friendly
+- Include error messages that are easy to understand
+PROMPT 2: Products & Kits API Endpoints
+Copy this entire prompt and paste into ChatGPT/Claude:
+
+Code
+I'm continuing to build the backend for my survival kit website.
+I've already created authentication (register, login, get user).
+
+NOW I need to build PRODUCTS and KITS endpoints.
+
+DATABASE CONTEXT:
+Table: products
+- id (UUID), name, description, category, price_cents, weight_grams, size, image_url, in_stock
+
+Table: kits
+- id (UUID), name, base_bag_id, description, image_url
+
+Table: kit_items (junction table)
+- id, kit_id, product_id, quantity
+
+TASK 1: Create Products Route File
+Create `routes/products.js` with these endpoints:
+
+ENDPOINT 1 - GET /products
+- Returns ALL products from database
+- Response format:
+  [
+    {
+      "id": "abc-123",
+      "name": "Water Bottle (1L)",
+      "category": "water",
+      "price_cents": 1500,
+      "description": "Lightweight water bottle",
+      "in_stock": 45,
+      "image_url": "https://..."
+    }
+  ]
+- Include error handling if database fails
+
+ENDPOINT 2 - GET /products/:id
+- Takes product ID from URL
+- Returns ONE product with all details
+- If product not found, return: { error: "Product not found" }
+
+ENDPOINT 3 - POST /products (ADMIN ONLY)
+- ADMIN AUTHENTICATION: Check if user has admin_role = true (we can skip this for now, just add a comment "TODO: add admin check")
+- Accepts JSON: { name, description, category, price_cents, weight_grams, size, image_url, in_stock }
+- Creates new product in database
+- Returns: { id, name, ... } (the newly created product)
+
+ENDPOINT 4 - PUT /products/:id (ADMIN ONLY)
+- Updates a product
+- Accepts JSON: { price_cents, in_stock, name } (any field can be updated)
+- Returns updated product
+- If product not found, return error
+
+For all endpoints:
+- Include error handling
+- Add comments explaining each step
+- Use try-catch blocks
+
+TASK 2: Create Kits Route File
+Create `routes/kits.js` with these endpoints:
+
+ENDPOINT 1 - GET /kits
+- Returns ALL kits from database
+- For EACH kit, also fetch all its items (from kit_items table)
+- Response format:
+  [
+    {
+      "id": "kit-123",
+      "name": "Solo 3-Day Hiking Kit",
+      "description": "Everything for 3 days",
+      "base_bag_id": "prod-999",
+      "items": [
+        {
+          "product_id": "prod-123",
+          "name": "Water Bottle",
+          "quantity": 2,
+          "price_cents": 1500
+        }
+      ],
+      "total_price_cents": 29999
+    }
+  ]
+- Calculate total_price_cents by: sum(product.price_cents * quantity)
+
+ENDPOINT 2 - GET /kits/:id
+- Takes kit ID from URL
+- Returns ONE kit with all its items and total price
+- Same response format as above
+- If kit not found, return error
+
+ENDPOINT 3 - POST /kits (ADMIN ONLY)
+- Creates a new kit
+- Accepts JSON:
+  {
+    "name": "Solo 3-Day Hiking Kit",
+    "base_bag_id": "prod-999",
+    "description": "...",
+    "items": [
+      { "product_id": "prod-123", "quantity": 2 },
+      { "product_id": "prod-456", "quantity": 1 }
+    ]
+  }
+- Inserts into kits table
+- Inserts each item into kit_items table
+- Returns: { id, name, items, total_price_cents }
+
+For all endpoints:
+- Include error handling
+- Add comments
+- Use try-catch
+
+TASK 3: Update Main Server File
+In your existing `server.js`, add these lines after the auth routes:
+1. Import the products routes: const productsRouter = require('./routes/products');
+2. Register products: app.use('/api', productsRouter);
+3. Import kits routes: const kitsRouter = require('./routes/kits');
+4. Register kits: app.use('/api', kitsRouter);
+
+IMPORTANT:
+- Use clear variable names
+- Add comments on EVERY function
+- When querying database, show the exact SQL being used
+- Include console.log statements so you can see what's happening
+- Make error messages descriptive
+PROMPT 3: Q&A Quiz Endpoints
+Copy this entire prompt and paste into ChatGPT/Claude:
+
+Code
+I'm building the Q&A quiz feature for my survival kit website.
+
+DATABASE CONTEXT:
+Table: qa_questions
+- id (UUID), text, position (order in quiz)
+
+Table: qa_answers
+- id (UUID), question_id, text, result_kit_id (which kit this answer recommends)
+
+Table: kits (already exists)
+- has the kit data
+
+TASK 1: Create Q&A Routes File
+Create `routes/qa.js` with these endpoints:
+
+ENDPOINT 1 - GET /qa/questions
+- Returns ALL questions ordered by position (1, 2, 3...)
+- Response format:
+  [
+    {
+      "id": "q-1",
+      "position": 1,
+      "text": "What is your main use case?"
+    },
+    {
+      "id": "q-2",
+      "position": 2,
+      "text": "How many days?"
+    }
+  ]
+
+ENDPOINT 2 - GET /qa/questions/:id/answers
+- Takes question ID from URL
+- Returns all answer options for that question
+- Response format:
+  [
+    {
+      "id": "a-1",
+      "text": "Solo Hiking",
+      "result_kit_id": "kit-456"
+    },
+    {
+      "id": "a-2",
+      "text": "Family Camping",
+      "result_kit_id": null
+    }
+  ]
+- result_kit_id is null if this answer leads to another question
+- result_kit_id has a kit ID if this answer directly recommends a kit
+
+ENDPOINT 3 - POST /qa/submit (THE MOST IMPORTANT ONE)
+This endpoint takes the user's answers and recommends a kit.
+
+Input JSON:
+{
+  "answers": {
+    "q-1": "a-1",
+    "q-2": "a-5"
+  }
+}
+(Maps question ID to answer ID)
+
+What the backend does:
+1. Receives the answers
+2. Looks up each answer_id in qa_answers table
+3. Gets the result_kit_id from the last answer (the final answer that leads to a kit)
+4. Fetches the full kit details (name, description, items, total price)
+5. Also fetches all items in the kit from kit_items table
+6. Calculates total price
+
+Response format:
+{
+  "recommended_kit": {
+    "id": "kit-123",
+    "name": "Solo 3-Day Hiking Kit",
+    "description": "Perfect for 3 days solo hiking",
+    "base_bag_id": "prod-999",
+    "items": [
+      {
+        "product_id": "prod-123",
+        "name": "Water Bottle",
+        "quantity": 2,
+        "price_cents": 1500
+      }
+    ],
+    "total_price_cents": 29999
+  },
+  "can_customize": true
+}
+
+Error handling:
+- If answer_id not found, return: { error: "Invalid answer" }
+- If result_kit_id is null, return: { error: "This answer path not yet configured" }
+- Use try-catch
+
+TASK 2: Create Sample Data (SQL for Supabase)
+I'll provide you sample quiz questions/answers that should be inserted into the database.
+Create a file called `docs/sample-qa-data.sql` with INSERT statements for:
+- 3 questions
+- 6 answers total
+- 2 kits already exist (assume kit IDs: kit-001, kit-002)
+
+Example structure:
+Question 1: "What is your use case?" 
+- Answer 1: "Solo Hiking" → leads to kit-001
+- Answer 2: "Family Camping" → leads to kit-002
+- Answer 3: "Emergency Prep" → leads to kit-003
+
+Question 2: "How many days?" (only shown if Answer 1 selected)
+- Answer 1: "1 day" 
+- Answer 2: "3 days"
+- Answer 3: "7 days"
+
+Write the INSERT SQL statements to add these questions and answers.
+
+TASK 3: Update Main Server File
+In `server.js`, add:
+1. Import q&a routes: const qaRouter = require('./routes/qa');
+2. Register q&a: app.use('/api', qaRouter);
+
+IMPORTANT:
+- Add comments explaining the logic
+- In POST /qa/submit, log to console which answer leads to which kit
+- Include error handling
+- Make response messages clear
+PROMPT 4: Create Order Endpoint
+Copy this entire prompt and paste into ChatGPT/Claude:
+
+Code
+I'm building the ORDER endpoint - when customers actually purchase a kit.
+
+DATABASE CONTEXT:
+Table: orders
+- id (UUID), user_id, kit_id, customizations (JSONB), total
+Message interrupted
+Copilot was interrupted before it could finish this message.
+You said: I have no idea what this means
+I have no idea what this means or what to do with it: Create a file called API_ENDPOINTS.md in your GitHub repo (or just save it locally):
+
+API_ENDPOINTS.md
+v2
+# API Endpoints for Survival Kit Builder
+
+## What is an Endpoint?
+An endpoint is a URL your website calls to do something:
+- `GET /products` = "Show me all products"
+- `POST /orders` = "Create a new order"
+Backend responds with:
+
+JSON
+{
+  "user_id": "abc-123-def",
+  "token": "eyJhbGc...",
+  "message": "Account created successfully"
+}
+2. Log In
+
+Endpoint: POST /auth/login What it does: Logs in an existing customer Website sends:
+
+JSON
+{
+  "email": "john@example.com",
+  "password": "secure123"
+}
+Backend responds with:
+Copilot said: You're right - let me slow down
+You're right - let me slow down and explain what that means in simple terms.
+
+What Does "Create a file called API_ENDPOINTS.md" Mean?
+Step-by-Step Explanation
+Step 1: Understand What a File is
+A file is just a document, like a Word document or a text file. API_ENDPOINTS.md is a simple text file.
+
+The .md means it's a "Markdown" file - a format that's easy to read and GitHub displays nicely.
+
+Step 2: Where to Create It
+You have two options:
+
+OPTION A: Create it in your GitHub repo folder (RECOMMENDED)
+
+Open your survival-kit-customizer folder on your computer
+Open the docs folder you created earlier
+Right-click in the folder → New File
+Name it: API_ENDPOINTS.md
+Open it with any text editor (Notepad, VS Code, etc.)
+Paste the content I provided
+OPTION B: Create it online in GitHub
+
+Go to your repo on GitHub: https://github.com/KanonAxle/survival-kit-customizer
+Click "Add file" → "Create new file"
+Name it: docs/API_ENDPOINTS.md (the docs/ part puts it in the docs folder)
+Paste the content into the text box
+Scroll down and click "Commit changes"
+What to Do With the API_ENDPOINTS.md File
+What It Contains
+It's a reference document - like a cheat sheet. It lists:
+
+Every button/action your website needs (14 total)
+What data each one needs
+What it sends back
+Why You Need It
+Later, when I give you coding prompts, I'll say:
+
+"Build endpoint #1: POST /auth/register"
+
+You'll look at API_ENDPOINTS.md and see exactly what that endpoint should do.
+
+How to Use It
+Save it in your repo (so you always have it)
+Reference it when building code (keeps you on track)
+Share it with AI (paste it into ChatGPT if needed)
+Simple Example
+Let me show you what one endpoint description actually means:
+
+Code
+### 1. Create New User Account
+**Endpoint:** `POST /auth/register`
+Translation:
+
+POST = When the customer clicks "Sign Up" button
+/auth/register = The URL path the website calls
+register = "Create a new account"
+Code
+**What it does:** Creates a new customer account
+Translation: This endpoint saves a new customer to the database.
+
+Code
+**Website sends:**
+{
+  "email": "john@example.com",
+  "password": "secure123",
+  "name": "John Smith"
+}
+Translation: When user fills out the sign-up form and clicks "Submit", the website sends this data to your backend.
+
+Code
+**Backend responds with:**
+{
+  "user_id": "abc-123-def",
+  "token": "eyJhbGc...",
+  "message": "Account created successfully"
+}
+Translation: Your backend checks everything is good, saves the user, and sends back confirmation.
+
+TL;DR (Too Long; Didn't Read)
+What to do:
+
+Create a text file called API_ENDPOINTS.md in your docs/ folder
+Copy the entire API_ENDPOINTS.md content I provided and paste it in
+Save it
+That's it! You now have a reference document
+Why it matters:
+
+It's your "roadmap" for what to build
+You'll reference it constantly
+It keeps everything organized
+Ready to Continue?
+Should I now give you PROMPT 1 - which is the actual step-by-step coding instructions to build your first backend feature (authentication)?
+
+Or do you have more questions about the setup?
+
+You said: I understand what I file is but
+I understand what I file is but when you send me what looks like code with POST I was unsure what to do with it, just be sure to clarify when you are giving me an example vs instructions, I need the implementation instrsuctions step by step
+Copilot said: Perfect! I understand. Let me be crystal
+Perfect! I understand. Let me be crystal clear going forward:
+
+I will use these labels:
+
+🔵 EXAMPLE = This is just to show you what something looks like (don't copy this)
+🟢 INSTRUCTIONS = Follow these exact steps in order
+📝 CODE TO PASTE = Copy this exactly and paste it into a file
+Let me restart STEP 4: AI CODING PROMPTS with that clarity.
+
+STEP 4: AI CODING PROMPTS (Beginner-Friendly with Clear Instructions)
+Before You Start - Important Setup
+Before I give you any coding prompts, you need to have these ready:
+
+🟢 INSTRUCTIONS: Get Your Supabase Credentials
+Go to https://supabase.com and log in
+Click on your project: survival-kit-builder
+On the left sidebar, click "Settings" → "API"
+You'll see two things:
+Project URL (looks like: https://abc123.supabase.co)
+Project API Key (looks like: eyJhbGc123abc...)
+Copy both and save them somewhere safe (you'll need them in Step 1)
+🟢 INSTRUCTIONS: Install a Code Editor
+Download VS Code from https://code.visualstudio.com (it's free)
+Install it on your computer
+Open VS Code
+DETAILED STEP-BY-STEP: SET UP YOUR BACKEND
+Phase 1: Create Your Backend Folder & Initialize Node.js
+🟢 INSTRUCTIONS: Create Backend Folder
+Open VS Code
+Go to File → Open Folder
+Navigate to your survival-kit-customizer folder
+Click "Open"
+You'll see your folder structure on the left
+🟢 INSTRUCTIONS: Create Backend Subfolder
+In VS Code, look at the left panel (file explorer)
+Right-click on the backend folder
+Select "New Terminal Here"
+A terminal will open at the bottom of VS Code
+Type this command and press Enter:
+Code
+cd backend
+🟢 INSTRUCTIONS: Initialize Node.js Project
+In the terminal (where you just typed cd backend), type these commands one at a time and press Enter after each:
+
+Code
+npm init -y
+This creates a file called package.json which tracks what your project needs.
+
+You should see output saying "wrote to package.json"
+
+Phase 2: Install Required Packages
+🟢 INSTRUCTIONS: Install Dependencies
+In the terminal, copy and paste this entire line and press Enter:
+
+Code
+npm install express dotenv @supabase/supabase-js jsonwebtoken bcryptjs cors
+This takes 1-2 minutes. Wait until you see the terminal prompt again.
+
+What each does (for your understanding):
+
+express = Framework to build your API
+dotenv = Loads secret keys safely
+@supabase/supabase-js = Connects to your database
+jsonwebtoken = Creates login tokens
+bcryptjs = Hashes passwords securely
+cors = Lets frontend talk to backend
+Phase 3: Create Your First File (.env)
+🟢 INSTRUCTIONS: Create .env File
+In VS Code left panel, right-click on the backend folder
+Select "New File"
+Name it exactly: .env (with the dot at the start)
+Press Enter
+Now you have a blank .env file open.
+
+🟢 INSTRUCTIONS: Add Your Secrets to .env
+📝 CODE TO PASTE: Copy this entire code block and paste it into your .env file:
+
+Code
+SUPABASE_URL=your_supabase_url_here
+SUPABASE_KEY=your_supabase_key_here
+JWT_SECRET=your_super_secret_key_12345
+PORT=3000
+Now replace the placeholders:
+
+Find your_supabase_url_here and replace it with your Project URL from earlier (it should look like https://abc123.supabase.co)
+Find your_supabase_key_here and replace it with your Project API Key
+Find your_super_secret_key_12345 and replace it with any random text (like MySuperSecretKey123!@#)
+Example of what it should look like:
+
+Code
+SUPABASE_URL=https://xyzabc.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9abc123
+JWT_SECRET=MyRandomSecretPassword123!@#
+PORT=3000
+Save the file (Ctrl+S on Windows, Cmd+S on Mac)
+
+Phase 4: Create Supabase Connection File
+🟢 INSTRUCTIONS: Create config Folder
+In VS Code, right-click on the backend folder
+Select "New Folder"
+Name it: config
+Press Enter
+🟢 INSTRUCTIONS: Create supabase.js File
+Right-click on the new config folder
+Select "New File"
+Name it: supabase.js
+Press Enter
+🟢 INSTRUCTIONS: Add Supabase Connection Code
+📝 CODE TO PASTE: Copy this entire code and paste it into supabase.js:
+
+JavaScript
+// This file connects to your Supabase database
+const { createClient } = require('@supabase/supabase-js');
+
+// Load environment variables from .env file
+require('dotenv').config();
+
+// Create Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
+
+// Export so other files can use it
+module.exports = supabase;
+Save the file (Ctrl+S)
+
+What this does: When other files need to talk to the database, they import this file instead of typing the connection details everywhere.
+
+Phase 5: Create Routes Folder for Authentication
+🟢 INSTRUCTIONS: Create routes Folder
+Right-click on the backend folder
+Select "New Folder"
+Name it: routes
+Press Enter
+🟢 INSTRUCTIONS: Create auth.js File
+Right-click on the new routes folder
+Select "New File"
+Name it: auth.js
+Press Enter
+🟢 INSTRUCTIONS: Add Authentication Endpoints
+📝 CODE TO PASTE: Copy this entire code and paste it into routes/auth.js:
+
+JavaScript
+// Authentication routes - handles user signup, login, and profile
+const express = require('express');
+const router = express.Router();
+const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const supabase = require('../config/supabase');
+
+// HELPER FUNCTION: Generate JWT Token
+function generateToken(userId) {
+  return jwt.sign(
+    { userId: userId },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+}
+
+// HELPER FUNCTION: Verify JWT Token from request
+function verifyToken(req) {
+  const authHeader = req.headers.authorization;
+  
+  // Check if authorization header exists
+  if (!authHeader) {
+    return null;
+  }
+  
+  // Extract token (format: "Bearer TOKEN")
+  const token = authHeader.split(' ')[1];
+  
+  try {
+    // Verify token is valid
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded.userId;
+  } catch (error) {
+    return null;
+  }
+}
+
+// ENDPOINT 1: Register (Create New Account)
+// POST /auth/register
+router.post('/auth/register', async (req, res) => {
+  try {
+    // Extract data from request
+    const { email, password, name } = req.body;
+    
+    // Validate input
+    if (!email || !password || !name) {
+      return res.status(400).json({
+        error: 'Email, password, and name are required'
+      });
+    }
+    
+    // Check if email already exists
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .single();
+    
+    if (existingUser) {
+      return res.status(400).json({
+        error: 'Email already registered'
+      });
+    }
+    
+    // Hash the password (make it secure)
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    
+    // Insert new user into database
+    const { data: newUser, error: insertError } = await supabase
+      .from('users')
+      .insert([
+        {
+          email: email,
+          password_hash: hashedPassword,
+          name: name
+        }
+      ])
+      .select();
+    
+    if (insertError) {
+      return res.status(500).json({
+        error: 'Failed to create account'
+      });
+    }
+    
+    // Create JWT token for immediate login
+    const token = generateToken(newUser[0].id);
+    
+    // Send success response
+    res.status(201).json({
+      user_id: newUser[0].id,
+      token: token,
+      message: 'Account created successfully'
+    });
+    
+  } catch (error) {
+    console.error('Register error:', error);
+    res.status(500).json({
+      error: 'Server error during registration'
+    });
+  }
+});
+
+// ENDPOINT 2: Login
+// POST /auth/login
+router.post('/auth/login', async (req, res) => {
+  try {
+    // Extract data from request
+    const { email, password } = req.body;
+    
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({
+        error: 'Email and password are required'
+      });
+    }
+    
+    // Find user by email
+    const { data: user, error: selectError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .single();
+    
+    if (selectError || !user) {
+      return res.status(401).json({
+        error: 'Invalid email or password'
+      });
+    }
+    
+    // Compare provided password with stored hash
+    const passwordMatch = await bcryptjs.compare(password, user.password_hash);
+    
+    if (!passwordMatch) {
+      return res.status(401).json({
+        error: 'Invalid email or password'
+      });
+    }
+    
+    // Create JWT token
+    const token = generateToken(user.id);
+    
+    // Send success response
+    res.status(200).json({
+      user_id: user.id,
+      token: token,
+      message: 'Login successful'
+    });
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({
+      error: 'Server error during login'
+    });
+  }
+});
+
+// ENDPOINT 3: Get Current User Info
+// GET /auth/me
+router.get('/auth/me', async (req, res) => {
+  try {
+    // Verify token from request header
+    const userId = verifyToken(req);
+    
+    if (!userId) {
+      return res.status(401).json({
+        error: 'Unauthorized - invalid or missing token'
+      });
+    }
+    
+    // Fetch user from database
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('id, email, name, created_at')
+      .eq('id', userId)
+      .single();
+    
+    if (error || !user) {
+      return res.status(404).json({
+        error: 'User not found'
+      });
+    }
+    
+    // Send user info
+    res.status(200).json(user);
+    
+  } catch (error) {
+    console.error('Get user error:', error);
+    res.status(500).json({
+      error: 'Server error getting user info'
+    });
+  }
+});
+
+// Export routes so server.js can use them
+module.exports = router;
+Save the file (Ctrl+S)
+
+What this code does:
+
+register endpoint: Creates new user accounts
+login endpoint: Logs users in
+get user endpoint: Shows who is logged in
+Helper functions: Generate and verify tokens
+Phase 6: Create Main Server File
+🟢 INSTRUCTIONS: Create server.js
+Right-click on the backend folder
+Select "New File"
+Name it: server.js
+Press Enter
+🟢 INSTRUCTIONS: Add Server Code
+📝 CODE TO PASTE: Copy this entire code and paste it into server.js:
+
+JavaScript
+// Main Express server file
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+// Import routes
+const authRouter = require('./routes/auth');
+
+// Create Express app
+const app = express();
+
+// Middleware - Allow frontend to communicate with backend
+app.use(cors());
+
+// Middleware - Convert JSON requests to JavaScript objects
+app.use(express.json());
+
+// Register routes
+app.use('/api', authRouter);
+
+// Health check endpoint (just to verify server is running)
+app.get('/api/health', (req, res) => {
+  res.json({ message: 'Server is running' });
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
+Save the file (Ctrl+S)
+
+Phase 7: Test Your Backend
+🟢 INSTRUCTIONS: Start the Server
+In VS Code terminal at the bottom, type:
+
+Code
+npm start
+(If that doesn't work, try: node server.js)
+
+You should see this message:
+
+Code
+🚀 Server running on http://localhost:3000
+If it doesn't work, check:
+
+Are you in the backend folder? (terminal should show backend in the path)
+Did you save all files?
+Did you install npm packages? (npm install earlier)
+🟢 INSTRUCTIONS: Test Registration Endpoint
+Open a new app called Postman (download from https://www.postman.com/downloads/)
+
+OR use an online tool: https://hoppscotch.io/
+Create a new request:
+
+Method: POST
+URL: http://localhost:3000/api/auth/register
+Body (click "Body" tab, select "raw" → "JSON"):
+📝 CODE TO PASTE (into Postman body):
+
+JSON
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "name": "Test User"
+}
+Click Send
+You should see a response:
+
+JSON
+{
+  "user_id": "some-uuid",
+  "token": "eyJhbGc...",
+  "message": "Account created successfully"
+}
+If you see this, your backend is working! 🎉
+
+🟢 INSTRUCTIONS: Test Login Endpoint
+Create another request in Postman:
+Method: POST
+URL: http://localhost:3000/api/auth/login
+Body:
+📝 CODE TO PASTE:
+
+JSON
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+Click Send
+You should get back: Login successful message with a token
+
+✅ Summary of Phase 4
+You now have:
+
+✅ Backend folder with Node.js initialized
+✅ .env file with secrets
+✅ Supabase connection file
+✅ Authentication routes (register, login, get user)
+✅ Main server file
+✅ Tested that it works
+Ready for Step 5?
+Once you've tested and confirmed it works, let me know and I'll give you:
+
+PROMPT 2: Building Products & Kits endpoints
+
+Should I continue, or do you have questions about what you just built?
+
+You said: I like that color code layour, thank
+I like that color code layour, thank you, keep that throughout this entire project, lets restart from first creating the supabase account
+Copilot said: Perfect! I'll use the color coding throughout.
+Perfect! I'll use the color coding throughout. Let's restart from the very beginning with Supabase.
+
+STEP 1: CREATE SUPABASE ACCOUNT & DATABASE
+Phase 1: Create Supabase Account
+🟢 INSTRUCTIONS: Sign Up for Supabase
+Go to https://supabase.com
+Click "Start your project" (top right button)
+You'll see a sign-up screen
+Choose "Sign up with GitHub" or "Sign up with email"
+If using email: Enter your email and create a password
+Check your email for verification link (if you used email)
+Click the verification link
+You're now logged into Supabase
+Phase 2: Create Your First Project
+🟢 INSTRUCTIONS: Create New Project
+After logging in, click "New project" (or you might see it on the dashboard)
+You'll see a form to fill in:
+Project name: Type survival-kit-builder
+Database password: Create a strong password (at least 12 characters, use numbers and symbols)
+⚠️ IMPORTANT: Write this down! You'll need it later
+Region: Select the region closest to you (e.g., "US East (N. Virginia)")
+Click "Create new project"
+Wait 2-3 minutes while Supabase creates your database
+You'll see a loading screen. When it's done, you'll see your project dashboard.
+
+Phase 3: Get Your Connection Credentials
+🟢 INSTRUCTIONS: Find Your Supabase URL
+In your project dashboard, look at the left sidebar
+Click "Settings" (gear icon at the bottom)
+Click "API" (in the submenu)
+You'll see a section called "Project URL"
+Copy this entire URL (it looks like: https://xyzabc123.supabase.co)
+Save it in a safe place (like a text file on your computer)
+🟢 INSTRUCTIONS: Find Your API Key
+Still in the Settings → API page
+Look for "Project API Keys" section
+Find the key labeled "anon" or "public"
+Click the copy icon next to it (or select and copy the text)
+It looks like a long string starting with eyJhbGc...
+Save this too in your safe text file
+Your text file should now look like:
+
+Code
+SUPABASE_URL: https://xyzabc123.supabase.co
+SUPABASE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+DATABASE_PASSWORD: YourStrongPassword123!
+Phase 4: Create Database Tables
+🟢 INSTRUCTIONS: Open SQL Editor
+In your Supabase dashboard, on the left sidebar, click "SQL Editor"
+You'll see a text area with SQL examples
+Click "New query" (top right of the SQL editor)
+A new blank query will open
+🟢 INSTRUCTIONS: Paste Database Schema
+Now you'll paste the SQL code that creates all your tables.
+
+📝 CODE TO PASTE: Copy this ENTIRE block and paste it into your SQL query:
+
+SQL
+-- TABLE 1: Users (stores customer information)
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 2: Products (individual items like "Water Bottle", "First Aid Kit")
+CREATE TABLE products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  description TEXT,
+  category TEXT NOT NULL,
+  price_cents INTEGER NOT NULL,
+  weight_grams INTEGER,
+  size TEXT,
+  image_url TEXT,
+  in_stock INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 3: Kits (bundles like "3-Day Hiking Kit" that contain multiple products)
+CREATE TABLE kits (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  base_bag_id UUID REFERENCES products(id),
+  description TEXT,
+  image_url TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 4: Kit Items (connects kits to products - "3-Day Kit contains 2x Water Bottles")
+CREATE TABLE kit_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  kit_id UUID NOT NULL REFERENCES kits(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES products(id),
+  quantity INTEGER DEFAULT 1
+);
+
+-- TABLE 5: Q&A Questions (the questions users see: "What is your use case?")
+CREATE TABLE qa_questions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  text TEXT NOT NULL,
+  position INTEGER NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 6: Q&A Answers (the answer options: "Solo Hiking", "Family Camping")
+CREATE TABLE qa_answers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  question_id UUID NOT NULL REFERENCES qa_questions(id) ON DELETE CASCADE,
+  text TEXT NOT NULL,
+  result_kit_id UUID REFERENCES kits(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 7: Orders (when a customer purchases a kit)
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  kit_id UUID REFERENCES kits(id),
+  customizations JSONB,
+  total_cents INTEGER NOT NULL,
+  status TEXT DEFAULT 'placed',
+  shipping_address TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  shipped_at TIMESTAMP
+);
+
+-- TABLE 8: Order Items (which products are in each order)
+CREATE TABLE order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES products(id),
+  quantity INTEGER DEFAULT 1
+);
+
+-- TABLE 9: Inventory Log (tracks when stock changes)
+CREATE TABLE inventory_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  product_id UUID NOT NULL REFERENCES products(id),
+  change_quantity INTEGER NOT NULL,
+  reason TEXT,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for faster searches
+CREATE INDEX idx_orders_user ON orders(user_id);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_kit_items_kit ON kit_items(kit_id);
+CREATE INDEX idx_qa_answers_question ON qa_answers(question_id);
+🟢 INSTRUCTIONS: Run the SQL
+After pasting the code into the SQL editor
+Look for the blue "Run" button (or press Ctrl+Enter or Cmd+Enter)
+Click it
+Wait a few seconds
+You should see ✅ green checkmarks next to each CREATE TABLE statement, which means it worked!
+
+If you see red X's, it means there's an error. Check:
+
+Did you copy the entire code block?
+Is there any text missing?
+Phase 5: Verify Tables Were Created
+🟢 INSTRUCTIONS: Check Your Tables
+In your Supabase dashboard, click "Table Editor" on the left sidebar
+
+You should see a list of tables:
+
+✅ users
+✅ products
+✅ kits
+✅ kit_items
+✅ qa_questions
+✅ qa_answers
+✅ orders
+✅ order_items
+✅ inventory_log
+Click on one of them (like "users") to open it
+
+You should see columns like id, email, password_hash, name, created_at
+
+If you see all 9 tables with the correct columns, you're done! ✅
+
+✅ Summary of Step 1
+You now have:
+
+✅ Supabase account created
+✅ Project created (survival-kit-builder)
+✅ All 9 database tables created
+✅ Saved your credentials (URL and API Key)
+Keep these saved:
+
+Supabase URL
+Supabase API Key
+Database password
+🟢 NEXT STEP
+When you're ready, let me know and I'll give you STEP 2: Create GitHub Repository (where you'll store your code).
+
+Did you successfully create the Supabase account and tables?
+
+You said: Success, continue
+Success, continue
+Copilot said: Excellent! Let's move to Step 2. --- # STEP
+Excellent! Let's move to Step 2.
+
+STEP 2: CREATE GITHUB REPOSITORY
+Phase 1: Create Your GitHub Repo
+🟢 INSTRUCTIONS: Sign Up/Log In to GitHub
+Go to https://github.com
+If you don't have an account:
+Click "Sign up" (top right)
+Enter email, create password, username
+Verify your email
+If you already have an account, click "Sign in" and log in
+🟢 INSTRUCTIONS: Create New Repository
+After logging in, click the "+" icon (top right corner)
+
+Select "New repository"
+
+You'll see a form. Fill it in:
+
+Repository name: Type survival-kit-customizer
+Description: Type Custom survival kit recommendation and builder website
+Public or Private: Select "Public" (easier for AI to help)
+Add a README file: Check the box ✅
+Add .gitignore: Click dropdown and select "Node" (since we're using Node.js)
+Choose a license: Select "MIT License" (optional but recommended)
+Click "Create repository" (green button at bottom)
+
+Congratulations! Your repository is now created. You're on your repo page.
+
+Phase 2: Clone Repository to Your Computer
+🟢 INSTRUCTIONS: Copy Repository URL
+On your GitHub repo page, click the green "Code" button (right side)
+Make sure "HTTPS" is selected (not SSH)
+Click the copy icon (two squares) to copy the URL
+It should look like: https://github.com/KanonAxle/survival-kit-customizer.git
+🟢 INSTRUCTIONS: Clone to Your Computer
+Open Terminal (Mac) or Command Prompt (Windows):
+
+Mac: Press Cmd + Space, type "Terminal", press Enter
+Windows: Press Windows key, type "cmd", press Enter
+Type this command and press Enter:
+
+Code
+cd Desktop
+(This moves you to your Desktop)
+
+Type this command and press Enter:
+
+Code
+git clone https://github.com/KanonAxle/survival-kit-customizer.git
+(Replace the URL with the one you copied)
+
+Wait for it to finish. You should see:
+
+Code
+Cloning into 'survival-kit-customizer'...
+When done, type:
+
+Code
+cd survival-kit-customizer
+You're now inside your project folder! 🎉
+
+Phase 3: Create Project Folder Structure
+🟢 INSTRUCTIONS: Create Folders
+In your terminal (you should still be in survival-kit-customizer), type these commands one at a time and press Enter:
+
+Code
+mkdir backend
+Code
+mkdir frontend
+Code
+mkdir docs
+Now your folder structure looks like:
+
+Code
+survival-kit-customizer/
+├── backend/
+├── frontend/
+├── docs/
+├── README.md
+└── .gitignore
+Phase 4: Save Documentation Files
+🟢 INSTRUCTIONS: Create docs/database-schema.sql
+Open VS Code
+Go to File → Open Folder
+Select your survival-kit-customizer folder
+Click "Open"
+In the left panel, right-click on the docs folder
+Select "New File"
+Name it: database-schema.sql
+Press Enter
+🟢 INSTRUCTIONS: Add Database Schema to File
+📝 CODE TO PASTE: Copy this and paste into docs/database-schema.sql:
+
+SQL
+-- TABLE 1: Users (stores customer information)
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 2: Products (individual items like "Water Bottle", "First Aid Kit")
+CREATE TABLE products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  description TEXT,
+  category TEXT NOT NULL,
+  price_cents INTEGER NOT NULL,
+  weight_grams INTEGER,
+  size TEXT,
+  image_url TEXT,
+  in_stock INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 3: Kits (bundles like "3-Day Hiking Kit" that contain multiple products)
+CREATE TABLE kits (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  base_bag_id UUID REFERENCES products(id),
+  description TEXT,
+  image_url TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 4: Kit Items (connects kits to products - "3-Day Kit contains 2x Water Bottles")
+CREATE TABLE kit_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  kit_id UUID NOT NULL REFERENCES kits(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES products(id),
+  quantity INTEGER DEFAULT 1
+);
+
+-- TABLE 5: Q&A Questions (the questions users see: "What is your use case?")
+CREATE TABLE qa_questions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  text TEXT NOT NULL,
+  position INTEGER NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 6: Q&A Answers (the answer options: "Solo Hiking", "Family Camping")
+CREATE TABLE qa_answers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  question_id UUID NOT NULL REFERENCES qa_questions(id) ON DELETE CASCADE,
+  text TEXT NOT NULL,
+  result_kit_id UUID REFERENCES kits(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 7: Orders (when a customer purchases a kit)
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  kit_id UUID REFERENCES kits(id),
+  customizations JSONB,
+  total_cents INTEGER NOT NULL,
+  status TEXT DEFAULT 'placed',
+  shipping_address TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  shipped_at TIMESTAMP
+);
+
+-- TABLE 8: Order Items (which products are in each order)
+CREATE TABLE order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES products(id),
+  quantity INTEGER DEFAULT 1
+);
+
+-- TABLE 9: Inventory Log (tracks when stock changes)
+CREATE TABLE inventory_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  product_id UUID NOT NULL REFERENCES products(id),
+  change_quantity INTEGER NOT NULL,
+  reason TEXT,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for faster searches
+CREATE INDEX idx_orders_user ON orders(user_id);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_kit_items_kit ON kit_items(kit_id);
+CREATE INDEX idx_qa_answers_question ON qa_answers(question_id);
+Save (Ctrl+S or Cmd+S)
+
+🟢 INSTRUCTIONS: Create docs/API_ENDPOINTS.md
+Right-click on the docs folder
+Select "New File"
+Name it: API_ENDPOINTS.md
+Press Enter
+🟢 INSTRUCTIONS: Add API Documentation
+📝 CODE TO PASTE: Copy this and paste into docs/API_ENDPOINTS.md:
+
+Markdown
+# API Endpoints for Survival Kit Builder
+
+## What is an Endpoint?
+An endpoint is a URL your website calls to do something:
+- `GET /products` = "Show me all products"
+- `POST /orders` = "Create a new order"
+
+---
+
+## AUTHENTICATION (Login/Signup)
+
+### 1. Create New User Account
+**Endpoint:** `POST /auth/register`
+**What it does:** Creates a new customer account
+
+**Website sends:**
+```json
+{
+  "email": "john@example.com",
+  "password": "secure123",
+  "name": "John Smith"
+}
+Backend responds with:
+
+JSON
+{
+  "user_id": "abc-123-def",
+  "token": "eyJhbGc...",
+  "message": "Account created successfully"
+}
+2. Log In
+Endpoint: POST /auth/login What it does: Logs in an existing customer
+
+Website sends:
+
+JSON
+{
+  "email": "john@example.com",
+  "password": "secure123"
+}
+Backend responds with:
+
+JSON
+{
+  "user_id": "abc-123-def",
+  "token": "eyJhbGc...",
+  "message": "Login successful"
+}
+3. Get Current User Info
+Endpoint: GET /auth/me What it does: Shows who is logged in
+
+Website needs to send: Token in header
+
+Code
+Authorization: Bearer eyJhbGc...
+Backend responds with:
+
+JSON
+{
+  "id": "abc-123-def",
+  "email": "john@example.com",
+  "name": "John Smith",
+  "created_at": "2025-02-21T10:30:00Z"
+}
+PRODUCTS (Items for Sale)
+4. Get All Products
+Endpoint: GET /products What it does: Shows all items available (water bottles, tents, food, etc.)
+
+Website sends: Nothing
+
+Backend responds with:
+
+JSON
+[
+  {
+    "id": "prod-123",
+    "name": "Water Bottle (1L)",
+    "category": "water",
+    "price_cents": 1500,
+    "description": "Lightweight water bottle",
+    "in_stock": 45,
+    "image_url": "https://..."
+  },
+  {
+    "id": "prod-456",
+    "name": "Tent (2-person)",
+    "category": "shelter",
+    "price_cents": 8999,
+    "in_stock": 12,
+    "image_url": "https://..."
+  }
+]
+5. Get One Product Details
+Endpoint: GET /products/:id What it does: Shows details of one specific product (replace :id with actual product ID)
+
+Website sends: Product ID in URL (e.g., /products/prod-123)
+
+Backend responds with:
+
+JSON
+{
+  "id": "prod-123",
+  "name": "Water Bottle (1L)",
+  "description": "Lightweight and durable water bottle",
+  "category": "water",
+  "price_cents": 1500,
+  "weight_grams": 180,
+  "size": "M",
+  "in_stock": 45,
+  "image_url": "https://..."
+}
+KITS (Pre-Made Bundles)
+6. Get All Kits
+Endpoint: GET /kits What it does: Shows all pre-made kits (e.g., "3-Day Hiking Kit")
+
+Website sends: Nothing
+
+Backend responds with:
+
+JSON
+[
+  {
+    "id": "kit-123",
+    "name": "Solo 3-Day Hiking Kit",
+    "description": "Everything one person needs for 3 days of hiking",
+    "base_bag_id": "prod-999",
+    "total_price_cents": 29999,
+    "items": [
+      {
+        "product_id": "prod-123",
+        "name": "Water Bottle (1L)",
+        "quantity": 2,
+        "price_cents": 1500
+      },
+      {
+        "product_id": "prod-456",
+        "name": "Tent (2-person)",
+        "quantity": 1,
+        "price_cents": 8999
+      }
+    ]
+  }
+]
+7. Get One Kit with All Items
+Endpoint: GET /kits/:id What it does: Shows one specific kit and everything in it
+
+Website sends: Kit ID in URL (e.g., /kits/kit-123)
+
+Backend responds with:
+
+JSON
+{
+  "id": "kit-123",
+  "name": "Solo 3-Day Hiking Kit",
+  "description": "Everything one person needs for 3 days of hiking",
+  "base_bag_id": "prod-999",
+  "items": [
+    {
+      "product_id": "prod-123",
+      "name": "Water Bottle (1L)",
+      "quantity": 2,
+      "price_cents": 1500,
+      "weight_grams": 180
+    }
+  ],
+  "total_price_cents": 29999
+}
+Q&A QUIZ
+8. Get All Quiz Questions
+Endpoint: GET /qa/questions What it does: Shows all the questions in the quiz
+
+Website sends: Nothing
+
+Backend responds with:
+
+JSON
+[
+  {
+    "id": "q-1",
+    "position": 1,
+    "text": "What is your main use case?"
+  },
+  {
+    "id": "q-2",
+    "position": 2,
+    "text": "How many days will you be out?"
+  }
+]
+9. Get Answers for a Question
+Endpoint: GET /qa/questions/:id/answers What it does: Shows answer options for one question
+
+Website sends: Question ID in URL (e.g., /qa/questions/q-1/answers)
+
+Backend responds with:
+
+JSON
+[
+  {
+    "id": "a-1",
+    "text": "Solo Hiking",
+    "result_kit_id": "kit-456"
+  },
+  {
+    "id": "a-2",
+    "text": "Family Camping",
+    "result_kit_id": null
+  },
+  {
+    "id": "a-3",
+    "text": "Emergency Preparedness",
+    "result_kit_id": "kit-789"
+  }
+]
+10. Submit Quiz Answers & Get Recommendation
+Endpoint: POST /qa/submit What it does: User answers all questions, backend recommends a kit
+
+Website sends:
+
+JSON
+{
+  "answers": {
+    "q-1": "a-1",
+    "q-2": "a-5"
+  }
+}
+Backend responds with:
+
+JSON
+{
+  "recommended_kit": {
+    "id": "kit-123",
+    "name": "Solo 3-Day Hiking Kit",
+    "description": "Perfect for a 3-day solo hiking trip",
+    "items": [
+      {
+        "product_id": "prod-123",
+        "name": "Water Bottle",
+        "quantity": 2
+      }
+    ],
+    "total_price_cents": 29999
+  },
+  "can_customize": true
+}
+ORDERS (Shopping/Checkout)
+11. Create New Order
+Endpoint: POST /orders What it does: Customer creates an order (adds kit with customizations)
+
+Website needs: Customer must be logged in (send token in Authorization header)
+
+Website sends:
+
+JSON
+{
+  "kit_id": "kit-123",
+  "customizations": {
+    "bag_size": "L",
+    "add_items": ["prod-999", "prod-888"],
+    "remove_items": ["prod-777"]
+  },
+  "shipping_address": "123 Main St, Denver, CO 80202"
+}
+Backend responds with:
+
+JSON
+{
+  "order_id": "order-456",
+  "total_cents": 32500,
+  "items": [
+    {
+      "product_id": "prod-123",
+      "name": "Water Bottle",
+      "quantity": 2,
+      "price_cents": 1500
+    }
+  ],
+  "message": "Order created. Proceed to payment."
+}
+12. Get User's Orders
+Endpoint: GET /orders What it does: Shows all orders placed by logged-in customer
+
+Website needs: Customer must be logged in (send token)
+
+Website sends: Nothing (just the token in header)
+
+Backend responds with:
+
+JSON
+[
+  {
+    "id": "order-456",
+    "kit_id": "kit-123",
+    "status": "placed",
+    "total_cents": 32500,
+    "created_at": "2025-02-21T10:30:00Z",
+    "shipped_at": null
+  },
+  {
+    "id": "order-789",
+    "kit_id": "kit-456",
+    "status": "shipped",
+    "total_cents": 19999,
+    "created_at": "2025-02-15T14:20:00Z",
+    "shipped_at": "2025-02-18T09:00:00Z"
+  }
+]
+13. Get One Order Details
+Endpoint: GET /orders/:id What it does: Shows detailed info about one order
+
+Website needs: Customer must be logged in (send token)
+
+Website sends: Order ID in URL (e.g., /orders/order-456)
+
+Backend responds with:
+
+JSON
+{
+  "id": "order-456",
+  "user_id": "user-123",
+  "kit_id": "kit-123",
+  "customizations": {
+    "bag_size": "L",
+    "add_items": ["prod-999"],
+    "remove_items": []
+  },
+  "items": [
+    {
+      "product_id": "prod-123",
+      "name": "Water Bottle",
+      "quantity": 2,
+      "price_cents": 1500
+    }
+  ],
+  "status": "placed",
+  "total_cents": 32500,
+  "shipping_address": "123 Main St, Denver, CO 80202",
+  "created_at": "2025-02-21T10:30:00Z"
+}
+STRIPE PAYMENT
+14. Create Checkout Session (Payment Page)
+Endpoint: POST /checkout What it does: Sends customer to Stripe payment page
+
+Website needs: Customer must be logged in (send token)
+
+Website sends:
+
+JSON
+{
+  "order_id": "order-456",
+  "success_url": "https://yoursite.com/success",
+  "cancel_url": "https://yoursite.com/cancel"
+}
+Backend responds with:
+
+JSON
+{
+  "session_id": "cs_test_123abc",
+  "url": "https://checkout.stripe.com/pay/cs_test_123abc",
+  "message": "Redirect customer to this URL"
+}
+Summary
+Total Endpoints to Build: 14
+
+By Category:
+
+Authentication: 3 endpoints (register, login, get user)
+Products: 2 endpoints (list, get one)
+Kits: 2 endpoints (list, get one)
+Q&A: 3 endpoints (get questions, get answers, submit quiz)
+Orders: 3 endpoints (create, list user's orders, get one)
+Payment: 1 endpoint (checkout)
+Code
+
+**Save** (Ctrl+S or Cmd+S)
+
+---
+
+### 🟢 INSTRUCTIONS: Create docs/QA_DECISION_TREE.md
+
+1. Right-click on the `docs` folder
+2. Select **"New File"**
+3. Name it: `QA_DECISION_TREE.md`
+4. Press Enter
+
+### 🟢 INSTRUCTIONS: Add Q&A Decision Tree
+
+📝 **CODE TO PASTE**: Copy this and paste into `docs/QA_DECISION_TREE.md`:
+
+```markdown
+# Survival Kit Builder - Q&A Decision Tree
+
+## How the Q&A Works
+
+When a user takes the quiz, they answer questions. Based on their answers, they get recommended a specific kit.
+
+Example:
+- User answers "Solo Hiking" → System recommends "Solo Trekker Kit"
+- User answers "Family Camping" + "3 days" → System recommends "Family Weekend Kit"
+
+---
+
+## Question Flow
+
+### Question 1: "What is your main use case?"
+**Position:** 1
+
+**Answer Options:**
+| Answer | Text | Leads To | Kit Recommendation |
+|--------|------|----------|-------------------|
+| a-1 | Solo Hiking/Backpacking | Question 2 (How many days?) | (depends on Q2) |
+| a-2 | Family Camping | Question 2 (How many days?) | (depends on Q2) |
+| a-3 | Emergency Home Preparedness | (direct result) | kit-urban-emergency |
+| a-4 | Vehicle Emergency Kit | (direct result) | kit-vehicle-survival |
+| a-5 | Medical/First Aid Focus | Question 2 (Medical type?) | (depends on Q2) |
+
+---
+
+### Question 2A: "How many days?" (if Solo Hiking selected)
+**Position:** 2
+**Only shown if:** User selected "Solo Hiking" (a-1)
+
+**Answer Options:**
+| Answer | Text | Recommended Kit |
+|--------|------|-----------------|
+| a-6 | Day hike (under 8 hours) | kit-solo-day-hiker |
+| a-7 | 1-2 days/nights | kit-solo-overnight |
+| a-8 | 3-5 days/nights | kit-solo-weekend-explorer |
+| a-9 | 7+ days/nights | kit-solo-expedition |
+
+---
+
+### Question 2B: "How many days?" (if Family Camping selected)
+**Position:** 2
+**Only shown if:** User selected "Family Camping" (a-2)
+
+**Answer Options:**
+| Answer | Text | Recommended Kit |
+|--------|------|-----------------|
+| a-10 | 1-2 days (weekend) | kit-family-weekend |
+| a-11 | 3-5 days | kit-family-adventure |
+| a-12 | 7+ days | kit-family-extended-expedition |
+
+---
+
+### Question 2C: "What type of medical prep?" (if Medical Focus selected)
+**Position:** 2
+**Only shown if:** User selected "Medical/First Aid Focus" (a-5)
+
+**Answer Options:**
+| Answer | Text | Recommended Kit |
+|--------|------|-----------------|
+| a-13 | Basic first aid | kit-basic-medical |
+| a-14 | Advanced first aid + trauma | kit-tactical-medical |
+| a-15 | Travel/adventure medical | kit-adventure-medical |
+
+---
+
+## Sample Kits & Their Contents
+
+### Kit 1: Solo Day Hiker Kit
+**Kit ID:** kit-solo-day-hiker
+**Base Bag:** Day Pack (20L) - prod-id-001
+**Contents:**
+- Water Bottle (1L) - qty: 1
+- Energy Bars (pack of 5) - qty: 1
+- Trail Mix (250g) - qty: 1
+- Basic First Aid Kit - qty: 1
+- Multi-tool - qty: 1
+- Hat - qty: 1
+- Extra Socks - qty: 1
+
+**Base Price:** $8999 (cents)
+
+---
+
+### Kit 2: Solo Overnight Kit
+**Kit ID:** kit-solo-overnight
+**Base Bag:** Hiking Backpack (35L) - prod-id-002
+**Contents:**
+- Water Bottle (1L) - qty: 2
+- Water Filter - qty: 1
+- Freeze-dried Meals - qty: 2
+- Energy Bars - qty: 1
+- Trail Mix - qty: 1
+- Sleeping Bag (lightweight) - qty: 1
+- Tent (solo) - qty: 1
+- First Aid Kit - qty: 1
+- Flashlight - qty: 1
+- Matches/Lighter - qty: 1
+- Multi-tool - qty: 1
+- Hat - qty: 1
+- Gloves - qty: 1
+
+**Base Price:** $19999 (cents)
+
+---
+
+### Kit 3: Urban Emergency Kit
+**Kit ID:** kit-urban-emergency
+**Base Bag:** Tactical Backpack (35L) - prod-id-999
+**Contents:**
+- Water Bottles - qty: 4
+- Water Purification Tablets - qty: 1
+- Canned Food (2-week supply) - qty: 5
+- Advanced First Aid Kit - qty: 1
+- Medications (pain relief, anti-diarrheal) - qty: 1
+- Multi-tool - qty: 1
+- Pry Bar - qty: 1
+- Flashlight - qty: 1
+- Whistle - qty: 1
+- Waterproof Document Case - qty: 1
+- Phone Charger (USB) - qty: 1
+- Face Masks - qty: 10
+
+**Base Price:** $19999 (cents)
+
+---
+
+### Kit 4: Family Weekend Kit
+**Kit ID:** kit-family-weekend
+**Base Bag:** Family Backpack (60L) - prod-id-003
+**Contents:**
+- Water Bottles (1L) - qty: 4
+- Water Filter - qty: 1
+- Freeze-dried Family Meals - qty: 4
+- Snacks - qty: 3
+- Sleeping Bags (family) - qty: 4
+- Family Tent (4-person) - qty: 1
+- First Aid Kit (comprehensive) - qty: 1
+- Multi-tool - qty: 2
+- Flashlights - qty: 2
+- Cooking Pot + Utensils - qty: 1
+- Hats - qty: 4
+- Gloves - qty: 4
+
+**Base Price:** $34999 (cents)
+
+---
+
+## Customization Options (After Kit is Recommended)
+
+Users can customize by:
+
+### 1. Bag Size
+- **Small (-15%):** Reduces price by 15%
+- **Medium (base):** Standard price
+- **Large (+20%):** Increases price by 20%
+- **Extra Large (+30%):** Increases price by 30%
+
+### 2. Add Items
+Users can add extra products:
+- Extra water bottles
+- Medical supplies (bandages, pain relief)
+- Food packs
+- Clothing items
+- Tools
+- Each item has its own price
+
+### 3. Remove Items
+Users can remove default kit items:
+- Removes from kit
+- Deducts item price from total
+
+---
+
+## Price Calculation Example
+
+**User journey:**
+1. Selects "Solo Hiking" → "3-5 days" → Gets "Solo Weekend Explorer Kit" ($25999 cents = $259.99)
+2. Customizes:
+   - Changes to "Large" bag: +$50 (+$5000 cents)
+   - Adds "Backup Power Bank": +$30 (+$3000 cents)
+   - Removes "Sleeping Bag": -$80 (-$8000 cents)
+3. **Final Price:** $25,999 + $5,000 + $3,000 - $8,000 = $25,999 cents = $259.99
+
+---
+
+## How to Add This to Database
+
+### SQL to Insert Questions:
+
+```sql
+INSERT INTO qa_questions (text, position) VALUES
+('What is your main use case?', 1),
+('How many days?', 2),
+('What type of medical prep?', 2);
+SQL to Insert Answers (simplified example):
+SQL
+INSERT INTO qa_answers (question_id, text, result_kit_id) VALUES
+-- Question 1 answers
+((SELECT id FROM qa_questions WHERE position=1), 'Solo Hiking/Backpacking', NULL),
+((SELECT id FROM qa_questions WHERE position=1), 'Family Camping', NULL),
+((SELECT id FROM qa_questions WHERE position=1), 'Emergency Home Preparedness', (SELECT id FROM kits WHERE name='Urban Emergency Kit')),
+-- Question 2 answers (for Solo Hiking)
+((SELECT id FROM qa_questions WHERE position=2), 'Day hike (under 8 hours)', (SELECT id FROM kits WHERE name='Solo Day Hiker Kit')),
+((SELECT id FROM qa_questions WHERE position=2), '1-2 days/nights', (SELECT id FROM kits WHERE name='Solo Overnight Kit'));
+Implementation Notes
+Terminal answers: Some answers immediately recommend a kit (result_kit_id has a value)
+Non-terminal answers: These lead to another question (result_kit_id is NULL)
+Multiple Q2s: There are multiple "Question 2" options depending on Q1 answer
+Price customization: Bag sizes are percentage adjustments, items are fixed prices
+Code
+
+**Save** (Ctrl+S or Cmd+S)
+
+---
+
+## Phase 5: Push to GitHub
+
+### 🟢 INSTRUCTIONS: Commit and Push Your Documentation
+
+In your terminal (you should be in the `survival-kit-customizer` folder), type these commands one at a time and press Enter:
+
+git add .
+
+Code
+git commit -m "Initial commit: Add documentation and folder structure"
+
+Code
+git push origin main
+
+Code
+
+You should see output saying files were pushed successfully.
+
+---
+
+### 🟢 INSTRUCTIONS: Verify on GitHub
+
+1. Go to https://github.com/KanonAxle/survival-kit-customizer (replace with your username)
+2. Refresh the page
+3. You should see:
+   - ✅ `docs/` folder with 3 files:
+     - `database-schema.sql`
+     - `API_ENDPOINTS.md`
+     - `QA_DECISION_TREE.md`
+   - ✅ `backend/` folder (empty)
+   - ✅ `frontend/` folder (empty)
+   - ✅ `README.md`
+
+---
+
+## ✅ Summary of Step 2
+
+You now have:
+- ✅ GitHub account
+- ✅ Repository created (`survival-kit-customizer`)
+- ✅ Project cloned to your computer
+- ✅ Folder structure created (backend, frontend, docs)
+- ✅ All documentation saved (database schema, API endpoints, Q&A tree)
+- ✅ Everything pushed to GitHub
+
+---
+
+# 🟢 NEXT STEP
+
+When you're ready, let me know and I'll give you **STEP 3: Build Your Backend (Node.js + Express)** with detailed, step-by-step prompts to give to AI for coding.
+
+Did everything work?
+You said: What should I do with this and
+What should I do with this and each following point?
+Copilot said: Got it — you want a **repeatable
+Got it — you want a repeatable process for “what do I do with this?” for every step I give you. Here’s the workflow we’ll use for every point from now on, and then I’ll map it to the steps we’re on.
+
+The “What do I do with this?” Rulebook (Use This Every Time)
+For anything I send you, it will be one of these 4 types:
+
+1) 🟢 INSTRUCTIONS (DO THIS NOW)
+What you do: Follow the steps exactly, in order, in the place I say (Supabase / GitHub / VS Code / Terminal).
+
+2) 📝 CODE TO PASTE (PUT THIS INTO A FILE OR TOOL)
+What you do: Copy the code exactly and paste it into:
+
+a file in VS Code OR
+the Supabase SQL Editor OR
+Postman/Hoppscotch for testing
+Then save/run it.
+
+3) 🟣 AI PROMPT (PASTE THIS INTO CHATGPT/CLAUDE)
+What you do: Copy the entire prompt and paste it into your AI tool. Then take the code the AI gives you and paste it into the file(s) I tell you.
+
+4) 🔵 EXAMPLE (READ ONLY)
+What you do: Don’t paste it anywhere. It’s only to help you understand what the “real thing” should look like.
+
+Now, specifically: “What should I do with this and each following point?”
+Below I’ll explain what you should do with each part of the last plan (and the same pattern will apply going forward).
+
+A) “Create GitHub repo”
+🟢 What you do
+You do it once, on GitHub’s website. Outcome: You have a repository URL like https://github.com/KanonAxle/survival-kit-customizer.
+
+✅ How you know it’s done
+You can open the repo page in a browser and it exists.
+
+B) “Clone repo”
+🟢 What you do
+You run the git clone ... command in your terminal.
+
+✅ Outcome
+A folder appears on your computer with your repo name.
+
+✅ How you know it’s done
+You can see the folder and it contains README.md.
+
+C) “Create folders: backend, frontend, docs”
+🟢 What you do
+Run mkdir backend frontend docs (or create them in VS Code).
+
+✅ Outcome
+Your repo has those folders.
+
+D) “Create docs/database-schema.sql”
+🟢 What you do
+Create a file in VS Code at: docs/database-schema.sql
+
+📝 What you do with the SQL text
+Paste the SQL schema into that file as documentation.
+
+Important clarification
+This file does not automatically create tables. It is just a saved copy so you don’t lose it.
+
+✅ How you know it’s done
+You see the file in VS Code and it contains the SQL.
+
+E) “Run SQL in Supabase”
+🟢 What you do
+Go to Supabase → SQL Editor → paste schema → click Run.
+
+✅ Outcome
+Tables exist in Supabase.
+
+✅ How you know it’s done
+Supabase Table Editor shows all tables.
+
+F) “Create docs/API_ENDPOINTS.md”
+🟢 What you do
+Create the file: docs/API_ENDPOINTS.md
+
+🟢 What you do with the content inside
+Paste the endpoint descriptions there.
+
+CRITICAL clarification (this is what confused you earlier)
+The POST /auth/login etc. lines are NOT code. They are a spec (a blueprint) describing what we will build later.
+
+You do not run that text anywhere. You read it when building your backend, so you know what each route must do.
+
+✅ How you know it’s done
+File exists, you can open it on GitHub and read it.
+
+G) “Create docs/QA_DECISION_TREE.md”
+🟢 What you do
+Create the file: docs/QA_DECISION_TREE.md
+
+🟢 What you do with it
+Paste the decision tree. Again: this is not code — it’s a plan/spec.
+
+✅ Outcome
+You have a written reference for quiz logic.
+
+H) “git add / commit / push”
+🟢 What you do
+You run:
+
+git add .
+git commit -m "message"
+git push origin main
+✅ Outcome
+Your GitHub repo now contains your folders + docs.
+
+✅ How you know it’s done
+Refresh GitHub and see the files there.
+
+The Pattern We’ll Use Next (So You Always Know What to Do)
+When we start building the actual app, each step will look like this:
+
+Example of how a backend step will work
+🟢 INSTRUCTIONS: “Create file backend/server.js”
+🟣 AI PROMPT: “Generate server.js with Express, CORS, JSON”
+📝 CODE TO PASTE: (either I provide it, or you paste what AI returns)
+🟢 INSTRUCTIONS: “Run node server.js”
+🟢 INSTRUCTIONS: “Test endpoint using Hoppscotch/Postman”
+You will always end each step with:
+
+✅ you created a file OR
+✅ you ran a command OR
+✅ you tested and saw a success response
+Quick Check Question (so I guide you correctly)
+Which part are you asking about with “What should I do with this?”:
+
+The docs files (API_ENDPOINTS.md etc.) — like “why do we have them?”
+The terminal commands (git / mkdir / clone) — like “when do I run them?”
+The POST / GET endpoint text — like “where do I paste it?” (answer: nowhere; it’s a spec)
+All of it — you want me to explicitly label every item as “run this / paste this / read only” (I can do that)
+Reply with 1 / 2 / 3 / 4, and I’ll continue to Step 3 (backend build) in exactly that style.
