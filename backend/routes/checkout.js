@@ -4,6 +4,11 @@ const router = express.Router();
 const supabase = require('../config/supabase');
 const Stripe = require('stripe');
 const jwt = require('jsonwebtoken');
+const {
+  isStripeTaxEnabled,
+  buildStripeTaxSessionParams,
+  formatStripeShippingAddress,
+} = require('../utils/stripeTax');
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -89,6 +94,7 @@ router.post('/checkout', async (req, res) => {
       name: item.product_name || item.products?.name || 'Product',
       unitPrice: item.unit_price_cents ?? item.products?.price_cents,
     }));
+    const stripeTaxEnabled = isStripeTaxEnabled();
     if (pricedItems.some(({ unitPrice }) => !Number.isSafeInteger(unitPrice) || unitPrice < 0)) {
       return res.status(500).json({ error: 'Order contains invalid item pricing' });
     }
@@ -114,6 +120,7 @@ router.post('/checkout', async (req, res) => {
         return {
           price_data: {
             currency: 'usd',
+            ...(stripeTaxEnabled ? { tax_behavior: 'exclusive' } : {}),
             product_data: { name: optionLabels.length ? `${name} (${optionLabels.join(', ')})` : name },
             unit_amount: unitPrice
           },
@@ -122,7 +129,7 @@ router.post('/checkout', async (req, res) => {
       })
       : [];
 
-    if (pricedItems.length && shippingCents > 0) {
+    if (pricedItems.length && shippingCents > 0 && !stripeTaxEnabled) {
       lineItems.push({
         price_data: {
           currency: 'usd',
@@ -134,15 +141,17 @@ router.post('/checkout', async (req, res) => {
     }
 
     if (!lineItems.length) {
-      if (!Number.isSafeInteger(order.total_cents) || order.total_cents <= 0) {
+      const fallbackSubtotal = order.total_cents - shippingCents;
+      if (!Number.isSafeInteger(fallbackSubtotal) || fallbackSubtotal <= 0) {
         return res.status(400).json({ error: 'Order total must be greater than zero to check out' });
       }
       const orderName = order.customizations?.kit_name || 'Baseline Kit Order';
       lineItems.push({
         price_data: {
           currency: 'usd',
+          ...(stripeTaxEnabled ? { tax_behavior: 'exclusive' } : {}),
           product_data: { name: orderName },
-          unit_amount: order.total_cents
+          unit_amount: fallbackSubtotal
         },
         quantity: 1
       });
@@ -161,9 +170,22 @@ router.post('/checkout', async (req, res) => {
         terms_version: order.customizations.terms_version,
         terms_accepted_at: order.customizations.terms_accepted_at,
         marketing_opt_in: String(order.customizations.marketing_opt_in === true),
+        stripe_tax_enabled: String(stripeTaxEnabled),
       }
     };
     sessionParams.customer_email = customer.email;
+    if (stripeTaxEnabled) {
+      Object.assign(sessionParams, buildStripeTaxSessionParams(shippingCents));
+    } else if (shippingCents > 0 && !pricedItems.length) {
+      sessionParams.line_items.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Shipping' },
+          unit_amount: shippingCents,
+        },
+        quantity: 1,
+      });
+    }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
 
@@ -214,9 +236,53 @@ router.post('/webhooks/stripe', express.raw({ type: 'application/json' }), async
       return res.status(400).json({ error: 'Stripe session is missing its order ID' });
     }
 
+    if (!Number.isSafeInteger(session.amount_total) || session.amount_total <= 0) {
+      console.error('Stripe checkout session has an invalid total:', session.id);
+      return res.status(400).json({ error: 'Stripe session has an invalid payment total' });
+    }
+
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .select('customizations')
+      .eq('id', orderId)
+      .single();
+    if (orderError || !order) {
+      console.error('Failed to fetch paid order for Stripe webhook:', orderError || `Order ${orderId} not found`);
+      return res.status(500).json({ error: 'Failed to fetch order after payment' });
+    }
+
+    const taxCents = session.total_details?.amount_tax ?? 0;
+    if (!Number.isSafeInteger(taxCents) || taxCents < 0) {
+      console.error('Stripe checkout session has an invalid tax amount:', session.id);
+      return res.status(400).json({ error: 'Stripe session has an invalid tax amount' });
+    }
+    const shippingCents = session.metadata.stripe_tax_enabled === 'true'
+      ? (session.total_details?.amount_shipping ?? session.shipping_cost?.amount_total ?? 0)
+      : (order.customizations?.shipping_cents ?? 0);
+    const updatedCustomizations = {
+      ...(order.customizations || {}),
+      stripe_session_id: session.id,
+      stripe_tax_cents: taxCents,
+      stripe_shipping_cents: shippingCents,
+      stripe_subtotal_cents: session.amount_subtotal,
+    };
+    const orderUpdate = {
+      status: 'paid',
+      total_cents: session.amount_total,
+      customizations: updatedCustomizations,
+    };
+    if (session.metadata.stripe_tax_enabled === 'true') {
+      try {
+        orderUpdate.shipping_address = formatStripeShippingAddress(session.shipping_details);
+      } catch (error) {
+        console.error('Stripe checkout session has an invalid shipping address:', session.id, error.message);
+        return res.status(400).json({ error: 'Stripe session has an invalid shipping address' });
+      }
+    }
+
     const { error: updateError, data: updatedOrders } = await supabase
       .from('orders')
-      .update({ status: 'paid' })
+      .update(orderUpdate)
       .eq('id', orderId)
       .select('id');
 

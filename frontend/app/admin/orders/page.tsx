@@ -191,7 +191,14 @@ export default function AdminOrdersPage() {
 
                     {/* Right: total + actions */}
                     <div className="flex items-center gap-3 shrink-0 flex-wrap">
-                      <span className="text-white font-bold text-sm">{fmt(order.total_cents)}</span>
+                      <div className="text-right">
+                        <span className="text-white font-bold text-sm">{fmt(order.total_cents)}</span>
+                        {typeof order.customizations?.stripe_tax_cents === 'number' && (
+                          <span className="block text-stone-500 text-xs">
+                            Includes {fmt(order.customizations.stripe_tax_cents)} tax
+                          </span>
+                        )}
+                      </div>
 
                       {/* Copy payment link for pending orders */}
                       {order.status === 'pending_payment' && paymentUrl && (

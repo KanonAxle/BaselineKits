@@ -249,6 +249,7 @@ export default function ResultsPage() {
           <div className="flex flex-col gap-3">
             <p className="text-xs text-stone-400">
               U.S. shipping only. Shipping is $14.95 on orders under $300 and free on orders of $300 or more.
+              Once Stripe Tax is configured, Stripe Checkout will ask you to confirm your shipping address and show any applicable sales tax before payment.
             </p>
             {kit.items.map((item, index) => {
               if (item.type === 'subkit_header') {

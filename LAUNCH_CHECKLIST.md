@@ -51,11 +51,13 @@ Keep staging and production credentials separate. The frontend uses the same-ori
 ## 5. Configure Stripe
 
 - Complete Stripe business, payout, and tax settings as applicable to the business.
+- Stripe Tax integration is implemented but disabled by default. Determine registration obligations with a tax professional, enable Stripe Tax in test mode, configure tax registrations and appropriate product/shipping tax codes, and set backend `STRIPE_TAX_ENABLED=true` only after those settings are ready. Do not enable live payments until tax behavior and obligations are reviewed.
 - After the domain is connected and HTTPS is ready, configure the Stripe test webhook endpoint at `https://<canonical-domain>/api/webhooks/stripe` for `checkout.session.completed`; put its test signing secret in `STRIPE_WEBHOOK_SECRET`.
 - Use Stripe test mode first. Verify the successful checkout, cancellation, webhook delivery, and resulting paid order status before enabling live mode.
 - The test webhook and a successful Stripe test checkout have been reported working. Before live mode, confirm the Stripe test event marks the order paid and test a cancellation.
 - Confirm the order amount and line items are correct for both normal kit checkout and any supported customizations.
-- Confirm shipping addresses are collected and persisted by the site's checkout flow; do not assume Stripe Checkout collects them.
+- The site collects a shipping address, and Stripe Checkout collects it again when Stripe Tax is enabled so it can calculate tax from the destination. The webhook saves Stripe's paid total and tax amount to the order.
+- Test Stripe Tax in test mode with addresses in jurisdictions where the business is registered and where it is not; verify the tax, shipping charge, total, webhook, and stored order amounts before live mode.
 
 ## 6. Complete customer-facing policies and operations
 

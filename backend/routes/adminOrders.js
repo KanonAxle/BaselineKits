@@ -4,6 +4,7 @@ const supabase = require('../config/supabase');
 const jwt = require('jsonwebtoken');
 const Stripe = require('stripe');
 const { calculateShippingCents } = require('../utils/shippingPricing');
+const { isStripeTaxEnabled, buildStripeTaxSessionParams } = require('../utils/stripeTax');
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -74,6 +75,9 @@ router.post('/admin/orders', requireAdmin, async (req, res) => {
       sum + (item.products.price_cents * (item.quantity || 1)), 0);
     const shipping_cents = calculateShippingCents(merchandise_subtotal_cents);
     const total_cents = merchandise_subtotal_cents + shipping_cents;
+    if (!Number.isSafeInteger(merchandise_subtotal_cents) || merchandise_subtotal_cents <= 0) {
+      return res.status(400).json({ error: 'This kit has no purchasable products' });
+    }
 
     // Create order in DB
     const customizations = {
@@ -120,25 +124,18 @@ router.post('/admin/orders', requireAdmin, async (req, res) => {
       }
     }
 
-    // Build Stripe line items — fall back to kit name + total if no products
-    const lineItems = productItems.length > 0
-      ? productItems.map(item => ({
-          price_data: {
-            currency: 'usd',
-            product_data: { name: item.products.name },
-            unit_amount: item.products.price_cents,
-          },
-          quantity: item.quantity || 1,
-        }))
-      : [{
-          price_data: {
-            currency: 'usd',
-            product_data: { name: kit.name },
-            unit_amount: total_cents || 100,
-          },
-          quantity: 1,
-        }];
-    if (shipping_cents > 0) {
+    // Build Stripe line items from the kit's purchasable products.
+    const stripeTaxEnabled = isStripeTaxEnabled();
+    const lineItems = productItems.map(item => ({
+      price_data: {
+        currency: 'usd',
+        ...(stripeTaxEnabled ? { tax_behavior: 'exclusive' } : {}),
+        product_data: { name: item.products.name },
+        unit_amount: item.products.price_cents,
+      },
+      quantity: item.quantity || 1,
+    }));
+    if (shipping_cents > 0 && !stripeTaxEnabled) {
       lineItems.push({
         price_data: {
           currency: 'usd',
@@ -154,7 +151,7 @@ router.post('/admin/orders', requireAdmin, async (req, res) => {
     // Stripe checkout sessions expire max 24 hours
     const expiresAt = Math.floor(Date.now() / 1000) + (24 * 60 * 60);
 
-    const session = await stripe.checkout.sessions.create({
+    const sessionParams = {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
@@ -162,8 +159,13 @@ router.post('/admin/orders', requireAdmin, async (req, res) => {
       expires_at: expiresAt,
       success_url: `${baseUrl}/track?order=${order.id}`,
       cancel_url: `${baseUrl}/`,
-      metadata: { order_id: order.id },
-    });
+      metadata: { order_id: order.id, stripe_tax_enabled: String(stripeTaxEnabled) },
+    };
+    if (stripeTaxEnabled) {
+      Object.assign(sessionParams, buildStripeTaxSessionParams(shipping_cents));
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
 
     // Store payment URL back into order customizations
     await supabase.from('orders').update({
