@@ -5,6 +5,7 @@ const supabase = require('../config/supabase');
 const jwt = require('jsonwebtoken');
 const { ProductSelectionError, resolveProductCartItem } = require('../utils/productPricing');
 const { calculateShippingCents } = require('../utils/shippingPricing');
+const { isUsShippingCountry } = require('../utils/shippingCountry');
 const TERMS_VERSION = '2026-10-15-draft';
 
 async function getCheckoutCustomer(req) {
@@ -184,8 +185,8 @@ router.post('/orders', async (req, res) => {
     if (!kit_id || !shipping_address) {
       return res.status(400).json({ error: 'kit_id and shipping_address are required' });
     }
-    if (shipping_country !== 'US') {
-      return res.status(400).json({ error: 'We currently ship within the United States only.' });
+    if (!isUsShippingCountry(shipping_country)) {
+      return res.status(400).json({ error: 'We currently ship only within the United States.' });
     }
 
     const orderItems = await resolveKitItemsForOrder(kit_id, customizations, person_sizes || []);
@@ -392,8 +393,8 @@ router.post('/orders/from-cart', async (req, res) => {
     if (!shipping_address) {
       return res.status(400).json({ error: 'shipping_address is required' });
     }
-    if (shipping_country !== 'US') {
-      return res.status(400).json({ error: 'We currently ship within the United States only.' });
+    if (!isUsShippingCountry(shipping_country)) {
+      return res.status(400).json({ error: 'We currently ship only within the United States.' });
     }
     if (!items || !items.length) {
       return res.status(400).json({ error: 'Cart is empty' });

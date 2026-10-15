@@ -83,7 +83,7 @@ export default function GoogleAddressAutocomplete({
       const result = await getGoogleAddressDetails(suggestion.place_id, token);
       const address = result.address as AddressDetails;
       if (address.country !== 'US') {
-        setError('We currently ship within the United States only. Please enter a U.S. address.');
+        setError('We currently ship only within the United States. Please enter a U.S. address.');
         return;
       }
       if (!address.street || !address.city || !address.state || !address.zip) {
