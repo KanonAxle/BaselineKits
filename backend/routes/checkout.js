@@ -94,7 +94,16 @@ router.post('/checkout', async (req, res) => {
     }
 
     const itemTotal = pricedItems.reduce((sum, { item, unitPrice }) => sum + unitPrice * item.quantity, 0);
-    const lineItems = itemTotal === order.total_cents
+    const shippingCents = order.customizations?.shipping_cents ?? 0;
+    if (!Number.isSafeInteger(shippingCents) || shippingCents < 0) {
+      return res.status(500).json({ error: 'Order contains an invalid shipping charge' });
+    }
+    if (pricedItems.length && itemTotal + shippingCents !== order.total_cents) {
+      console.error('Order item, shipping, and total amounts do not match:', order_id);
+      return res.status(500).json({ error: 'Order totals do not match the saved items' });
+    }
+
+    const lineItems = pricedItems.length
       ? pricedItems.filter(({ unitPrice }) => unitPrice > 0).map(({ item, name, unitPrice }) => {
         const options = item.selected_options || {};
         const optionLabels = [
@@ -112,6 +121,17 @@ router.post('/checkout', async (req, res) => {
         };
       })
       : [];
+
+    if (pricedItems.length && shippingCents > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Shipping' },
+          unit_amount: shippingCents,
+        },
+        quantity: 1,
+      });
+    }
 
     if (!lineItems.length) {
       if (!Number.isSafeInteger(order.total_cents) || order.total_cents <= 0) {

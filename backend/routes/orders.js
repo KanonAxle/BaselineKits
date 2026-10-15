@@ -4,7 +4,8 @@ const router = express.Router();
 const supabase = require('../config/supabase');
 const jwt = require('jsonwebtoken');
 const { ProductSelectionError, resolveProductCartItem } = require('../utils/productPricing');
-const TERMS_VERSION = '2026-10-12-draft';
+const { calculateShippingCents } = require('../utils/shippingPricing');
+const TERMS_VERSION = '2026-10-15-draft';
 
 async function getCheckoutCustomer(req) {
   const userId = verifyToken(req);
@@ -172,7 +173,7 @@ router.post('/orders', async (req, res) => {
     const customerResult = await getCheckoutCustomer(req);
     if (customerResult.error) return res.status(customerResult.status).json({ error: customerResult.error });
     const { user } = customerResult;
-    const { kit_id, customizations, shipping_address, phone_number, person_sizes, terms_accepted, marketing_opt_in } = req.body;
+    const { kit_id, customizations, shipping_address, shipping_country, phone_number, person_sizes, terms_accepted, marketing_opt_in } = req.body;
 
     if (terms_accepted !== true) {
       return res.status(400).json({ error: 'You must accept the Terms of Use to place an order.' });
@@ -183,6 +184,9 @@ router.post('/orders', async (req, res) => {
     if (!kit_id || !shipping_address) {
       return res.status(400).json({ error: 'kit_id and shipping_address are required' });
     }
+    if (shipping_country !== 'US') {
+      return res.status(400).json({ error: 'We currently ship within the United States only.' });
+    }
 
     const orderItems = await resolveKitItemsForOrder(kit_id, customizations, person_sizes || []);
     if (!orderItems.length) return res.status(404).json({ error: 'Kit not found or has no items' });
@@ -192,11 +196,15 @@ router.post('/orders', async (req, res) => {
       return res.status(availabilityError.status || 500).json({ error: availabilityError.error });
     }
 
-    let total_cents = orderItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
+    const merchandise_subtotal_cents = orderItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
+    const shipping_cents = calculateShippingCents(merchandise_subtotal_cents);
+    const total_cents = merchandise_subtotal_cents + shipping_cents;
 
     const storedCustomizations = {
       ...(customizations || {}),
       customer_email: user.email,
+      merchandise_subtotal_cents,
+      shipping_cents,
       ...buildConsentMetadata(terms_accepted, marketing_opt_in),
       ...(phone_number ? { phone_number } : {})
     };
@@ -233,6 +241,8 @@ router.post('/orders', async (req, res) => {
     res.status(201).json({
       order_id: orderId,
       total_cents,
+      merchandise_subtotal_cents,
+      shipping_cents,
       items: orderItems,
       message: 'Order created. Proceed to payment.'
     });
@@ -371,7 +381,7 @@ router.post('/orders/from-cart', async (req, res) => {
     const customerResult = await getCheckoutCustomer(req);
     if (customerResult.error) return res.status(customerResult.status).json({ error: customerResult.error });
     const { user } = customerResult;
-    const { items, shipping_address, phone_number, terms_accepted, marketing_opt_in } = req.body;
+    const { items, shipping_address, shipping_country, phone_number, terms_accepted, marketing_opt_in } = req.body;
 
     if (terms_accepted !== true) {
       return res.status(400).json({ error: 'You must accept the Terms of Use to place an order.' });
@@ -381,6 +391,9 @@ router.post('/orders/from-cart', async (req, res) => {
     }
     if (!shipping_address) {
       return res.status(400).json({ error: 'shipping_address is required' });
+    }
+    if (shipping_country !== 'US') {
+      return res.status(400).json({ error: 'We currently ship within the United States only.' });
     }
     if (!items || !items.length) {
       return res.status(400).json({ error: 'Cart is empty' });
@@ -436,11 +449,15 @@ router.post('/orders/from-cart', async (req, res) => {
       return res.status(availabilityError.status || 500).json({ error: availabilityError.error });
     }
 
-    let total_cents = allOrderItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
+    const merchandise_subtotal_cents = allOrderItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
+    const shipping_cents = calculateShippingCents(merchandise_subtotal_cents);
+    const total_cents = merchandise_subtotal_cents + shipping_cents;
 
     const storedCustomizations = {
       source: 'cart',
       customer_email: user.email,
+      merchandise_subtotal_cents,
+      shipping_cents,
       ...buildConsentMetadata(terms_accepted, marketing_opt_in),
       ...(phone_number ? { phone_number } : {}),
     };
@@ -477,6 +494,8 @@ router.post('/orders/from-cart', async (req, res) => {
     res.status(201).json({
       order_id: orderId,
       total_cents,
+      merchandise_subtotal_cents,
+      shipping_cents,
       items: allOrderItems,
       message: 'Order created. Proceed to payment.',
     });

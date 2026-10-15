@@ -140,8 +140,8 @@ export const submitQuiz = (answers) =>
   apiFetch('/qa/submit', { method: 'POST', body: JSON.stringify({ answers }) });
 
 // Orders require an authenticated account; marketing consent is optional.
-export const createOrder = (kit_id, customizations, shipping_address, phone_number, terms_accepted, marketing_opt_in) =>
-  apiFetch('/orders', { method: 'POST', body: JSON.stringify({ kit_id, customizations, shipping_address, phone_number, terms_accepted, marketing_opt_in }) });
+export const createOrder = (kit_id, customizations, shipping_address, shipping_country, phone_number, terms_accepted, marketing_opt_in) =>
+  apiFetch('/orders', { method: 'POST', body: JSON.stringify({ kit_id, customizations, shipping_address, shipping_country, phone_number, terms_accepted, marketing_opt_in }) });
 
 export const getOrders = () => apiFetch('/orders');
 
@@ -176,8 +176,8 @@ export const createCheckout = (order_id, success_url, cancel_url) =>
   apiFetch('/checkout', { method: 'POST', body: JSON.stringify({ order_id, success_url, cancel_url }) });
 
 // Cart order — creates an order from an array of CartItem objects (products and/or kits)
-export const createCartOrder = (items, shipping_address, phone_number, terms_accepted, marketing_opt_in) =>
-  apiFetch('/orders/from-cart', { method: 'POST', body: JSON.stringify({ items, shipping_address, phone_number, terms_accepted, marketing_opt_in }) });
+export const createCartOrder = (items, shipping_address, shipping_country, phone_number, terms_accepted, marketing_opt_in) =>
+  apiFetch('/orders/from-cart', { method: 'POST', body: JSON.stringify({ items, shipping_address, shipping_country, phone_number, terms_accepted, marketing_opt_in }) });
 
 // Shopify Cart API — returns Shopify's hosted checkout URL.
 export const createShopifyCart = (items, email) =>

@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar';
 import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
 import { useCart } from '../../lib/cartContext';
 import Link from 'next/link';
+import { calculateShippingCents } from '../../lib/shippingPricing';
 
 function collectSizable(items: any[]): any[] {
   const result: any[] = [];
@@ -108,7 +109,7 @@ export default function ResultsPage() {
     if (!address.trim()) { setError('Please enter your street address.'); return; }
     if (!city.trim()) { setError('Please enter your city.'); return; }
     if (!state.trim()) { setError('Please enter your state.'); return; }
-    if (!zip.trim()) { setError('Please enter your ZIP code.'); return; }
+    if (!/^\d{5}(?:-\d{4})?$/.test(zip.trim())) { setError('Please enter a valid U.S. ZIP code.'); return; }
     if (!termsAccepted) { setError('Please accept the Terms of Use to continue.'); return; }
     setLoading(true);
     setError('');
@@ -139,6 +140,7 @@ export default function ResultsPage() {
         kit.id,
         { remove_items: removedItems, add_items: [] },
         formattedAddress,
+        'US',
         phone || null,
         termsAccepted,
         marketingOptIn
@@ -245,6 +247,9 @@ export default function ResultsPage() {
             <span className="text-xs uppercase tracking-[0.15em] text-stone-500">Click to remove items</span>
           </div>
           <div className="flex flex-col gap-3">
+            <p className="text-xs text-stone-400">
+              U.S. shipping only. Shipping is $14.95 on orders under $300 and free on orders of $300 or more.
+            </p>
             {kit.items.map((item, index) => {
               if (item.type === 'subkit_header') {
                 return (
@@ -363,8 +368,15 @@ export default function ResultsPage() {
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-stone-900 border border-stone-800 rounded-xl px-6 py-5">
           <div>
-            <div className="text-stone-400 text-sm">Total</div>
-            <div className="text-3xl font-bold">{formatPrice(calculateTotal())}</div>
+            <div className="flex justify-between gap-6 text-sm text-stone-400">
+              <span>Kit subtotal</span><span>{formatPrice(calculateTotal())}</span>
+            </div>
+            <div className="flex justify-between gap-6 text-sm text-stone-400 mt-1">
+              <span>Shipping</span>
+              <span>{calculateShippingCents(calculateTotal()) ? formatPrice(calculateShippingCents(calculateTotal())) : 'Free'}</span>
+            </div>
+            <div className="text-stone-400 text-sm mt-2">Total</div>
+            <div className="text-3xl font-bold">{formatPrice(calculateTotal() + calculateShippingCents(calculateTotal()))}</div>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <button onClick={handleAddKitToCart}

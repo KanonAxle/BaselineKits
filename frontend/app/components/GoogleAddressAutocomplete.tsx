@@ -82,6 +82,10 @@ export default function GoogleAddressAutocomplete({
     try {
       const result = await getGoogleAddressDetails(suggestion.place_id, token);
       const address = result.address as AddressDetails;
+      if (address.country !== 'US') {
+        setError('We currently ship within the United States only. Please enter a U.S. address.');
+        return;
+      }
       if (!address.street || !address.city || !address.state || !address.zip) {
         setError('That result did not include a complete mailing address. Please enter the address manually.');
         return;

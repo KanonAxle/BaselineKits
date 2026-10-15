@@ -4,9 +4,8 @@ This project has a Next.js frontend, an Express API, Supabase for database and i
 
 ## 0. Prepare the GitHub version
 
-- Vercel deploys from GitHub, but the deployment changes in this checkout are not published yet.
-- Review the current Git changes before publishing. This checkout includes other pending app changes and deletions, so do not use `git add .` or blindly commit every file.
-- Publish the complete, intended application state (including `vercel.json`, both app services, and required routes) to the GitHub branch Vercel will deploy. A commit of only the launch configuration would not include all of the pending app files.
+- The launch application state was published to `main` in commit `eb37e68` and deployed by Vercel.
+- This checkout may still contain unrelated local files and edits. Do not use `git add .` or blindly commit every file.
 
 ## 1. Deploy the frontend and API
 
@@ -14,7 +13,7 @@ This project has a Next.js frontend, an Express API, Supabase for database and i
 - The public `/api/*` rewrite routes requests to the API service; all other paths route to the storefront. The frontend defaults to the same-origin `/api` path.
 - Configure `ADMIN_SECRET`, `JWT_SECRET`, `SUPABASE_URL`, `SUPABASE_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `FRONTEND_URL` in Vercel's server-side environment variables. Include the Vercel project URL for initial testing, then both domain origins; for example `FRONTEND_URL=https://<project>.vercel.app,https://baselinekits.com,https://www.baselinekits.com`.
 - Set optional server-side address lookup credentials such as `GOOGLE_MAPS_API_KEY` only if those services are enabled. Do not commit `.env` files or expose server-side secrets as `NEXT_PUBLIC_` variables.
-- Verify the API at `https://baselinekits.com/api/health` after connecting the custom domain.
+- The canonical domain is `https://www.baselinekits.com`; `https://baselinekits.com` redirects to it. Both storefront and API health have been verified.
 - Use `vercel dev` to run and test all services locally with Vercel's routing configuration.
 
 ## 2. Connect the GoDaddy domain
@@ -41,8 +40,7 @@ Keep staging and production credentials separate. The frontend uses the same-ori
 
 - Apply the current schema and required migrations from `docs/database-schema.sql` to the intended production Supabase project.
 - For an existing database, do not blindly rerun the full schema file; apply only migrations that have not already been run.
-- Run `docs/migrations/20261015_recommendation_config.sql` in the Supabase SQL Editor before deploying. Admin-managed recommendation weights are stored in this table.
-- Run `docs/migrations/20261016_launch_schema_compat.sql` before deploying. It adds account address fields, kit collection support, and server-priced order-item snapshots required by the current app.
+- `docs/migrations/20261015_recommendation_config.sql` and `docs/migrations/20261016_launch_schema_compat.sql` have been applied to the current Supabase project.
 - Confirm required tables, policies, quiz content, products, kits, and recommendation data are present and correct.
 - Create the `product-images` Storage bucket and verify its access settings support public product images and authorized admin uploads.
 - Confirm the backend uses the correct production project and a server-only key.
@@ -55,6 +53,7 @@ Keep staging and production credentials separate. The frontend uses the same-ori
 - Complete Stripe business, payout, and tax settings as applicable to the business.
 - After the domain is connected and HTTPS is ready, configure the Stripe test webhook endpoint at `https://<canonical-domain>/api/webhooks/stripe` for `checkout.session.completed`; put its test signing secret in `STRIPE_WEBHOOK_SECRET`.
 - Use Stripe test mode first. Verify the successful checkout, cancellation, webhook delivery, and resulting paid order status before enabling live mode.
+- The test webhook and a successful Stripe test checkout have been reported working. Before live mode, confirm the Stripe test event marks the order paid and test a cancellation.
 - Confirm the order amount and line items are correct for both normal kit checkout and any supported customizations.
 - Confirm shipping addresses are collected and persisted by the site's checkout flow; do not assume Stripe Checkout collects them.
 
@@ -62,6 +61,8 @@ Keep staging and production credentials separate. The frontend uses the same-ori
 
 - Replace all draft placeholders in the Terms of Use and Privacy Policy, including business identity, contact details, shipping, returns, refunds, data retention, and customer privacy requests.
 - Have the policies reviewed for the business and the regions where it will sell. The current site explicitly labels both policies as drafts; do not launch paid checkout with unfinished policy text.
+- Current draft terms describe U.S.-only shipping, $14.95 shipping below a $300 merchandise subtotal and free shipping at $300 or more, variable order processing estimates, cancellations before fulfillment begins, and the return/refund rules provided by the business. They remain drafts pending review.
+- Shippo live rate quotes are not connected yet. Checkout currently uses the fixed shipping policy above; decide package dimensions before adding live rates. Pirate Ship does not offer an API for checkout rate quotes.
 - Confirm required Terms acceptance is recorded with each order and the optional marketing opt-in stays separate.
 - Configure an email provider and unsubscribe handling before sending marketing emails; the current app records consent but does not provide mailing-list delivery.
 - Define how orders will be fulfilled, shipped, tracked, refunded, and supported. Confirm the published catalog reflects actual stock and prices.

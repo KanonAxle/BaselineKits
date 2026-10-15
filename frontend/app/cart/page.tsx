@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar';
 import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
 import { useCart } from '../../lib/cartContext';
 import { createCartOrder, createCheckout, getKit, getMe, getToken } from '../../lib/api';
+import { calculateShippingCents } from '../../lib/shippingPricing';
 
 function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -24,6 +25,8 @@ function collectSizable(items: any[]): any[] {
 export default function CartPage() {
   const router = useRouter();
   const { items, removeItem, updateQuantity, clearCart, totalCents } = useCart();
+  const shippingCents = calculateShippingCents(totalCents);
+  const checkoutTotalCents = totalCents + shippingCents;
   const [address, setAddress] = useState('');
   const [address2, setAddress2] = useState('');
   const [city, setCity] = useState('');
@@ -67,7 +70,7 @@ export default function CartPage() {
     if (!address.trim()) { setError('Please enter your shipping address.'); return; }
     if (!city.trim()) { setError('Please enter your city.'); return; }
     if (!state.trim()) { setError('Please enter your state.'); return; }
-    if (!zip.trim()) { setError('Please enter your ZIP code.'); return; }
+    if (!/^\d{5}(?:-\d{4})?$/.test(zip.trim())) { setError('Please enter a valid U.S. ZIP code.'); return; }
     if (!getToken()) { router.push('/login?next=%2Fcart'); return; }
     if (!termsAccepted) { setError('Please accept the Terms of Use to continue.'); return; }
 
@@ -89,7 +92,7 @@ export default function CartPage() {
     setLoading(true);
     setError('');
     try {
-      const order = await createCartOrder(items, shippingAddress, phone || null, termsAccepted, marketingOptIn);
+      const order = await createCartOrder(items, shippingAddress, 'US', phone || null, termsAccepted, marketingOptIn);
       const checkout = await createCheckout(
         order.order_id,
         `${window.location.origin}/success?order_id=${order.order_id}`,
@@ -223,6 +226,9 @@ export default function CartPage() {
             </div>
           </div>
           <div className="flex flex-col gap-3">
+            <p className="text-xs text-stone-400">
+              U.S. shipping only. Shipping is $14.95 on orders under $300 and free on orders of $300 or more.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <GoogleAddressAutocomplete
                 value={address}
@@ -310,8 +316,14 @@ export default function CartPage() {
         {/* Total + Checkout */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-stone-900 border border-stone-800 rounded-xl px-6 py-5">
           <div>
-            <div className="text-stone-400 text-sm">Total</div>
-            <div className="text-3xl font-bold">{formatPrice(totalCents)}</div>
+            <div className="flex justify-between gap-6 text-sm text-stone-400">
+              <span>Items</span><span>{formatPrice(totalCents)}</span>
+            </div>
+            <div className="flex justify-between gap-6 text-sm text-stone-400 mt-1">
+              <span>Shipping</span><span>{shippingCents ? formatPrice(shippingCents) : 'Free'}</span>
+            </div>
+            <div className="text-stone-400 text-sm mt-2">Total</div>
+            <div className="text-3xl font-bold">{formatPrice(checkoutTotalCents)}</div>
           </div>
           <button
             onClick={handleCheckout}

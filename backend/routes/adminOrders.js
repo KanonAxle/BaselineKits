@@ -3,6 +3,7 @@ const router = express.Router();
 const supabase = require('../config/supabase');
 const jwt = require('jsonwebtoken');
 const Stripe = require('stripe');
+const { calculateShippingCents } = require('../utils/shippingPricing');
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -69,8 +70,10 @@ router.post('/admin/orders', requireAdmin, async (req, res) => {
     if (kitItemsError) return res.status(500).json({ error: 'Failed to fetch kit items' });
 
     const productItems = (kitItems || []).filter(item => item.products);
-    const total_cents = productItems.reduce((sum, item) =>
+    const merchandise_subtotal_cents = productItems.reduce((sum, item) =>
       sum + (item.products.price_cents * (item.quantity || 1)), 0);
+    const shipping_cents = calculateShippingCents(merchandise_subtotal_cents);
+    const total_cents = merchandise_subtotal_cents + shipping_cents;
 
     // Create order in DB
     const customizations = {
@@ -79,6 +82,8 @@ router.post('/admin/orders', requireAdmin, async (req, res) => {
       guest_phone: customer_phone || null,
       phone_order: true,
       notes: notes || null,
+      merchandise_subtotal_cents,
+      shipping_cents,
     };
 
     const { data: order, error: orderError } = await supabase
@@ -133,6 +138,16 @@ router.post('/admin/orders', requireAdmin, async (req, res) => {
           },
           quantity: 1,
         }];
+    if (shipping_cents > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Shipping' },
+          unit_amount: shipping_cents,
+        },
+        quantity: 1,
+      });
+    }
 
     const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 

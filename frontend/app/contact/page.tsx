@@ -85,7 +85,7 @@ function ContactContent() {
                 </div>
                 <div>
                   <p className="label-tactical text-stone-500 mb-1">Email</p>
-                  <p className="text-stone-300 text-sm">support@baselinekits.com</p>
+                  <a href="mailto:info@baselinekits.com" className="text-stone-300 text-sm hover:text-orange-400">info@baselinekits.com</a>
                 </div>
               </div>
 

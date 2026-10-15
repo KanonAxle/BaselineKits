@@ -8,7 +8,7 @@ const sections = [
   },
   {
     title: 'Payments and service providers',
-    body: 'Stripe processes checkout payments. When you use address autocomplete, the address text you enter and the selected address are sent to Google Places. We may also use service providers for hosting and data storage, Smarty address verification if that feature is re-enabled, shipping, and site operations. Those providers receive information needed to perform their services. Confirm the provider list and applicable international data transfers before publishing a final policy.',
+    body: 'Stripe processes checkout payments. When you use address autocomplete, the address text you enter and the selected address are sent to Google Places. The site is hosted by Vercel and uses Supabase for data storage. We use shipping providers to prepare and fulfill orders; shipping labels may currently be purchased through Pirate Ship. Those providers receive information needed to perform their services. Before publishing a final policy, confirm the provider list, their applicable privacy practices, and any applicable international data transfers.',
   },
   {
     title: 'How information is used',
@@ -20,7 +20,7 @@ const sections = [
   },
   {
     title: 'Retention, security, and your choices',
-    body: 'We use reasonable safeguards, but no online service can guarantee absolute security. Complete this draft with the business’s retention periods, data-access/deletion request process, and any rights required by applicable privacy laws. Contact: [insert privacy contact email and business legal name].',
+    body: 'We use reasonable safeguards, but no online service can guarantee absolute security. To ask about, access, or request deletion of personal information, contact BaselineKits at info@baselinekits.com. We may retain information when needed to complete orders, meet legal or accounting obligations, resolve disputes, or protect the service. Requests will be handled subject to applicable law and required recordkeeping.',
   },
   {
     title: 'Updates',
@@ -36,11 +36,11 @@ export default function PrivacyPage() {
         <div className="mb-8 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-amber-200">
           <p className="font-bold uppercase tracking-widest text-sm">Draft for business and legal review</p>
           <p className="mt-1 text-sm text-amber-100/80">
-            This draft includes items that still need confirmation. Complete the bracketed details and review it before publication as a final policy.
+            Review this draft against the business’s actual data practices and applicable privacy laws before treating it as final.
           </p>
         </div>
         <h1 className="text-3xl font-extrabold uppercase tracking-wide">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-stone-500">Draft version 2026-10-12. Effective date to be confirmed.</p>
+        <p className="mt-2 text-sm text-stone-500">Draft version 2026-10-15. Effective date to be confirmed.</p>
         <p className="mt-6 text-stone-300 leading-relaxed">
           This draft explains information BaselineKits may handle when you browse the site, create an account, or place an order.
         </p>
