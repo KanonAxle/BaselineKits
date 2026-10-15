@@ -1,143 +1,222 @@
+// @ts-nocheck
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getQuestions, getAnswers, submitQuiz } from '../../lib/api';
+import { getStartQuestion, getQuestion, submitQuiz } from '../../lib/api';
+import Navbar from '../components/Navbar';
 
 export default function QuizPage() {
   const router = useRouter();
-  const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState({}); // { questionId: answerId }
-  const [answerOptions, setAnswerOptions] = useState({}); // { questionId: [answers] }
-  const [currentStep, setCurrentStep] = useState(0);
+
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [answers, setAnswers] = useState({});
+
+  // Flash + visual feedback state
+  const [flashingId, setFlashingId] = useState(null);
+
   const [loading, setLoading] = useState(true);
+  const [advancing, setAdvancing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Load all questions on mount
   useEffect(() => {
-    getQuestions()
-      .then(async (qs) => {
-        setQuestions(qs);
-        // Pre-load answers for all questions
-        const allAnswers = {};
-        for (const q of qs) {
-          const ans = await getAnswers(q.id);
-          allAnswers[q.id] = ans;
-        }
-        setAnswerOptions(allAnswers);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Failed to load quiz. Please try again.');
-        setLoading(false);
-      });
+    getStartQuestion()
+      .then(q => { setCurrentQuestion(q); setLoading(false); })
+      .catch(err => { setError(err.message || 'Failed to load quiz. Please try again.'); setLoading(false); });
   }, []);
 
-  const currentQuestion = questions[currentStep];
-  const currentAnswers = currentQuestion ? (answerOptions[currentQuestion.id] || []) : [];
-  const selectedAnswer = currentQuestion ? answers[currentQuestion.id] : null;
-
-  function selectAnswer(answerId) {
-    setAnswers(prev => ({ ...prev, [currentQuestion.id]: answerId }));
-  }
-
-  function goBack() {
-    setCurrentStep(prev => prev - 1);
-  }
-
-  async function goNext() {
-    if (currentStep < questions.length - 1) {
-      setCurrentStep(prev => prev + 1);
-    } else {
-      // Final step — submit
-      setSubmitting(true);
-      setError('');
+  // Navigate to the next question or submit if terminal
+  async function advance(answer: any, newAnswers: any) {
+    if (answer.result_contact) {
+      // Build Q&A summary from all previous steps + this final answer
+      const lines: string[] = [];
+      for (const step of history) {
+        const qText = step.question?.text || '';
+        const aText = step.question?.answers?.find((a: any) => a.id === step.answerId)?.text || '';
+        if (qText && aText) lines.push(`Q: ${qText}\nA: ${aText}`);
+      }
+      if (currentQuestion?.text && answer.text) {
+        lines.push(`Q: ${currentQuestion.text}\nA: ${answer.text}`);
+      }
+      if (lines.length > 0) {
+        localStorage.setItem('quizContactSummary', lines.join('\n\n'));
+      }
+      router.push('/contact?from=quiz');
+      return;
+    }
+    if (answer.next_question_id) {
+      setAdvancing(true);
       try {
-        const result = await submitQuiz(answers);
-        // Store result and navigate to results page
+        const nextQuestion = await getQuestion(answer.next_question_id);
+        setHistory(prev => [...prev, { question: currentQuestion, answerId: answer.id }]);
+        setCurrentQuestion(nextQuestion);
+        setFlashingId(null);
+      } catch (err: any) {
+        setError(err.message || 'Failed to load next question.');
+      } finally {
+        setAdvancing(false);
+      }
+    } else if (answer.result_kit_id) {
+      setSubmitting(true);
+      try {
+        const result = await submitQuiz(newAnswers);
         localStorage.setItem('quizResult', JSON.stringify(result));
         router.push('/results');
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message || 'Failed to get recommendation. Try again.');
         setSubmitting(false);
       }
+    } else {
+      setError('This answer has no next question or kit assigned. Please contact support.');
     }
   }
+
+  // Called when user clicks an answer button
+  function handleClick(answer: any) {
+    if (advancing || submitting) return;
+
+    setError('');
+
+    // Flash animation
+    setFlashingId(answer.id);
+    setTimeout(() => setFlashingId(null), 400);
+
+    const newAnswers = { ...answers, [currentQuestion.id]: answer.id };
+    setAnswers(newAnswers);
+    advance(answer, newAnswers);
+  }
+
+  function goBack() {
+    if (history.length === 0) { router.push('/'); return; }
+    const prev = history[history.length - 1];
+    setHistory(h => h.slice(0, -1));
+    setCurrentQuestion(prev.question);
+    setAnswers(prev2 => {
+      const updated = { ...prev2 };
+      delete updated[currentQuestion.id];
+      return updated;
+    });
+    setError('');
+  }
+
+  const stepNumber = history.length + 1;
+  const backLabel = history.length === 0 ? '← Home' : '← Back';
 
   if (loading) {
     return (
       <main className="min-h-screen bg-stone-950 text-white flex items-center justify-center">
-        <p className="text-stone-400">Loading quiz...</p>
+        <p className="label-tactical text-stone-500 tracking-widest">Initializing assessment...</p>
       </main>
     );
   }
 
-  if (error && questions.length === 0) {
+  if (error && !currentQuestion) {
     return (
-      <main className="min-h-screen bg-stone-950 text-white flex items-center justify-center">
-        <p className="text-red-400">{error}</p>
+      <main className="min-h-screen bg-stone-950 text-white flex items-center justify-center flex-col gap-4">
+        <p className="text-red-400 text-center max-w-md">{error}</p>
+        <button
+          onClick={() => {
+            setError('');
+            setLoading(true);
+            getStartQuestion()
+              .then(q => { setCurrentQuestion(q); setLoading(false); })
+              .catch(err => { setError(err.message); setLoading(false); });
+          }}
+          className="label-tactical text-orange-500 hover:text-orange-400 tracking-widest border border-orange-500/30 hover:border-orange-500/60 px-4 py-2 rounded transition-colors"
+        >
+          Try Again
+        </button>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-stone-950 text-white flex flex-col items-center justify-center px-6">
+    <>
+    <Navbar />
+    <main className="min-h-screen bg-stone-950 text-white flex flex-col items-center justify-center px-6 py-16">
 
-      {/* Progress bar */}
-      <div className="w-full max-w-xl mb-8">
-        <div className="flex justify-between text-stone-500 text-sm mb-2">
-          <span>Question {currentStep + 1} of {questions.length}</span>
-          <span>{Math.round(((currentStep + 1) / questions.length) * 100)}%</span>
+      {/* Header label */}
+      <div className="w-full max-w-xl mb-6">
+        <p className="label-tactical text-orange-500 tracking-[0.2em]">// Kit Assessment</p>
+      </div>
+
+      {/* Step indicator */}
+      <div className="w-full max-w-xl mb-6">
+        <div className="flex justify-between label-tactical text-stone-500 mb-2">
+          <span>Step {stepNumber}</span>
+          {submitting && <span className="text-orange-400">Calculating your kit...</span>}
+          {advancing && <span className="text-stone-600">Loading...</span>}
         </div>
-        <div className="w-full bg-stone-800 rounded-full h-2">
-          <div
-            className="bg-orange-500 h-2 rounded-full transition-all"
-            style={{ width: `${((currentStep + 1) / questions.length) * 100}%` }}
-          />
+        <div className="flex items-center gap-1.5">
+          {Array.from({ length: stepNumber }).map((_, i) => (
+            <div
+              key={i}
+              className={`h-1 flex-1 rounded-full transition-all ${i < stepNumber - 1 ? 'bg-orange-500' : 'bg-orange-500/40'}`}
+            />
+          ))}
         </div>
       </div>
 
       {/* Question card */}
-      <div className="w-full max-w-xl bg-stone-900 rounded-xl p-8 border border-stone-800">
-        <h2 className="text-2xl font-bold mb-6">{currentQuestion?.text}</h2>
+      <div className="w-full max-w-xl bg-stone-900/80 rounded p-8 border border-stone-800">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-6">{currentQuestion?.text}</h2>
 
         <div className="flex flex-col gap-3">
-          {currentAnswers.map(answer => (
-            <button
-              key={answer.id}
-              onClick={() => selectAnswer(answer.id)}
-              className={`text-left px-5 py-4 rounded-lg border transition-all ${
-                selectedAnswer === answer.id
-                  ? 'border-orange-500 bg-orange-500/10 text-white'
-                  : 'border-stone-700 hover:border-stone-500 text-stone-300'
-              }`}
-            >
-              {answer.text}
-            </button>
-          ))}
+          {(currentQuestion?.answers || []).map(answer => {
+            const isSelected = answers[currentQuestion.id] === answer.id;
+            const isFlashing = flashingId === answer.id;
+
+            return (
+              <div key={answer.id} className="group">
+                <button
+                  onClick={() => handleClick(answer)}
+                  disabled={advancing || submitting}
+                  className={`w-full text-left px-5 py-4 rounded border transition-all disabled:opacity-40 ${
+                    isFlashing ? 'answer-flash' : ''
+                  } ${
+                    isSelected
+                      ? 'border-orange-500 bg-orange-500/10 text-white'
+                      : 'border-stone-700 hover:border-stone-500 text-stone-300 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span>{answer.text}</span>
+                    {answer.description && (
+                      <span className="md:hidden text-[10px] uppercase tracking-[0.2em] text-stone-500 group-hover:text-orange-400 transition-colors">
+                        Info
+                      </span>
+                    )}
+                  </div>
+
+                  {answer.description && (
+                    <p className={`mt-2 text-xs leading-relaxed text-stone-300 max-h-0 group-hover:max-h-96 transition-all duration-200 overflow-hidden ${
+                      isSelected ? 'max-h-96 md:max-h-0 md:group-hover:max-h-96' : ''
+                    }`}>
+                      {answer.description}
+                    </p>
+                  )}
+                </button>
+              </div>
+            );
+          })}
         </div>
 
         {error && <p className="text-red-400 mt-4 text-sm">{error}</p>}
 
-        {/* Navigation */}
-        <div className="flex justify-between mt-8">
+        {/* Back navigation */}
+        <div className="flex justify-start mt-8">
           <button
             onClick={goBack}
-            disabled={currentStep === 0}
-            className="text-stone-400 hover:text-white disabled:opacity-30 transition-colors"
+            disabled={advancing || submitting}
+            className="label-tactical text-stone-500 hover:text-white disabled:opacity-30 transition-colors tracking-widest px-3 py-2"
           >
-            ← Back
-          </button>
-          <button
-            onClick={goNext}
-            disabled={!selectedAnswer || submitting}
-            className="bg-orange-600 hover:bg-orange-500 disabled:opacity-40 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
-          >
-            {submitting ? 'Getting recommendation...' : currentStep === questions.length - 1 ? 'Get My Kit →' : 'Next →'}
+            {backLabel}
           </button>
         </div>
       </div>
 
     </main>
+    </>
   );
 }

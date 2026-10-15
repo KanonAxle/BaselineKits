@@ -1,52 +1,54 @@
+// @ts-nocheck
 'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import { lookupOrder } from '../../lib/api';
 import Navbar from '../components/Navbar';
 
-function formatPrice(cents) {
+function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
 const statusSteps = ['placed', 'paid', 'packed', 'shipped', 'delivered'];
-const statusLabels = { placed: 'Order Received', paid: 'Payment Confirmed', packed: 'Being Packed', shipped: 'Shipped', delivered: 'Delivered' };
-const statusIcons = { placed: '📋', paid: '💳', packed: '🎒', shipped: '🚚', delivered: '✅' };
+const statusLabels: Record<string, string> = { placed: 'Order Received', paid: 'Payment Confirmed', packed: 'Being Packed', shipped: 'Shipped', delivered: 'Delivered' };
+const statusIcons: Record<string, string> = { placed: '📋', paid: '💳', packed: '🎒', shipped: '🚚', delivered: '✅' };
 
 function TrackContent() {
   const params = useSearchParams();
   const [orderId, setOrderId] = useState(params.get('order_id') || '');
-  const [order, setOrder] = useState(null);
+  const [email, setEmail] = useState('');
+  const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Auto-lookup if order_id is in URL
+  // Auto-lookup links may use order_id (customer checkout) or order (admin-created orders).
   useEffect(() => {
-    const id = params.get('order_id');
+    const id = params.get('order_id') || params.get('order');
     if (id) {
       setOrderId(id);
-      doLookup(id);
+      doLookup(id, '');
     }
   }, []);
 
-  async function doLookup(id) {
+  async function doLookup(id: string, lookupEmail: string) {
     setLoading(true);
     setError('');
     setOrder(null);
     try {
-      const data = await lookupOrder(id);
+      const data = await lookupOrder(id, lookupEmail || undefined);
       setOrder(data);
-    } catch (err) {
-      setError(err.message || 'Order not found. Double-check your order number and try again.');
+    } catch (err: any) {
+      setError(err.message || 'Order not found. Double-check your email and order number.');
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleLookup(e) {
+  async function handleLookup(e: React.FormEvent) {
     e.preventDefault();
-    if (!orderId.trim()) return;
-    doLookup(orderId.trim());
+    if (!orderId.trim()) { setError('Please enter your order number.'); return; }
+    if (!email.trim()) { setError('Please enter your email address.'); return; }
+    doLookup(orderId.trim(), email.trim());
   }
 
   const currentStep = order ? statusSteps.indexOf(order.status) : -1;
@@ -54,20 +56,29 @@ function TrackContent() {
   return (
     <div className="max-w-xl mx-auto px-6 py-16">
       <h1 className="text-3xl font-bold mb-2">Track Your Order</h1>
-      <p className="text-stone-400 mb-8">Enter the order number from your confirmation email.</p>
+      <p className="text-stone-400 mb-8">Enter the email you used at checkout and your order number.</p>
 
-      <form onSubmit={handleLookup} className="flex gap-3 mb-8">
+      <form onSubmit={handleLookup} className="flex flex-col gap-3 mb-8">
         <input
-          type="text"
-          value={orderId}
-          onChange={e => setOrderId(e.target.value)}
-          placeholder="Paste your order number here"
-          className="flex-1 bg-stone-900 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Email address used at checkout"
+          className="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
         />
-        <button type="submit" disabled={loading || !orderId.trim()}
-          className="bg-orange-600 hover:bg-orange-500 disabled:opacity-40 text-white font-semibold px-6 py-3 rounded-lg transition-colors whitespace-nowrap">
-          {loading ? '...' : 'Track →'}
-        </button>
+        <div className="flex gap-3">
+          <input
+            type="text"
+            value={orderId}
+            onChange={e => setOrderId(e.target.value)}
+            placeholder="Order number"
+            className="flex-1 bg-stone-900 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
+          />
+          <button type="submit" disabled={loading || !orderId.trim()}
+            className="bg-orange-600 hover:bg-orange-500 disabled:opacity-40 text-white font-semibold px-6 py-3 rounded-lg transition-colors whitespace-nowrap">
+            {loading ? '...' : 'Track →'}
+          </button>
+        </div>
       </form>
 
       {error && (
@@ -111,10 +122,8 @@ function TrackContent() {
       )}
 
       <div className="mt-10 text-center">
-        <p className="text-stone-500 text-sm">
-          Have an account?{' '}
-          <Link href="/login" className="text-orange-500 hover:text-orange-400">Log in</Link>
-          {' '}to see all your orders in one place.
+        <p className="text-stone-600 text-sm">
+          Your order number was included in your confirmation email.
         </p>
       </div>
     </div>

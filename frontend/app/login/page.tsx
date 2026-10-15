@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -5,22 +6,28 @@ import Link from 'next/link';
 import { login, saveToken } from '../../lib/api';
 import Navbar from '../components/Navbar';
 
+function getNextPath() {
+  const requestedPath = new URLSearchParams(window.location.search).get('next');
+  return requestedPath?.startsWith('/') && !requestedPath.startsWith('//') ? requestedPath : '/account';
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const data = await login(email, password);
+      const data = await login(email, password, rememberMe);
       saveToken(data.token);
-      router.push('/account');
-    } catch (err) {
+      router.push(getNextPath());
+    } catch (err: any) {
       setError(err.message || 'Login failed. Check your email and password.');
       setLoading(false);
     }
@@ -49,6 +56,15 @@ export default function LoginPage() {
                   placeholder="••••••••" />
               </div>
               {error && <p className="text-red-400 text-sm">{error}</p>}
+              <label className="flex items-center gap-3 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={e => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-stone-600 bg-stone-800 accent-orange-500 cursor-pointer"
+                />
+                <span className="text-stone-400 text-sm">Remember me for 30 days</span>
+              </label>
               <button type="submit" disabled={loading}
                 className="bg-orange-600 hover:bg-orange-500 disabled:opacity-40 text-white font-semibold py-3 rounded-lg transition-colors mt-2">
                 {loading ? 'Logging in...' : 'Log In'}
@@ -57,18 +73,17 @@ export default function LoginPage() {
 
             <p className="text-stone-500 text-sm text-center mt-6">
               Don't have an account?{' '}
-              <Link href="/register" className="text-orange-500 hover:text-orange-400">Sign up</Link>
+              <Link
+                href="/register"
+                onClick={event => {
+                  event.preventDefault();
+                  router.push(`/register?next=${encodeURIComponent(getNextPath())}`);
+                }}
+                className="text-orange-500 hover:text-orange-400"
+              >Sign up</Link>
             </p>
           </div>
 
-          {/* Guest option */}
-          <div className="bg-stone-900 border border-stone-800 rounded-xl p-5 text-center">
-            <p className="text-stone-400 text-sm mb-3">Just checking on an order?</p>
-            <Link href="/track"
-              className="border border-stone-700 hover:border-orange-500 text-stone-300 hover:text-white text-sm px-5 py-2 rounded-lg transition-colors">
-              Track Order by Number →
-            </Link>
-          </div>
         </div>
       </div>
     </main>
