@@ -41,8 +41,13 @@ function formatStripeShippingAddress(shippingDetails) {
   ].filter(Boolean).join(', ');
 }
 
+function getStripeShippingDetails(session) {
+  return session?.shipping_details || session?.collected_information?.shipping_details || null;
+}
+
 module.exports = {
   isStripeTaxEnabled,
   buildStripeTaxSessionParams,
   formatStripeShippingAddress,
+  getStripeShippingDetails,
 };

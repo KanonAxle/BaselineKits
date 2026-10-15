@@ -4,6 +4,7 @@ const {
   isStripeTaxEnabled,
   buildStripeTaxSessionParams,
   formatStripeShippingAddress,
+  getStripeShippingDetails,
 } = require('../utils/stripeTax');
 
 test('Stripe Tax is enabled only by the explicit true setting', () => {
@@ -57,4 +58,15 @@ test('incomplete or non-U.S. Stripe shipping addresses are rejected', () => {
   assert.throws(() => formatStripeShippingAddress({
     address: { line1: '123 Main St', country: 'CA' },
   }), /complete U\.S\. shipping address/);
+});
+
+test('Stripe shipping details support both Checkout Session address fields', () => {
+  const legacyDetails = { address: { country: 'US' } };
+  const collectedDetails = { address: { country: 'US' } };
+
+  assert.equal(getStripeShippingDetails({ shipping_details: legacyDetails }), legacyDetails);
+  assert.equal(getStripeShippingDetails({
+    collected_information: { shipping_details: collectedDetails },
+  }), collectedDetails);
+  assert.equal(getStripeShippingDetails({}), null);
 });

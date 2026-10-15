@@ -315,13 +315,25 @@ router.get('/orders', async (req, res) => {
 
     const { data: orders, error } = await supabase
       .from('orders')
-      .select('id, kit_id, status, total_cents, created_at, shipped_at, kits(name)')
+      .select('id, kit_id, status, total_cents, created_at, shipped_at, customizations, kits(name), order_items(quantity, product_name, unit_price_cents, selected_options, products(id, name, price_cents))')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) return res.status(500).json({ error: 'Failed to fetch orders' });
 
-    res.status(200).json(orders.map(o => ({ ...o, kit_name: o.kits?.name || 'Custom Kit' })));
+    res.status(200).json(orders.map(order => ({
+      ...order,
+      kit_name: order.kits?.name || 'Custom Kit',
+      items: (order.order_items || []).map(item => ({
+        product_id: item.products?.id,
+        name: item.product_name || item.products?.name || 'Product',
+        quantity: item.quantity,
+        price_cents: item.unit_price_cents ?? item.products?.price_cents,
+        selected_options: item.selected_options || null,
+      })),
+      order_items: undefined,
+      kits: undefined,
+    })));
 
   } catch (error) {
     console.error('Get orders error:', error);

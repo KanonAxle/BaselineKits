@@ -8,6 +8,7 @@ const {
   isStripeTaxEnabled,
   buildStripeTaxSessionParams,
   formatStripeShippingAddress,
+  getStripeShippingDetails,
 } = require('../utils/stripeTax');
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
@@ -265,6 +266,7 @@ router.post('/webhooks/stripe', express.raw({ type: 'application/json' }), async
       stripe_tax_cents: taxCents,
       stripe_shipping_cents: shippingCents,
       stripe_subtotal_cents: session.amount_subtotal,
+      stripe_paid_total_cents: session.amount_total,
     };
     const orderUpdate = {
       status: 'paid',
@@ -273,10 +275,14 @@ router.post('/webhooks/stripe', express.raw({ type: 'application/json' }), async
     };
     if (session.metadata.stripe_tax_enabled === 'true') {
       try {
-        orderUpdate.shipping_address = formatStripeShippingAddress(session.shipping_details);
+        const shippingDetails = getStripeShippingDetails(session);
+        if (shippingDetails) {
+          orderUpdate.shipping_address = formatStripeShippingAddress(shippingDetails);
+        } else {
+          console.warn('Stripe checkout session omitted shipping details; retaining the address supplied before checkout:', session.id);
+        }
       } catch (error) {
-        console.error('Stripe checkout session has an invalid shipping address:', session.id, error.message);
-        return res.status(400).json({ error: 'Stripe session has an invalid shipping address' });
+        console.error('Stripe checkout session returned an invalid shipping address; retaining the address supplied before checkout:', session.id, error.message);
       }
     }
 
