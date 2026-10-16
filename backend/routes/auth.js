@@ -41,6 +41,18 @@ function buildUserAddressPayload({ billing_address, mailing_address } = {}) {
   return payload;
 }
 
+function normalizeEmail(email) {
+  return typeof email === 'string' ? email.trim().toLowerCase() : '';
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function escapeIlikePattern(value) {
+  return value.replace(/[\\%_]/g, '\\$&');
+}
+
 // HELPER: Generate a JWT login token for a user
 function generateToken(userId, rememberMe = false) {
   return jwt.sign(
@@ -73,22 +85,23 @@ function verifyToken(req) {
 router.post('/auth/register', async (req, res) => {
   try {
     const {
-      email,
+      email: submittedEmail,
       password,
       name,
       phone_number,
       billing_address,
       mailing_address,
     } = req.body;
+    const email = normalizeEmail(submittedEmail);
 
-    if (!email || !password || !name) {
+    if (!isValidEmail(email) || !password || !name) {
       return res.status(400).json({ error: 'Email, password, and name are required' });
     }
 
     const { data: existingUser, error: existingError } = await supabase
       .from('users')
       .select('id')
-      .eq('email', email)
+      .ilike('email', escapeIlikePattern(email))
       .maybeSingle();
 
     if (existingError) {
@@ -139,16 +152,17 @@ router.post('/auth/register', async (req, res) => {
 // -------------------------------------------------------
 router.post('/auth/login', async (req, res) => {
   try {
-    const { email, password, rememberMe } = req.body;
+    const { password, rememberMe } = req.body;
+    const email = normalizeEmail(req.body.email);
 
-    if (!email || !password) {
+    if (!isValidEmail(email) || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
     const { data: user, error: selectError } = await supabase
       .from('users')
       .select('*')
-      .eq('email', email)
+      .ilike('email', escapeIlikePattern(email))
       .maybeSingle();
 
     if (selectError || !user) {
@@ -222,6 +236,8 @@ router.put('/auth/profile', async (req, res) => {
       billing_address,
       mailing_address,
       password,
+      email: submittedEmail,
+      current_password,
     } = req.body;
 
     const updatePayload = {
@@ -229,6 +245,55 @@ router.put('/auth/profile', async (req, res) => {
       ...(phone_number !== undefined ? { phone_number } : {}),
       ...buildUserAddressPayload({ billing_address, mailing_address }),
     };
+
+    if (submittedEmail !== undefined) {
+      const email = normalizeEmail(submittedEmail);
+      if (!isValidEmail(email)) {
+        return res.status(400).json({ error: 'Enter a valid email address.' });
+      }
+
+      const { data: currentUser, error: currentUserError } = await supabase
+        .from('users')
+        .select('id, email, password_hash')
+        .eq('id', userId)
+        .single();
+
+      if (currentUserError) {
+        console.error('Profile email lookup failed:', currentUserError);
+        return res.status(500).json({ error: 'Unable to verify account credentials.' });
+      }
+      if (!currentUser) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      if (email !== normalizeEmail(currentUser.email)) {
+        if (typeof current_password !== 'string' || !current_password) {
+          return res.status(400).json({ error: 'Enter your current password to change your email.' });
+        }
+
+        const passwordMatch = await bcryptjs.compare(current_password, currentUser.password_hash);
+        if (!passwordMatch) {
+          return res.status(403).json({ error: 'Current password is incorrect.' });
+        }
+
+        const { data: existingUser, error: existingError } = await supabase
+          .from('users')
+          .select('id')
+          .ilike('email', escapeIlikePattern(email))
+          .neq('id', userId)
+          .maybeSingle();
+
+        if (existingError) {
+          console.error('Email availability lookup failed:', existingError);
+          return res.status(500).json({ error: 'Unable to validate email address.' });
+        }
+        if (existingUser) {
+          return res.status(409).json({ error: 'That email address is already in use.' });
+        }
+
+        updatePayload.email = email;
+      }
+    }
 
     if (password) {
       updatePayload.password_hash = await bcryptjs.hash(password, 10);
@@ -247,6 +312,9 @@ router.put('/auth/profile', async (req, res) => {
 
     if (updateError || !updatedUser) {
       console.error('Profile update error:', updateError);
+      if (updateError?.code === '23505' && updatePayload.email) {
+        return res.status(409).json({ error: 'That email address is already in use.' });
+      }
       return res.status(500).json({ error: 'Failed to update profile' });
     }
 
@@ -260,3 +328,5 @@ router.put('/auth/profile', async (req, res) => {
 module.exports = router;
 module.exports.normalizeAddressInput = normalizeAddressInput;
 module.exports.buildUserAddressPayload = buildUserAddressPayload;
+module.exports.normalizeEmail = normalizeEmail;
+module.exports.isValidEmail = isValidEmail;

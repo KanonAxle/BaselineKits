@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getAdminToken, getKits, adminCreatePhoneOrder, lookupAddress } from '../../../../lib/api';
+import { getAdminToken, getKits, adminCreatePhoneOrder } from '../../../../lib/api';
+import GoogleAddressAutocomplete from '../../../components/GoogleAddressAutocomplete';
 
 const emptyForm = {
   customer_name: '',
@@ -21,8 +22,6 @@ export default function NewPhoneOrderPage() {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState('');
   const [result, setResult] = useState(null); // { order_id, payment_url, total_cents, expires_at }
-  const [addressSuggestions, setAddressSuggestions] = useState([]);
-  const [addressLookupLoading, setAddressLookupLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -30,78 +29,8 @@ export default function NewPhoneOrderPage() {
     getKits().then(setKits).catch(() => {});
   }, [router]);
 
-  function normalizeAddressText(value) {
-    return value ? value.replace(/\s+/g, ' ').trim() : '';
-  }
-
-  function buildAddressSuggestionsFromText(value) {
-    const text = normalizeAddressText(value);
-    if (!text) return [];
-
-    const lineParts = text.split(/[\n,]+/).map(part => part.trim()).filter(Boolean);
-    if (!lineParts.length) return [];
-
-    const street = lineParts[0];
-    const zipMatch = text.match(/(\d{5})(?:-\d{4})?$/);
-    const stateMatch = text.match(/\b([A-Z]{2})\b/);
-    const cityMatch = lineParts.length > 1 ? lineParts[lineParts.length - 2] : '';
-
-    const candidates = [
-      text,
-      street && cityMatch && stateMatch ? `${street}, ${cityMatch}, ${stateMatch[1]} ${zipMatch ? zipMatch[1] : ''}`.trim() : null,
-      street && stateMatch && zipMatch ? `${street}, ${stateMatch[1]} ${zipMatch[1]}` : null,
-    ].filter(Boolean);
-
-    return [...new Set(candidates)].slice(0, 3);
-  }
-
-  useEffect(() => {
-    const fallbackSuggestions = buildAddressSuggestionsFromText(form.shipping_address);
-    const text = normalizeAddressText(form.shipping_address);
-    if (!text) {
-      setAddressSuggestions([]);
-      return;
-    }
-
-    const parts = text.split(/[\n,]+/).map(part => part.trim()).filter(Boolean);
-    const street = parts[0] || '';
-    const zipMatch = text.match(/(\d{5})(?:-\d{4})?$/);
-    const stateMatch = text.match(/\b([A-Z]{2})\b/);
-    const cityMatch = parts.length > 1 ? parts[parts.length - 2] : '';
-
-    if (!street || !cityMatch || !stateMatch || !zipMatch) {
-      setAddressSuggestions(fallbackSuggestions);
-      return;
-    }
-
-    let active = true;
-    const runLookup = async () => {
-      setAddressLookupLoading(true);
-      try {
-        const data = await lookupAddress({ street, city: cityMatch, state: stateMatch[1], zip: zipMatch[1] });
-        const suggestions = (data?.suggestions || []).map((item) => {
-          const parts = [item.street, item.street2, `${item.city}, ${item.state} ${item.zip}${item.zip_plus_four ? `-${item.zip_plus_four}` : ''}`].filter(Boolean);
-          return parts.join(', ');
-        });
-
-        if (active) setAddressSuggestions(suggestions.length ? suggestions : fallbackSuggestions);
-      } catch {
-        if (active) setAddressSuggestions(fallbackSuggestions);
-      } finally {
-        if (active) setAddressLookupLoading(false);
-      }
-    };
-
-    runLookup();
-    return () => { active = false; };
-  }, [form.shipping_address]);
-
   function set(field, value) {
     setForm(f => ({ ...f, [field]: value }));
-  }
-
-  function applyAddressSuggestion(suggestion) {
-    set('shipping_address', suggestion);
   }
 
   async function handleSubmit(e) {
@@ -301,35 +230,12 @@ export default function NewPhoneOrderPage() {
             <div className="flex flex-col gap-4">
               <div>
                 <label className="label-tactical text-stone-500 mb-1 block">Shipping Address *</label>
-                <textarea
+                <GoogleAddressAutocomplete
                   value={form.shipping_address}
-                  onChange={e => set('shipping_address', e.target.value)}
-                  required
-                  rows={3}
-                  placeholder={"123 Main St\nSpringfield, IL 62701"}
-                  className="w-full bg-stone-800 border border-stone-700 rounded px-4 py-3 text-white placeholder-stone-600 focus:outline-none focus:border-orange-500 resize-none"
+                  onChange={value => set('shipping_address', value)}
+                  onAddressSelected={selected => set('shipping_address', selected.formatted_address)}
+                  className="w-full bg-stone-800 border border-stone-700 rounded px-4 py-3 text-white placeholder-stone-600 focus:outline-none focus:border-orange-500"
                 />
-                {addressSuggestions.length > 0 && (
-                  <div className="mt-3 rounded border border-orange-500/30 bg-stone-950/60 p-3">
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-orange-400 mb-2">Suggested addresses</p>
-                    <div className="flex flex-col gap-2">
-                      {addressLookupLoading ? (
-                        <p className="text-xs text-stone-400">Checking address…</p>
-                      ) : (
-                        addressSuggestions.map((suggestion) => (
-                          <button
-                            key={suggestion}
-                            type="button"
-                            onClick={() => applyAddressSuggestion(suggestion)}
-                            className="text-left rounded border border-stone-700 bg-stone-900 px-3 py-2 text-sm text-stone-200 hover:border-orange-500 hover:text-white transition-colors"
-                          >
-                            {suggestion}
-                          </button>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
               <div>
                 <label className="label-tactical text-stone-500 mb-1 block">Notes <span className="text-stone-600 normal-case font-normal">(optional — internal only)</span></label>

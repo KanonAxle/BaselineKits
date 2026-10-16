@@ -22,6 +22,8 @@ function collectSizable(items: any[]): any[] {
   return result;
 }
 
+type KitSizingCheck = 'checking' | 'required' | 'not-required' | 'error';
+
 export default function CartPage() {
   const router = useRouter();
   const { items, removeItem, updateQuantity, clearCart, totalCents } = useCart();
@@ -32,6 +34,8 @@ export default function CartPage() {
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [zip, setZip] = useState('');
+  const [savedAddress, setSavedAddress] = useState<{ street: string; street2: string; city: string; state: string; zip: string } | null>(null);
+  const [useAccountAddress, setUseAccountAddress] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,6 +43,8 @@ export default function CartPage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [error, setError] = useState('');
+  const [kitSizingChecks, setKitSizingChecks] = useState<Record<string, KitSizingCheck>>({});
+  const [kitSizingRefresh, setKitSizingRefresh] = useState(0);
 
   function variantSummary(item: any) {
     const parts: string[] = [];
@@ -56,16 +62,65 @@ export default function CartPage() {
       .then(user => {
         setEmail(user.email || '');
         setPhone(user.phone_number || '');
+        const mailingAddress = user.mailing_address || {};
+        const nextAddress = {
+          street: mailingAddress.street || '',
+          street2: mailingAddress.street2 || '',
+          city: mailingAddress.city || '',
+          state: mailingAddress.state || '',
+          zip: mailingAddress.zip || '',
+        };
+        const hasUsableAddress = Boolean(
+          nextAddress.street.trim() &&
+          nextAddress.city.trim() &&
+          nextAddress.state.trim() &&
+          nextAddress.zip.trim()
+        );
+        setSavedAddress(hasUsableAddress ? nextAddress : null);
+        setUseAccountAddress(hasUsableAddress);
+        if (hasUsableAddress) {
+          setAddress(nextAddress.street);
+          setAddress2(nextAddress.street2);
+          setCity(nextAddress.city);
+          setState(nextAddress.state);
+          setZip(nextAddress.zip);
+        }
       })
       .catch(() => router.replace('/login?next=%2Fcart'))
       .finally(() => setAccountLoading(false));
   }, [router]);
+
+  useEffect(() => {
+    let active = true;
+    const kits = items
+      .map((item, index) => ({ item, index }))
+      .filter(({ item }) => item.type === 'kit');
+
+    Promise.all(kits.map(async ({ item }) => {
+      try {
+        const kitData = await getKit(item.id);
+        if (active) {
+          setKitSizingChecks(current => ({
+            ...current,
+            [item.id]: collectSizable(kitData.items || []).length > 0 ? 'required' : 'not-required',
+          }));
+        }
+      } catch {
+        if (active) {
+          setKitSizingChecks(current => ({ ...current, [item.id]: 'error' }));
+        }
+      }
+    }));
+
+    return () => { active = false; };
+  }, [items, kitSizingRefresh]);
 
   function buildShippingAddress() {
     return [address, address2, city, state, zip].filter(Boolean).join(', ');
   }
 
   async function handleCheckout() {
+    setError('');
     const shippingAddress = buildShippingAddress();
     if (!address.trim()) { setError('Please enter your shipping address.'); return; }
     if (!city.trim()) { setError('Please enter your city.'); return; }
@@ -74,23 +129,24 @@ export default function CartPage() {
     if (!getToken()) { router.push('/login?next=%2Fcart'); return; }
     if (!termsAccepted) { setError('Please accept the Terms of Use to continue.'); return; }
 
-    // Intercept if any kit needs sizing
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      if (item.type === 'kit' && !item.sizingComplete) {
-        try {
-          const kitData = await getKit(item.id);
-          const sizableItems = collectSizable(kitData.items || []);
-          if (sizableItems.length > 0) {
-            router.push(`/sizing?kitIndex=${i}`);
-            return;
-          }
-        } catch { /* can't check sizing — proceed */ }
+      if (item.type !== 'kit') continue;
+      if (kitSizingChecks[item.id] === 'checking' || !kitSizingChecks[item.id]) {
+        setError('Please wait while we check whether your kits need sizing.');
+        return;
+      }
+      if (kitSizingChecks[item.id] === 'error') {
+        setError('We could not check sizing requirements for a kit. Please retry the check before checkout.');
+        return;
+      }
+      if (kitSizingChecks[item.id] === 'required' && !item.sizingComplete) {
+        router.push(`/sizing?kitIndex=${i}`);
+        return;
       }
     }
 
     setLoading(true);
-    setError('');
     try {
       const order = await createCartOrder(items, shippingAddress, 'US', phone || null, termsAccepted, marketingOptIn);
       const checkout = await createCheckout(
@@ -163,21 +219,31 @@ export default function CartPage() {
                   {variantSummary(item) && (
                     <span className="text-stone-400 text-xs">{variantSummary(item)}</span>
                   )}
-                  {item.type === 'kit' && !item.sizingComplete && (
+                  {item.type === 'kit' && kitSizingChecks[item.id] === 'required' && !item.sizingComplete && (
                     <button
+                      type="button"
                       onClick={() => router.push(`/sizing?kitIndex=${index}`)}
                       className="text-xs px-2 py-0.5 rounded border border-amber-500/50 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors"
                     >
                       Sizing needed →
                     </button>
                   )}
-                  {item.type === 'kit' && item.sizingComplete && (
+                  {item.type === 'kit' && kitSizingChecks[item.id] === 'required' && item.sizingComplete && (
                     <button
+                      type="button"
                       onClick={() => router.push(`/sizing?kitIndex=${index}`)}
                       className="text-xs px-2 py-0.5 rounded border border-stone-700 text-stone-500 hover:border-stone-500 transition-colors"
                     >
                       Edit sizing
                     </button>
+                  )}
+                  {item.type === 'kit' && kitSizingChecks[item.id] === 'error' && (
+                    <span className="text-xs text-amber-400">
+                      Could not check sizing.{' '}
+                      <button type="button" onClick={() => setKitSizingRefresh(current => current + 1)} className="underline hover:text-amber-300">
+                        Retry
+                      </button>
+                    </span>
                   )}
                 </div>
                 <div className="text-stone-500 text-xs mt-1">{formatPrice(item.price_cents)} each</div>
@@ -220,62 +286,88 @@ export default function CartPage() {
         <div className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold">Shipping & Contact</h2>
-            <div className="flex items-center gap-3">
-              <span className="text-stone-600 text-xs">Have an account?</span>
-              <Link href="/login" className="text-orange-400 hover:text-orange-300 text-xs underline transition-colors">Log in</Link>
-            </div>
           </div>
           <div className="flex flex-col gap-3">
             <p className="text-xs text-stone-400">
               U.S. shipping only. Shipping is $14.95 on orders under $300 and free on orders of $300 or more.
               Once Stripe Tax is configured, Stripe Checkout will ask you to confirm your shipping address and show any applicable sales tax before payment.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <GoogleAddressAutocomplete
-                value={address}
-                onChange={setAddress}
-                onAddressSelected={selected => {
-                  setAddress(selected.street);
-                  setAddress2(selected.street2 || '');
-                  setCity(selected.city);
-                  setState(selected.state);
-                  setZip(selected.zip);
+            <label className="flex items-center gap-3 text-sm text-stone-300">
+              <input
+                type="checkbox"
+                checked={useAccountAddress}
+                disabled={!savedAddress}
+                onChange={event => {
+                  const checked = event.target.checked;
+                  setUseAccountAddress(checked);
+                  if (checked && savedAddress) {
+                    setAddress(savedAddress.street);
+                    setAddress2(savedAddress.street2);
+                    setCity(savedAddress.city);
+                    setState(savedAddress.state);
+                    setZip(savedAddress.zip);
+                  }
                 }}
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
+                className="h-4 w-4 accent-orange-500 disabled:opacity-50"
               />
-              <input
-                type="text"
-                value={address2}
-                onChange={e => setAddress2(e.target.value)}
-                placeholder="Apartment, suite, unit, etc."
-                autoComplete="address-line2"
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500 md:col-span-2"
-              />
-              <input
-                type="text"
-                value={city}
-                onChange={e => setCity(e.target.value)}
-                placeholder="City"
-                autoComplete="address-level2"
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
-              />
-              <input
-                type="text"
-                value={state}
-                onChange={e => setState(e.target.value)}
-                placeholder="State"
-                autoComplete="address-level1"
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
-              />
-              <input
-                type="text"
-                value={zip}
-                onChange={e => setZip(e.target.value)}
-                placeholder="ZIP code"
-                autoComplete="postal-code"
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500 md:col-span-2"
-              />
-            </div>
+              <span>Use my saved mailing address{accountLoading ? ' (loading…)': ''}</span>
+            </label>
+            {!accountLoading && !savedAddress && (
+              <p className="text-xs text-stone-500">No complete mailing address is saved to your account yet. Enter a shipping address below.</p>
+            )}
+            {useAccountAddress && savedAddress ? (
+              <div className="rounded-lg border border-stone-800 bg-stone-950/50 px-4 py-3 text-sm text-stone-300">
+                <p>{[savedAddress.street, savedAddress.street2, savedAddress.city, savedAddress.state, savedAddress.zip].filter(Boolean).join(', ')}</p>
+                <Link href="/account" className="mt-2 inline-block text-xs text-orange-400 underline">Edit saved address</Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <GoogleAddressAutocomplete
+                  value={address}
+                  onChange={setAddress}
+                  onAddressSelected={selected => {
+                    setAddress(selected.street);
+                    setAddress2(selected.street2 || '');
+                    setCity(selected.city);
+                    setState(selected.state);
+                    setZip(selected.zip);
+                  }}
+                  className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
+                />
+                <input
+                  type="text"
+                  value={address2}
+                  onChange={e => setAddress2(e.target.value)}
+                  placeholder="Apartment, suite, unit, etc."
+                  autoComplete="address-line2"
+                  className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500 md:col-span-2"
+                />
+                <input
+                  type="text"
+                  value={city}
+                  onChange={e => setCity(e.target.value)}
+                  placeholder="City"
+                  autoComplete="address-level2"
+                  className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
+                />
+                <input
+                  type="text"
+                  value={state}
+                  onChange={e => setState(e.target.value)}
+                  placeholder="State"
+                  autoComplete="address-level1"
+                  className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
+                />
+                <input
+                  type="text"
+                  value={zip}
+                  onChange={e => setZip(e.target.value)}
+                  placeholder="ZIP code"
+                  autoComplete="postal-code"
+                  className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500 md:col-span-2"
+                />
+              </div>
+            )}
             <div className="rounded-lg border border-stone-800 bg-stone-950/50 px-4 py-3 text-sm text-stone-400">
               <span className="text-stone-500">Account email for order updates: </span>
               <span className="text-white">{accountLoading ? 'Loading account…' : email}</span>

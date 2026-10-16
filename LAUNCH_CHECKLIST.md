@@ -12,7 +12,7 @@ This project has a Next.js frontend, an Express API, Supabase for database and i
 - Import the repository into Vercel and keep the project root at the repository root (`.`), where `vercel.json` lives. The Services configuration builds `frontend` as the public Next.js storefront and `backend` as the Express API.
 - The public `/api/*` rewrite routes requests to the API service; all other paths route to the storefront. The frontend defaults to the same-origin `/api` path.
 - Configure `ADMIN_SECRET`, `JWT_SECRET`, `SUPABASE_URL`, `SUPABASE_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `FRONTEND_URL` in Vercel's server-side environment variables. Include the Vercel project URL for initial testing, then both domain origins; for example `FRONTEND_URL=https://<project>.vercel.app,https://baselinekits.com,https://www.baselinekits.com`.
-- Set optional server-side address lookup credentials such as `GOOGLE_MAPS_API_KEY` only if those services are enabled. Do not commit `.env` files or expose server-side secrets as `NEXT_PUBLIC_` variables.
+- Set `GOOGLE_MAPS_API_KEY` for Google address autocomplete. Do not commit `.env` files or expose server-side secrets as `NEXT_PUBLIC_` variables.
 - The canonical domain is `https://www.baselinekits.com`; `https://baselinekits.com` redirects to it. Both storefront and API health have been verified.
 - Use `vercel dev` to run and test all services locally with Vercel's routing configuration.
 
@@ -32,7 +32,6 @@ Backend:
 - Set strong, unique `JWT_SECRET` and `ADMIN_SECRET` values.
 - Start with Stripe test-mode `STRIPE_SECRET_KEY` and test webhook signing secret. Switch both to live-mode values only after the complete test-mode flow passes.
 - Set `GOOGLE_MAPS_API_KEY` if Google address autocomplete is enabled. Restrict the key to the required API and usage; keep it server-side.
-- Set Smarty credentials only if Smarty address verification is enabled.
 
 Keep staging and production credentials separate. The frontend uses the same-origin `/api` rewrite, and backend allowed origins must match the deployed HTTPS storefront origins exactly.
 

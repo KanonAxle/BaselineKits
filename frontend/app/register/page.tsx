@@ -1,10 +1,11 @@
 // @ts-nocheck
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { lookupAddress, register, saveToken } from '../../lib/api';
+import { register, saveToken } from '../../lib/api';
 import Navbar from '../components/Navbar';
+import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
 
 const emptyAddress = () => ({ street: '', street2: '', city: '', state: '', zip: '' });
 
@@ -22,76 +23,12 @@ export default function RegisterPage() {
   const [billingAddress, setBillingAddress] = useState(emptyAddress());
   const [mailingAddress, setMailingAddress] = useState(emptyAddress());
   const [sameAsBilling, setSameAsBilling] = useState(true);
-  const [billingSuggestions, setBillingSuggestions] = useState([]);
-  const [mailingSuggestions, setMailingSuggestions] = useState([]);
-  const [billingStatus, setBillingStatus] = useState('idle');
-  const [mailingStatus, setMailingStatus] = useState('idle');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   function updateAddressField(addressKey, field, value) {
     const setter = addressKey === 'billing' ? setBillingAddress : setMailingAddress;
     setter((current) => ({ ...current, [field]: value }));
   }
-
-  function applySuggestion(addressKey, suggestion) {
-    const segments = String(suggestion).split(',').map(part => part.trim()).filter(Boolean);
-    const nextAddress = { ...emptyAddress() };
-    if (segments[0]) nextAddress.street = segments[0];
-    if (segments[1]) nextAddress.city = segments[1].replace(/\s+[A-Z]{2}\s+\d{5}.*$/i, '').trim();
-    if (segments[2]) {
-      const trailing = segments[2].trim();
-      const stateMatch = trailing.match(/^([A-Za-z]{2})\b/);
-      const zipMatch = trailing.match(/(\d{5})(?:-\d{4})?$/);
-      nextAddress.state = stateMatch ? stateMatch[1].toUpperCase() : trailing.split(' ')[0] || '';
-      nextAddress.zip = zipMatch ? zipMatch[1] : (trailing.split(' ').slice(1).join(' ') || '');
-    }
-    if (addressKey === 'billing') setBillingAddress(nextAddress);
-    else setMailingAddress(nextAddress);
-  }
-
-  useEffect(() => {
-    if (sameAsBilling) {
-      setMailingAddress({ ...billingAddress });
-    }
-  }, [sameAsBilling, billingAddress]);
-
-  useEffect(() => {
-    const validateAddress = async (addressKey, address, setStatus, setSuggestions) => {
-      const hasStreet = String(address.street || '').trim().length >= 3;
-      const hasCity = String(address.city || '').trim().length >= 2;
-      const hasState = String(address.state || '').trim().length >= 2;
-      const hasZip = String(address.zip || '').trim().length >= 3;
-      if (!hasStreet || !hasCity || !hasState || !hasZip) {
-        setStatus('incomplete');
-        setSuggestions([]);
-        return;
-      }
-
-      try {
-        setStatus('checking');
-        const data = await lookupAddress({
-          street: address.street,
-          city: address.city,
-          state: address.state,
-          zip: address.zip,
-        });
-        const suggestions = (data?.suggestions || []).map((item) => [
-          item.street,
-          item.street2,
-          `${item.city}, ${item.state} ${item.zip}${item.zip_plus_four ? `-${item.zip_plus_four}` : ''}`
-        ].filter(Boolean).join(', '));
-
-        setSuggestions(suggestions);
-        setStatus(suggestions.length ? 'success' : 'empty');
-      } catch {
-        setSuggestions([]);
-        setStatus('fallback');
-      }
-    };
-
-    validateAddress('billing', billingAddress, setBillingStatus, setBillingSuggestions);
-    validateAddress('mailing', mailingAddress, setMailingStatus, setMailingSuggestions);
-  }, [billingAddress, mailingAddress]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -105,13 +42,14 @@ export default function RegisterPage() {
     }
 
     try {
+      const addressForMailing = sameAsBilling ? billingAddress : mailingAddress;
       const data = await register(
         email.trim(),
         password,
         name.trim(),
         phoneNumber.trim(),
         { ...billingAddress, street2: billingAddress.street2 || '' },
-        { ...mailingAddress, street2: mailingAddress.street2 || '' }
+        { ...addressForMailing, street2: addressForMailing.street2 || '' }
       );
       saveToken(data.token);
       router.push(getNextPath());
@@ -163,27 +101,25 @@ export default function RegisterPage() {
               <div className="border border-stone-800 rounded-xl p-4 bg-stone-950/50">
                 <h2 className="text-lg font-semibold mb-4">Billing Address</h2>
                 <div className="grid gap-3">
-                  <input value={billingAddress.street} onChange={e => updateAddressField('billing', 'street', e.target.value)} placeholder="Street address" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
+                  <GoogleAddressAutocomplete
+                    value={billingAddress.street}
+                    onChange={street => updateAddressField('billing', 'street', street)}
+                    onAddressSelected={selected => setBillingAddress(current => ({
+                      ...current,
+                      street: selected.street,
+                      street2: selected.street2 || '',
+                      city: selected.city,
+                      state: selected.state,
+                      zip: selected.zip,
+                    }))}
+                    className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
+                  />
                   <input value={billingAddress.street2} onChange={e => updateAddressField('billing', 'street2', e.target.value)} placeholder="Apt / Suite / Unit (optional)" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
                   <div className="grid md:grid-cols-3 gap-3">
                     <input value={billingAddress.city} onChange={e => updateAddressField('billing', 'city', e.target.value)} placeholder="City" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
                     <input value={billingAddress.state} onChange={e => updateAddressField('billing', 'state', e.target.value)} placeholder="State" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
                     <input value={billingAddress.zip} onChange={e => updateAddressField('billing', 'zip', e.target.value)} placeholder="ZIP" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
                   </div>
-                  {billingStatus !== 'idle' && billingStatus !== 'incomplete' && (
-                    <div className="text-xs text-stone-300">
-                      {billingStatus === 'checking' ? 'Validating billing address with Smarty…' : billingStatus === 'success' ? 'Smarty validated the billing address.' : billingStatus === 'empty' ? 'Smarty found no match for this billing address.' : 'Smarty validation unavailable for this billing address.'}
-                    </div>
-                  )}
-                  {billingSuggestions.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {billingSuggestions.slice(0, 3).map((item, index) => (
-                        <button key={`${item}-${index}`} type="button" onClick={() => applySuggestion('billing', item)} className="text-xs border border-stone-700 bg-stone-800 hover:border-orange-500 text-stone-300 px-2 py-1 rounded">
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -194,7 +130,12 @@ export default function RegisterPage() {
                     <input
                       type="checkbox"
                       checked={sameAsBilling}
-                      onChange={e => setSameAsBilling(e.target.checked)}
+                      onChange={e => {
+                        if (sameAsBilling && !e.target.checked) {
+                          setMailingAddress({ ...billingAddress });
+                        }
+                        setSameAsBilling(e.target.checked);
+                      }}
                       className="h-4 w-4 accent-orange-500"
                     />
                     Same as billing
@@ -203,27 +144,25 @@ export default function RegisterPage() {
 
                 {!sameAsBilling && (
                   <div className="grid gap-3">
-                    <input value={mailingAddress.street} onChange={e => updateAddressField('mailing', 'street', e.target.value)} placeholder="Street address" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
+                    <GoogleAddressAutocomplete
+                      value={mailingAddress.street}
+                      onChange={street => updateAddressField('mailing', 'street', street)}
+                      onAddressSelected={selected => setMailingAddress(current => ({
+                        ...current,
+                        street: selected.street,
+                        street2: selected.street2 || '',
+                        city: selected.city,
+                        state: selected.state,
+                        zip: selected.zip,
+                      }))}
+                      className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
+                    />
                     <input value={mailingAddress.street2} onChange={e => updateAddressField('mailing', 'street2', e.target.value)} placeholder="Apt / Suite / Unit (optional)" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
                     <div className="grid md:grid-cols-3 gap-3">
                       <input value={mailingAddress.city} onChange={e => updateAddressField('mailing', 'city', e.target.value)} placeholder="City" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
                       <input value={mailingAddress.state} onChange={e => updateAddressField('mailing', 'state', e.target.value)} placeholder="State" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
                       <input value={mailingAddress.zip} onChange={e => updateAddressField('mailing', 'zip', e.target.value)} placeholder="ZIP" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
                     </div>
-                    {mailingStatus !== 'idle' && mailingStatus !== 'incomplete' && (
-                      <div className="text-xs text-stone-300">
-                        {mailingStatus === 'checking' ? 'Validating mailing address with Smarty…' : mailingStatus === 'success' ? 'Smarty validated the mailing address.' : mailingStatus === 'empty' ? 'Smarty found no match for this mailing address.' : 'Smarty validation unavailable for this mailing address.'}
-                      </div>
-                    )}
-                    {mailingSuggestions.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        {mailingSuggestions.slice(0, 3).map((item, index) => (
-                          <button key={`${item}-${index}`} type="button" onClick={() => applySuggestion('mailing', item)} className="text-xs border border-stone-700 bg-stone-800 hover:border-orange-500 text-stone-300 px-2 py-1 rounded">
-                            {item}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 )}
                 {sameAsBilling && (

@@ -149,16 +149,6 @@ export const getOrders = () => apiFetch('/orders');
 export const lookupOrder = (order_id, email) =>
   apiFetch(`/orders/lookup/${order_id}${email ? `?email=${encodeURIComponent(email)}` : ''}`);
 
-export const lookupAddress = ({ street, city, state, zip }) => {
-  const params = new URLSearchParams({
-    street,
-    city,
-    state,
-    zip,
-  });
-  return apiFetch(`/address/lookup?${params.toString()}`);
-};
-
 export const autocompleteGoogleAddress = (input, sessionToken) =>
   apiFetch('/address/google/autocomplete', {
     method: 'POST',

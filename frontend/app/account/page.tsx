@@ -2,8 +2,9 @@
 import { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getMe, getOrders, getToken, lookupAddress, removeToken, updateProfile } from '../../lib/api';
+import { getMe, getOrders, getToken, removeToken, updateProfile } from '../../lib/api';
 import Navbar from '../components/Navbar';
+import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
 
 function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -55,14 +56,12 @@ export default function AccountPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [billingAddress, setBillingAddress] = useState<AddressFields>(emptyAddress());
   const [mailingAddress, setMailingAddress] = useState<AddressFields>(emptyAddress());
   const [sameAsBilling, setSameAsBilling] = useState(true);
-  const [billingSuggestions, setBillingSuggestions] = useState<string[]>([]);
-  const [mailingSuggestions, setMailingSuggestions] = useState<string[]>([]);
-  const [billingStatus, setBillingStatus] = useState('idle');
-  const [mailingStatus, setMailingStatus] = useState('idle');
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(() => new Set());
 
   function toggleOrderExpanded(orderId: string) {
@@ -85,21 +84,31 @@ export default function AccountPage() {
         const [userData, ordersData] = await Promise.all([getMe(), getOrders()]);
         setUser(userData);
         setName(userData.name || '');
+        setEmail(userData.email || '');
         setPhoneNumber(userData.phone_number || '');
-        setBillingAddress({
+        const nextBillingAddress = {
           street: userData.billing_address?.street || '',
           street2: userData.billing_address?.street2 || '',
           city: userData.billing_address?.city || '',
           state: userData.billing_address?.state || '',
           zip: userData.billing_address?.zip || '',
-        });
-        setMailingAddress({
+        };
+        const nextMailingAddress = {
           street: userData.mailing_address?.street || '',
           street2: userData.mailing_address?.street2 || '',
           city: userData.mailing_address?.city || '',
           state: userData.mailing_address?.state || '',
           zip: userData.mailing_address?.zip || '',
-        });
+        };
+        setBillingAddress(nextBillingAddress);
+        setMailingAddress(nextMailingAddress);
+        setSameAsBilling(
+          nextBillingAddress.street === nextMailingAddress.street &&
+          nextBillingAddress.street2 === nextMailingAddress.street2 &&
+          nextBillingAddress.city === nextMailingAddress.city &&
+          nextBillingAddress.state === nextMailingAddress.state &&
+          nextBillingAddress.zip === nextMailingAddress.zip
+        );
         setOrders(ordersData);
       } catch {
         removeToken();
@@ -112,56 +121,6 @@ export default function AccountPage() {
     loadData();
   }, [router]);
 
-  useEffect(() => {
-    if (sameAsBilling) {
-      setMailingAddress({ ...billingAddress });
-    }
-  }, [sameAsBilling, billingAddress]);
-
-  useEffect(() => {
-    const validateAddress = async (
-      _addressKey: string,
-      address: AddressFields,
-      setStatus: (value: string) => void,
-      setSuggestions: (value: string[]) => void,
-    ) => {
-      const hasStreet = String(address.street || '').trim().length >= 3;
-      const hasCity = String(address.city || '').trim().length >= 2;
-      const hasState = String(address.state || '').trim().length >= 2;
-      const hasZip = String(address.zip || '').trim().length >= 3;
-
-      if (!hasStreet || !hasCity || !hasState || !hasZip) {
-        setStatus('incomplete');
-        setSuggestions([]);
-        return;
-      }
-
-      try {
-        setStatus('checking');
-        const data = await lookupAddress({
-          street: address.street,
-          city: address.city,
-          state: address.state,
-          zip: address.zip,
-        });
-        const suggestions = (data?.suggestions || []).map((item: any) => [
-          item.street,
-          item.street2,
-          `${item.city}, ${item.state} ${item.zip}${item.zip_plus_four ? `-${item.zip_plus_four}` : ''}`
-        ].filter(Boolean).join(', '));
-
-        setSuggestions(suggestions);
-        setStatus(suggestions.length ? 'success' : 'empty');
-      } catch {
-        setSuggestions([]);
-        setStatus('fallback');
-      }
-    };
-
-    validateAddress('billing', billingAddress, setBillingStatus, setBillingSuggestions);
-    validateAddress('mailing', mailingAddress, setMailingStatus, setMailingSuggestions);
-  }, [billingAddress, mailingAddress]);
-
   function updateAddressField(
     setter: Dispatch<SetStateAction<AddressFields>>,
     field: keyof AddressFields,
@@ -170,36 +129,32 @@ export default function AccountPage() {
     setter((current) => ({ ...current, [field]: value }));
   }
 
-  function applySuggestion(setter: Dispatch<SetStateAction<AddressFields>>, suggestion: string) {
-    const segments = String(suggestion).split(',').map(part => part.trim()).filter(Boolean);
-    const nextAddress = emptyAddress();
-    if (segments[0]) nextAddress.street = segments[0];
-    if (segments[1]) nextAddress.city = segments[1].replace(/\s+[A-Z]{2}\s+\d{5}.*$/i, '').trim();
-    if (segments[2]) {
-      const trailing = segments[2].trim();
-      const stateMatch = trailing.match(/^([A-Za-z]{2})\b/);
-      const zipMatch = trailing.match(/(\d{5})(?:-\d{4})?$/);
-      nextAddress.state = stateMatch ? stateMatch[1].toUpperCase() : trailing.split(' ')[0] || '';
-      nextAddress.zip = zipMatch ? zipMatch[1] : (trailing.split(' ').slice(1).join(' ') || '');
-    }
-    setter(nextAddress);
-  }
-
   async function saveProfile(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSaving(true);
     setError('');
 
+    const emailChanged = email.trim().toLowerCase() !== String(user?.email || '').trim().toLowerCase();
+    if (emailChanged && !currentPassword) {
+      setError('Enter your current password to change your email.');
+      setSaving(false);
+      return;
+    }
+
     try {
       await updateProfile({
         name,
+        email: email.trim(),
+        ...(emailChanged ? { current_password: currentPassword } : {}),
         phone_number: phoneNumber,
         billing_address: billingAddress,
-        mailing_address: mailingAddress,
+        mailing_address: sameAsBilling ? billingAddress : mailingAddress,
       });
       const refreshedUser = await getMe();
       setUser(refreshedUser);
       setName(refreshedUser.name || '');
+      setEmail(refreshedUser.email || '');
+      setCurrentPassword('');
       setPhoneNumber(refreshedUser.phone_number || '');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to save your account information.';
@@ -235,6 +190,17 @@ export default function AccountPage() {
                 <input value={name} onChange={e => setName(e.target.value)} className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
               </div>
               <div>
+                <label className="text-sm text-stone-400 mb-1 block">Email</label>
+                <input type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
+                {email.trim().toLowerCase() !== String(user?.email || '').trim().toLowerCase() && (
+                  <div className="mt-3">
+                    <label className="text-sm text-stone-400 mb-1 block">Current password to confirm email change</label>
+                    <input type="password" autoComplete="current-password" required value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
+                    <p className="text-xs text-stone-500 mt-1">The new email takes effect immediately and will be used to sign in.</p>
+                  </div>
+                )}
+              </div>
+              <div>
                 <label className="text-sm text-stone-400 mb-1 block">Phone</label>
                 <input value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
               </div>
@@ -245,27 +211,25 @@ export default function AccountPage() {
             <div className="border border-stone-800 rounded-xl p-4 bg-stone-950/50">
               <h3 className="text-lg font-semibold mb-4">Billing Address</h3>
               <div className="grid gap-3">
-                <input value={billingAddress.street} onChange={e => updateAddressField(setBillingAddress, 'street', e.target.value)} placeholder="Street address" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
+                <GoogleAddressAutocomplete
+                  value={billingAddress.street}
+                  onChange={street => updateAddressField(setBillingAddress, 'street', street)}
+                  onAddressSelected={selected => setBillingAddress(current => ({
+                    ...current,
+                    street: selected.street,
+                    street2: selected.street2 || '',
+                    city: selected.city,
+                    state: selected.state,
+                    zip: selected.zip,
+                  }))}
+                  className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white"
+                />
                 <input value={billingAddress.street2} onChange={e => updateAddressField(setBillingAddress, 'street2', e.target.value)} placeholder="Apt / Suite / Unit" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
                 <div className="grid sm:grid-cols-3 gap-3">
                   <input value={billingAddress.city} onChange={e => updateAddressField(setBillingAddress, 'city', e.target.value)} placeholder="City" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
                   <input value={billingAddress.state} onChange={e => updateAddressField(setBillingAddress, 'state', e.target.value)} placeholder="State" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
                   <input value={billingAddress.zip} onChange={e => updateAddressField(setBillingAddress, 'zip', e.target.value)} placeholder="ZIP" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
                 </div>
-                {billingStatus !== 'idle' && billingStatus !== 'incomplete' && (
-                  <div className="text-xs text-stone-300">
-                    {billingStatus === 'checking' ? 'Validating billing address with Smarty…' : billingStatus === 'success' ? 'Smarty validated your billing address.' : billingStatus === 'empty' ? 'Smarty found no match for this billing address.' : 'Smarty validation is unavailable for this billing address.'}
-                  </div>
-                )}
-                {billingSuggestions.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {billingSuggestions.slice(0, 3).map((item, index) => (
-                      <button key={item + index} type="button" onClick={() => applySuggestion(setBillingAddress, item)} className="text-xs border border-stone-700 px-2 py-1 rounded hover:border-orange-500">
-                        {item}
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
 
@@ -276,7 +240,12 @@ export default function AccountPage() {
                   <input
                     type="checkbox"
                     checked={sameAsBilling}
-                    onChange={e => setSameAsBilling(e.target.checked)}
+                    onChange={e => {
+                      if (sameAsBilling && !e.target.checked) {
+                        setMailingAddress({ ...billingAddress });
+                      }
+                      setSameAsBilling(e.target.checked);
+                    }}
                     className="h-4 w-4 accent-orange-500"
                   />
                   Same as billing
@@ -285,27 +254,25 @@ export default function AccountPage() {
 
               {!sameAsBilling && (
                 <div className="grid gap-3">
-                  <input value={mailingAddress.street} onChange={e => updateAddressField(setMailingAddress, 'street', e.target.value)} placeholder="Street address" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
+                  <GoogleAddressAutocomplete
+                    value={mailingAddress.street}
+                    onChange={street => updateAddressField(setMailingAddress, 'street', street)}
+                    onAddressSelected={selected => setMailingAddress(current => ({
+                      ...current,
+                      street: selected.street,
+                      street2: selected.street2 || '',
+                      city: selected.city,
+                      state: selected.state,
+                      zip: selected.zip,
+                    }))}
+                    className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white"
+                  />
                   <input value={mailingAddress.street2} onChange={e => updateAddressField(setMailingAddress, 'street2', e.target.value)} placeholder="Apt / Suite / Unit" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
                   <div className="grid sm:grid-cols-3 gap-3">
                     <input value={mailingAddress.city} onChange={e => updateAddressField(setMailingAddress, 'city', e.target.value)} placeholder="City" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
                     <input value={mailingAddress.state} onChange={e => updateAddressField(setMailingAddress, 'state', e.target.value)} placeholder="State" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
                     <input value={mailingAddress.zip} onChange={e => updateAddressField(setMailingAddress, 'zip', e.target.value)} placeholder="ZIP" className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white" />
                   </div>
-                  {mailingStatus !== 'idle' && mailingStatus !== 'incomplete' && (
-                    <div className="text-xs text-stone-300">
-                      {mailingStatus === 'checking' ? 'Validating mailing address with Smarty…' : mailingStatus === 'success' ? 'Smarty validated your mailing address.' : mailingStatus === 'empty' ? 'Smarty found no match for this mailing address.' : 'Smarty validation is unavailable for this mailing address.'}
-                    </div>
-                  )}
-                  {mailingSuggestions.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {mailingSuggestions.slice(0, 3).map((item, index) => (
-                        <button key={item + index} type="button" onClick={() => applySuggestion(setMailingAddress, item)} className="text-xs border border-stone-700 px-2 py-1 rounded hover:border-orange-500">
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               )}
 
