@@ -86,6 +86,7 @@ function TacticalEmblem() {
 const KIT_CATEGORIES = [
   {
     label: 'Bags & Packs',
+    category: 'bag',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
         <path d="M9 2h6l1 4H8L9 2z" />
@@ -96,6 +97,7 @@ const KIT_CATEGORIES = [
   },
   {
     label: 'Water & Filtration',
+    category: 'water',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
         <path d="M12 2L6 12a6 6 0 1 0 12 0L12 2z" />
@@ -105,6 +107,7 @@ const KIT_CATEGORIES = [
   },
   {
     label: 'Emergency Food',
+    category: 'food',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
         <rect x="5" y="3" width="14" height="18" rx="2" />
@@ -115,6 +118,7 @@ const KIT_CATEGORIES = [
   },
   {
     label: 'Medical',
+    category: 'medical',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
         <rect x="3" y="3" width="18" height="18" rx="3" />
@@ -124,6 +128,7 @@ const KIT_CATEGORIES = [
   },
   {
     label: 'Tools & Lighting',
+    category: 'tools',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
         <path d="M14.7 6.3a1 1 0 0 0 0 1.4l-8 8a1 1 0 0 0 1.4 1.4l8-8a1 1 0 0 0 0-1.4l-.8-.8a4 4 0 0 0-5.6 0L8 9" />
@@ -134,6 +139,7 @@ const KIT_CATEGORIES = [
   },
   {
     label: 'Shelter',
+    category: 'shelter',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
         <path d="M3 18L12 5l9 13H3z" />
@@ -243,7 +249,7 @@ export default function Home() {
             {KIT_CATEGORIES.map(cat => (
               <Link
                 key={cat.label}
-                href="/kits"
+                href={`/products?category=${cat.category}`}
                 className="flex flex-col items-center gap-3 p-4 rounded border border-stone-800 hover:border-orange-500/40 hover:bg-stone-900 transition-all group text-center"
               >
                 <span className="text-stone-500 group-hover:text-orange-400 transition-colors">

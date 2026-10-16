@@ -40,7 +40,13 @@ export default function ProductsPage() {
 
   useEffect(() => {
     getProducts()
-      .then(data => setProducts(data))
+      .then((data: Product[]) => {
+        setProducts(data);
+        const requestedCategory = new URLSearchParams(window.location.search).get('category');
+        if (requestedCategory && data.some(product => product.category === requestedCategory)) {
+          setCategory(requestedCategory);
+        }
+      })
       .catch(() => setError('Failed to load products. Please try again later.'))
       .finally(() => setLoading(false));
   }, []);
