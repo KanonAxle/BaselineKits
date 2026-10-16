@@ -1,0 +1,38 @@
+IMAGE GENERATION PROMPT - Standard Tool Kit
+
+Create one original, photorealistic, premium ecommerce product photograph showing the actual contents of this specific preparedness kit. Use the following self-contained art direction inspired by the supplied reference: a warm rustic cabin, dark weathered horizontal timber wall, aged plank floor, a window in the upper-right background, soft natural daylight, and the kit arranged visibly across the foreground. Create a new photograph for this kit; do not copy the reference.
+
+KIT IDENTITY
+Name: Standard Tool Kit
+Purpose and saved description: Readiness is key, and the ability to work with the equipment you have is essential. This toolkit is designed around being able to accomplish basic tasks when you need them done the most.
+
+EXACT KIT CONTENTS - AUTHORITATIVE INVENTORY
+- 1 x V-Jaw Tongue & Groove Pliers 6.5" (brand/type reference: Channellock)
+  Visual/product details: -V-JAWS for more points of contact on round stock and tubing -RELIABLE PERMALOCK fastener eliminates nut and bolt failure with increased joint strength -STRONG 90-degree, laser-hardened teeth for superior grip and longevity -FORGED high carbon U.S. steel for maximum strength and durability is specially coated for ultimate rust prevention -UNDERCUT tongue & groove won’t slip
+- 1 x Compact Wire Stripper 10-18AWG (brand/type reference: Southwire; selected variant: color=Yellow)
+  Visual/product details: -Efficient Performance in a Compact Form: The Southwire Compact Stripper delivers precise results with serrated grip and clean wire stripping in a lightweight stripping tool -Comfortable Handle Grip: This wire stripper features a comfortable handle grip to support hand fatigue -Pliers for Any Situation: Whatever task you're up against at home or at the jobsite, Southwire has a pair of pliers that will make your work more convenient and efficient -Tools You Can Trust: Southwire tools are made from high-quality materials and are built to last -Delivering Power Responsibly: Southwire is known for providing innovative products and services and delivering on our promises
+- 1 x 5-Pocket Tool Holder (brand/type reference: CLC Custom LeatherCraft)
+  Visual/product details: -EVERYTHING YOU NEED: With this cell phone, tool, and accessory holder you can hang, strap, or clip on work belts, web suspenders, pants, etc. -COMPACT PHONES: This cell phone and tool holder holds most brands of compact phones -VERSATILE TOOL HOLDER: This cell phone holder and tool holder 3-way attachment for pants, web suspenders, work aprons, and more. -TOOL HOLDER DIMENSIONS: 6 in. x 2.5 in.
+- 1 x Multi-Bit Screwdriver/Nut Driver 11-in-1 (brand/type reference: Klein Tools)
+  Visual/product details: -IMPACT RATED MULTI-TOOL: New-to-world design with impact-rated compatibility for both an impact driver and screwdriver handle -VERSATILE 11-IN-1 TOOL: Includes 7 tips and converts to 4 nut driver sizes for a wide range of applications -INTERCHANGEABLE COMPONENTS: Fast and easy switch outs with interchangeable bits and nut drivers -COMFORTABLE CUSHION-GRIP HANDLE: Provides a comfortable grip for enhanced control and torque -PRECISION MACHINED TIPS: Precision machined bit tips offer a firm hold and reduce cam-out for reliable performance -INTEGRATED MAGNETIC BIT HOLDER: Magnetic bit holder also serves as a magnetic 1/4-Inch power nut driver -COLOR CODED FOR EASY IDENTIFICATION: Power nut driver.
+
+COMPOSITION AND CAMERA
+- Square aspect ratio product photograph, camera at a natural seated or standing height with a modest downward angle, similar to the reference. Show the wooden floor and enough wall to establish the cabin, while keeping every listed item in frame.
+- Rustic, lived-in cabin interior: weathered dark-brown horizontal timber wall behind an old plank wood floor with visible grain and natural imperfections. A simple window in the upper-right background admits soft daylight. No modern interior, tabletop, outdoor landscape, or plain studio sweep.
+- This kit does not list a backpack or bag. Do not add one. Arrange only its listed contents on the cabin floor, with its largest or most visually characteristic listed item as the focal anchor. Fold listed garments neatly, group listed food packages together, and arrange listed tools in visible orderly rows; include no other objects.
+- Lay all listed contents out across the floor in deliberate, individually visible groups, not as a heap. Place larger listed objects toward the back or center and smaller listed accessories in tidy rows in front, with natural spacing and minimal overlap. Keep the complete arrangement legible at storefront thumbnail size.
+- Warm natural wood tones and gentle window light from the upper right, believable contact shadows, realistic textures, true-to-life colors, subtle depth, and restrained contrast. Documentary-realistic commercial photography; no dramatic cinematic effects or artificial glow.
+- Gear is the hero; cabin is context. Keep all contents sharp and correctly proportioned. Match the reference's practical product-display feel without excessive empty floor or cut-off items.
+
+KIT-SPECIFIC VISUAL ACCURACY
+- The exact contents list above alone determines what objects are present. Include each listed major item and quantity; do not add plausible-but-unlisted survival items. Respect selected size, color, flavor, age/gender variant, and other selected product options. Selected variant values are authoritative and override any generic product description that conflicts with them.
+- IMPORTANT: Ignore incidental objects mentioned in product marketing copy. For example, a description that says an item fits inside a backpack does NOT mean a backpack is included. Depict an object only when it appears as an item in the exact contents list above.
+- Keep repeated items individually visible where quantity or selected variants distinguish them; never collapse differently colored or sized products into one generic object. Details for identical repeated products are listed once to keep the prompt concise; the quantity line remains authoritative.
+- Use item descriptions only as supporting clues for that listed item's silhouette, material, construction, color, and function. If details are ambiguous, show a simple plausible generic version rather than inventing features.
+- Apparel kits: display only the named clothing, folded or arranged neatly so the garments and selected colors are recognizable. Food kits: display only the listed shelf-stable packages. Tools and medical kits: display only the listed equipment, arranged safely and neatly. These are layout hints, not permission to add objects.
+- Brands are type references only. Do not invent logos, prominent trademarks, or exact model details not present in the listed product description. Avoid legible package copy; any packaging design should be subtle and generic.
+
+DO NOT SHOW
+Any item absent from the exact inventory, an unlisted bag or backpack, unlisted cabin furniture or decorative props, extra duplicates, people, faces, hands, animals, combat activity, flames, explosions, disasters, text overlays, captions, invented legible labels, logos, watermarks, borders, price tags, infographic elements, collage panels, modern interiors, sterile straight-down flat lays, plain charcoal studio backgrounds, illustration, cartoon styling, or a synthetic 3D-render appearance. If the listed inventory includes a knife, hatchet, or similar tool, do not omit it; show it as a stationary utilitarian tool with no person or action.
+
+Generate one finished original image in this rustic cabin reference aesthetic, following this kit's exact saved contents.

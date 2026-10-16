@@ -1,0 +1,23 @@
+{
+  "Q1": {
+    "Urban emergency preparedness": 18,
+    "Home defense security": 14,
+    "Family evacuation readiness": 16,
+    "Disaster supplies and recovery": 13,
+    "Community resilience and planning": 12
+  },
+  "Q2": {
+    "1 adult": 10,
+    "2 adults": 12,
+    "Family with children": 18,
+    "Group / multiple adults": 16,
+    "Individual or solo": 8
+  },
+  "Q3": {
+    "Short-term disruption": 12,
+    "Extended outage": 18,
+    "Civil unrest": 16,
+    "Severe weather": 14,
+    "Long-term self-reliance": 20
+  }
+}

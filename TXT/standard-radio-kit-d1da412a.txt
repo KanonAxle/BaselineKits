@@ -1,0 +1,34 @@
+IMAGE GENERATION PROMPT - Standard Radio Kit
+
+Create one original, photorealistic, premium ecommerce product photograph showing the actual contents of this specific preparedness kit. Use the following self-contained art direction inspired by the supplied reference: a warm rustic cabin, dark weathered horizontal timber wall, aged plank floor, a window in the upper-right background, soft natural daylight, and the kit arranged visibly across the foreground. Create a new photograph for this kit; do not copy the reference.
+
+KIT IDENTITY
+Name: Standard Radio Kit
+Purpose and saved description: Radios are an essential tool in any emergency scenario, a link between users and the rest of the world when our usual methods fail, including internet or cell phone service.
+
+EXACT KIT CONTENTS - AUTHORITATIVE INVENTORY
+- 1 x UV-5R Two Way Radio Dual Band 144-148/420-450Mhz (brand/type reference: Baofeng; listed weight: 204 g)
+  Visual/product details: -Frequency Range: 144-148MHz, 420-450MHz. Please kindly know that UV-5R would not transmit without this frequency range. -128 Channels 50 CTCSS and 104 CDCSS Dual-Band Display, Dual Freq. Display, Dual-Standby, A/B band independent operation, High/Low TX power selectable: Busy channel lock-out(BCLO) -High/Low TX power selectable: Busy channel lock-out(BCLO),128 Channels 50 CTCSS and 104 CDCSS Dual-Band Display, Dual Freq. Display, Dual-Standby, A/B band independent operation, Keypad Lock. Voice companding: 50 CTCSS/ 104 DCS coder & tone searching, Tri-color background light selectable: 0-9 grades VOX selectable....
+- 1 x Emergency Hand Crank Radio (brand/type reference: RunningSnail; selected variant: color=Red)
+  Visual/product details: -HOME & OUTDOOR NECESSARY: As reported, we used to experience several times natural disasters per year like hurricanes"Harvey", Wildfire, and so on. The emergency weather Radio will keep your family safe through it all. This Weather Radio can timely report emergency weather alerts in your areas to be well prepared; A 2000mAh Built-in Li-ion battery to charge most of the device until power back; A LED flashlight with rugged cover design could light up your darkness. -2000mAh PHONE CHARGER: When we are trapped in an emergency，This emergency radio with a 2000mAh emergency power bank may be our life-saving tool....
+
+COMPOSITION AND CAMERA
+- Square aspect ratio product photograph, camera at a natural seated or standing height with a modest downward angle, similar to the reference. Show the wooden floor and enough wall to establish the cabin, while keeping every listed item in frame.
+- Rustic, lived-in cabin interior: weathered dark-brown horizontal timber wall behind an old plank wood floor with visible grain and natural imperfections. A simple window in the upper-right background admits soft daylight. No modern interior, tabletop, outdoor landscape, or plain studio sweep.
+- This kit does not list a backpack or bag. Do not add one. Arrange only its listed contents on the cabin floor, with its largest or most visually characteristic listed item as the focal anchor. Fold listed garments neatly, group listed food packages together, and arrange listed tools in visible orderly rows; include no other objects.
+- Lay all listed contents out across the floor in deliberate, individually visible groups, not as a heap. Place larger listed objects toward the back or center and smaller listed accessories in tidy rows in front, with natural spacing and minimal overlap. Keep the complete arrangement legible at storefront thumbnail size.
+- Warm natural wood tones and gentle window light from the upper right, believable contact shadows, realistic textures, true-to-life colors, subtle depth, and restrained contrast. Documentary-realistic commercial photography; no dramatic cinematic effects or artificial glow.
+- Gear is the hero; cabin is context. Keep all contents sharp and correctly proportioned. Match the reference's practical product-display feel without excessive empty floor or cut-off items.
+
+KIT-SPECIFIC VISUAL ACCURACY
+- The exact contents list above alone determines what objects are present. Include each listed major item and quantity; do not add plausible-but-unlisted survival items. Respect selected size, color, flavor, age/gender variant, and other selected product options. Selected variant values are authoritative and override any generic product description that conflicts with them.
+- IMPORTANT: Ignore incidental objects mentioned in product marketing copy. For example, a description that says an item fits inside a backpack does NOT mean a backpack is included. Depict an object only when it appears as an item in the exact contents list above.
+- Keep repeated items individually visible where quantity or selected variants distinguish them; never collapse differently colored or sized products into one generic object. Details for identical repeated products are listed once to keep the prompt concise; the quantity line remains authoritative.
+- Use item descriptions only as supporting clues for that listed item's silhouette, material, construction, color, and function. If details are ambiguous, show a simple plausible generic version rather than inventing features.
+- Apparel kits: display only the named clothing, folded or arranged neatly so the garments and selected colors are recognizable. Food kits: display only the listed shelf-stable packages. Tools and medical kits: display only the listed equipment, arranged safely and neatly. These are layout hints, not permission to add objects.
+- Brands are type references only. Do not invent logos, prominent trademarks, or exact model details not present in the listed product description. Avoid legible package copy; any packaging design should be subtle and generic.
+
+DO NOT SHOW
+Any item absent from the exact inventory, an unlisted bag or backpack, unlisted cabin furniture or decorative props, extra duplicates, people, faces, hands, animals, combat activity, flames, explosions, disasters, text overlays, captions, invented legible labels, logos, watermarks, borders, price tags, infographic elements, collage panels, modern interiors, sterile straight-down flat lays, plain charcoal studio backgrounds, illustration, cartoon styling, or a synthetic 3D-render appearance. If the listed inventory includes a knife, hatchet, or similar tool, do not omit it; show it as a stationary utilitarian tool with no person or action.
+
+Generate one finished original image in this rustic cabin reference aesthetic, following this kit's exact saved contents.

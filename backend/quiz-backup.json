@@ -1,0 +1,328 @@
+[
+  {
+    "id": "8958ecc3-15a0-4ca6-97c6-1128ebad5ab9",
+    "text": "Who are you building this evacuation kit for?",
+    "position": 1,
+    "created_at": "2026-04-02T13:44:15.609899",
+    "is_start": false,
+    "answers": [
+      {
+        "id": "cc316c21-7068-42c7-ae23-bab21926ff86",
+        "text": "Just me (solo adult)",
+        "description": null,
+        "result_kit_id": null,
+        "next_question_id": "62c3bdd1-c438-4747-ad37-e05e0775065e",
+        "question_id": "8958ecc3-15a0-4ca6-97c6-1128ebad5ab9",
+        "group_action": {
+          "adults": 1
+        },
+        "result_contact": false
+      },
+      {
+        "id": "a70befdb-d430-4104-b3fc-e88313850ba5",
+        "text": "Me and one other adult",
+        "description": null,
+        "result_kit_id": null,
+        "next_question_id": "62c3bdd1-c438-4747-ad37-e05e0775065e",
+        "question_id": "8958ecc3-15a0-4ca6-97c6-1128ebad5ab9",
+        "group_action": {
+          "adults": 2
+        },
+        "result_contact": false
+      },
+      {
+        "id": "4f7c3dc2-e8c4-4b5d-92e7-dccfe4ab8008",
+        "text": "A family — adults and children",
+        "description": null,
+        "result_kit_id": null,
+        "next_question_id": "fa17364e-484f-4d62-83f7-588ce696ba22",
+        "question_id": "8958ecc3-15a0-4ca6-97c6-1128ebad5ab9",
+        "group_action": {
+          "adults": 2
+        },
+        "result_contact": false
+      },
+      {
+        "id": "95616b12-2baa-4c85-8062-46671eb1ace0",
+        "text": "A large group or team (5+ people)",
+        "description": "Groups this size usually require a custom solution. We'll help you plan it out.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "8958ecc3-15a0-4ca6-97c6-1128ebad5ab9",
+        "group_action": null,
+        "result_contact": true
+      }
+    ]
+  },
+  {
+    "id": "2af9f4c6-0f5d-460f-8f83-dc70dab4eb18",
+    "text": "How long do you need to be self-sufficient at home?",
+    "position": 1,
+    "created_at": "2026-04-02T13:44:15.681351",
+    "is_start": false,
+    "answers": [
+      {
+        "id": "aa27adf2-d9b4-4a02-91a2-660cbdb85f04",
+        "text": "72 hours — the standard FEMA recommendation",
+        "description": "Enough supplies to be fully independent for three days while infrastructure is restored.",
+        "result_kit_id": null,
+        "next_question_id": "ec039c5f-cc19-4df4-af11-178ebd8ce111",
+        "question_id": "2af9f4c6-0f5d-460f-8f83-dc70dab4eb18",
+        "group_action": null,
+        "result_contact": false
+      },
+      {
+        "id": "50ff4ae5-dd6c-40fe-83d3-566ae402be4c",
+        "text": "Two weeks or longer",
+        "description": "Long-term preparedness requires a custom plan. We'll help you build it.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "2af9f4c6-0f5d-460f-8f83-dc70dab4eb18",
+        "group_action": null,
+        "result_contact": true
+      },
+      {
+        "id": "17ca7d4b-7610-4759-939c-92239b42ab10",
+        "text": "Up to one week",
+        "description": "A more robust cache for slower-moving scenarios like extended power outages or severe weather recovery.",
+        "result_kit_id": null,
+        "next_question_id": "ec039c5f-cc19-4df4-af11-178ebd8ce111",
+        "question_id": "2af9f4c6-0f5d-460f-8f83-dc70dab4eb18",
+        "group_action": null,
+        "result_contact": false
+      },
+      {
+        "id": "36b123bc-8c71-4a9a-8302-a9b4fc94ba56",
+        "text": "I'm not sure — just give me a solid recommendation",
+        "description": null,
+        "result_kit_id": null,
+        "next_question_id": "ec039c5f-cc19-4df4-af11-178ebd8ce111",
+        "question_id": "2af9f4c6-0f5d-460f-8f83-dc70dab4eb18",
+        "group_action": null,
+        "result_contact": false
+      }
+    ]
+  },
+  {
+    "id": "426c0a29-342c-4108-94e3-66b2f6ac1d6d",
+    "text": "What type of vehicle are you equipping?",
+    "position": 1,
+    "created_at": "2026-04-02T13:44:15.757677",
+    "is_start": false,
+    "answers": [
+      {
+        "id": "9873686d-9a51-4566-8e77-82ec0d72b048",
+        "text": "Personal car, SUV, or light truck",
+        "description": "A compact, well-organized kit sized for a standard passenger vehicle.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "426c0a29-342c-4108-94e3-66b2f6ac1d6d",
+        "group_action": null,
+        "result_contact": false
+      },
+      {
+        "id": "596d40a6-b34b-4da3-a08c-72a6983c4537",
+        "text": "Multiple vehicles to equip",
+        "description": "We can put together a bundle or fleet package. Let's talk.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "426c0a29-342c-4108-94e3-66b2f6ac1d6d",
+        "group_action": null,
+        "result_contact": true
+      },
+      {
+        "id": "ae3a6131-0e31-4df6-971c-91d9759e514f",
+        "text": "Work truck, van, or heavy-duty vehicle",
+        "description": "A more comprehensive kit suited to larger vehicles or professionals spending extended time on the road.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "426c0a29-342c-4108-94e3-66b2f6ac1d6d",
+        "group_action": null,
+        "result_contact": false
+      }
+    ]
+  },
+  {
+    "id": "62c3bdd1-c438-4747-ad37-e05e0775065e",
+    "text": "Does anyone in your group have special requirements?",
+    "position": 1,
+    "created_at": "2026-04-02T13:44:15.822885",
+    "is_start": false,
+    "answers": [
+      {
+        "id": "30c47d7e-2d4b-4a92-9b87-d53711a306ed",
+        "text": "We have pets to include in the plan",
+        "description": "Dogs, cats, and small animals can be included. We'll make sure food, water, and carrying supplies are covered.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "62c3bdd1-c438-4747-ad37-e05e0775065e",
+        "group_action": null,
+        "result_contact": false
+      },
+      {
+        "id": "5fde567d-3d4b-4598-9b38-502e038a1531",
+        "text": "No special requirements — standard healthy adults",
+        "description": null,
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "62c3bdd1-c438-4747-ad37-e05e0775065e",
+        "group_action": null,
+        "result_contact": false
+      },
+      {
+        "id": "b5798a6b-92b5-465c-a66e-4f376bb5c363",
+        "text": "Someone in our group has medical needs or power-dependent devices",
+        "description": "Oxygen concentrators, CPAP machines, insulin refrigeration, and similar needs require a custom plan.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "62c3bdd1-c438-4747-ad37-e05e0775065e",
+        "group_action": null,
+        "result_contact": true
+      }
+    ]
+  },
+  {
+    "id": "fa17364e-484f-4d62-83f7-588ce696ba22",
+    "text": "What are the ages of the children in your household?",
+    "position": 1,
+    "created_at": "2026-04-02T13:44:15.896298",
+    "is_start": false,
+    "answers": [
+      {
+        "id": "f3a8b26c-e9c5-4be0-913b-4a84a2d24caf",
+        "text": "All children are school-age (5 years and older)",
+        "description": null,
+        "result_kit_id": null,
+        "next_question_id": "62c3bdd1-c438-4747-ad37-e05e0775065e",
+        "question_id": "fa17364e-484f-4d62-83f7-588ce696ba22",
+        "group_action": {
+          "children": 1
+        },
+        "result_contact": false
+      },
+      {
+        "id": "d848a725-cda9-4e6f-bf5b-73f390645796",
+        "text": "A mix — some children under 5 and some older",
+        "description": "Mixed-age families with young children need tailored solutions. We'll build the right kit with you.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "fa17364e-484f-4d62-83f7-588ce696ba22",
+        "group_action": null,
+        "result_contact": true
+      },
+      {
+        "id": "e16c7b60-8804-4c4c-9368-35164d512fe0",
+        "text": "We have infants or toddlers (under 5 years old)",
+        "description": "Infants and young toddlers need formula, diapers, medications, and specialized gear. This warrants a custom kit.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "fa17364e-484f-4d62-83f7-588ce696ba22",
+        "group_action": null,
+        "result_contact": true
+      }
+    ]
+  },
+  {
+    "id": "ec039c5f-cc19-4df4-af11-178ebd8ce111",
+    "text": "Does your household have any of the following?",
+    "position": 1,
+    "created_at": "2026-04-02T13:44:15.969379",
+    "is_start": false,
+    "answers": [
+      {
+        "id": "c7417e7f-8cb6-4786-85a8-649dd6329ef3",
+        "text": "We have children at home",
+        "description": null,
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "ec039c5f-cc19-4df4-af11-178ebd8ce111",
+        "group_action": {
+          "adults": 2,
+          "children": 1
+        },
+        "result_contact": false
+      },
+      {
+        "id": "9ca9f953-2780-4ba8-a8ee-e6f9947e0251",
+        "text": "Someone requires medical equipment or power-dependent devices",
+        "description": "Power outages are especially serious with medical equipment. Let us build a plan that addresses this.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "ec039c5f-cc19-4df4-af11-178ebd8ce111",
+        "group_action": null,
+        "result_contact": true
+      },
+      {
+        "id": "55aa6507-d64d-4f10-ac58-d401044ba1a0",
+        "text": "Nothing out of the ordinary — a standard household",
+        "description": null,
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "ec039c5f-cc19-4df4-af11-178ebd8ce111",
+        "group_action": {
+          "adults": 1
+        },
+        "result_contact": false
+      },
+      {
+        "id": "3ef39779-1af9-43be-b2c8-f00722d27eb4",
+        "text": "We have elderly or mobility-limited members",
+        "description": "Mobility aids, fall prevention, and accessibility needs require a custom approach.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "ec039c5f-cc19-4df4-af11-178ebd8ce111",
+        "group_action": null,
+        "result_contact": true
+      }
+    ]
+  },
+  {
+    "id": "e6644b1f-130d-4ccb-90b5-8938d98dfdd9",
+    "text": "What is your primary preparedness goal?",
+    "position": 1,
+    "created_at": "2026-04-02T13:44:15.521193",
+    "is_start": true,
+    "answers": [
+      {
+        "id": "84422d96-90b3-4c8f-a518-c8914f2a752b",
+        "text": "Build a bug-out / evacuation kit",
+        "description": "A portable kit designed to sustain you if you need to leave your home quickly — whether due to wildfire, flood, civil emergency, or any rapid-displacement scenario.",
+        "result_kit_id": null,
+        "next_question_id": "8958ecc3-15a0-4ca6-97c6-1128ebad5ab9",
+        "question_id": "e6644b1f-130d-4ccb-90b5-8938d98dfdd9",
+        "group_action": null,
+        "result_contact": false
+      },
+      {
+        "id": "49e83769-2b91-4ecf-9aa7-057a63a977f9",
+        "text": "Prepare my home for emergencies (shelter in place)",
+        "description": "A home-based supply cache designed to keep your household comfortable and safe without leaving — covering power outages, water disruptions, and extended grid-down scenarios.",
+        "result_kit_id": null,
+        "next_question_id": "2af9f4c6-0f5d-460f-8f83-dc70dab4eb18",
+        "question_id": "e6644b1f-130d-4ccb-90b5-8938d98dfdd9",
+        "group_action": null,
+        "result_contact": false
+      },
+      {
+        "id": "473d14d4-8f50-4b03-b929-df0b1f72b52d",
+        "text": "Build a vehicle emergency kit",
+        "description": "A compact kit stored in your car or truck for roadside emergencies, unexpected overnight situations, or getting home when normal routes are disrupted.",
+        "result_kit_id": null,
+        "next_question_id": "426c0a29-342c-4108-94e3-66b2f6ac1d6d",
+        "question_id": "e6644b1f-130d-4ccb-90b5-8938d98dfdd9",
+        "group_action": null,
+        "result_contact": false
+      },
+      {
+        "id": "c74ec211-8462-4424-915f-f909a801f739",
+        "text": "I'm not sure — help me figure out what I need",
+        "description": "Not a problem. Reach out and we'll walk you through what makes sense for your situation.",
+        "result_kit_id": null,
+        "next_question_id": null,
+        "question_id": "e6644b1f-130d-4ccb-90b5-8938d98dfdd9",
+        "group_action": null,
+        "result_contact": true
+      }
+    ]
+  }
+]
