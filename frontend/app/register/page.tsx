@@ -189,6 +189,10 @@ export default function RegisterPage() {
                 className="text-orange-500 hover:text-orange-400"
               >Log in</Link>
             </p>
+            <p className="text-stone-500 text-sm text-center mt-3">
+              Already placed an order?{' '}
+              <Link href="/track" className="text-orange-500 hover:text-orange-400">Track your order</Link>
+            </p>
           </div>
         </div>
       </div>

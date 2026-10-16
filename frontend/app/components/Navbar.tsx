@@ -45,9 +45,6 @@ export default function Navbar() {
             <Link href="/products" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
               Products
             </Link>
-            <Link href="/track" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
-              Track Order
-            </Link>
             <Link href="/mission" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
               Mission
             </Link>
@@ -119,9 +116,6 @@ export default function Navbar() {
           </Link>
           <Link href="/products" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold py-2">
             Products
-          </Link>
-          <Link href="/track" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold py-2">
-            Track Order
           </Link>
           <Link href="/mission" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold py-2">
             Mission

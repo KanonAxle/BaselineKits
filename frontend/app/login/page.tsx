@@ -82,6 +82,10 @@ export default function LoginPage() {
                 className="text-orange-500 hover:text-orange-400"
               >Sign up</Link>
             </p>
+            <p className="text-stone-500 text-sm text-center mt-3">
+              Need to check an order?{' '}
+              <Link href="/track" className="text-orange-500 hover:text-orange-400">Track your order</Link>
+            </p>
           </div>
 
         </div>
