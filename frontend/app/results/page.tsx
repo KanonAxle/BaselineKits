@@ -32,18 +32,27 @@ export default function ResultsPage() {
     setKit(parsed.recommended_kit);
   }, [router]);
 
+  if (!kit) {
+    return (
+      <main className="min-h-screen bg-stone-950 text-white flex items-center justify-center">
+        <p className="text-stone-400">Loading your kit...</p>
+      </main>
+    );
+  }
+
+  const kitItems = Array.isArray(kit.items) ? kit.items : [];
   const kitDescription = kit?.description || 'This recommendation was selected based on your answers and household situation. You can remove extra items or continue with the full kit as-is.';
-  const productCount = kit?.items?.filter((item: any) => item.type !== 'subkit_header').length || 0;
+  const productCount = kitItems.filter((item: any) => item.type !== 'subkit_header').length;
   const topHighlights = [
     'Built around your answers',
     `${productCount} selected essentials`,
     'Customizable before checkout',
   ];
-  const featuredItems = kit?.items?.filter((item: any) => item.type !== 'subkit_header').slice(0, 3) || [];
+  const featuredItems = kitItems.filter((item: any) => item.type !== 'subkit_header').slice(0, 3);
 
   function toggleItem(itemId: string) {
     // Check if this is a bag being removed
-    const item = kit.items.find(i => (i.product_id || i.sub_kit_id) === itemId);
+    const item = kitItems.find(i => (i.product_id || i.sub_kit_id) === itemId);
     const isRemoving = !removedItems.includes(itemId);
     
     if (item && isRemoving && isBag(item)) {
@@ -65,8 +74,7 @@ export default function ResultsPage() {
   }
 
   function calculateTotal() {
-    if (!kit) return 0;
-    const activeItems = kit.items.filter(item =>
+    const activeItems = kitItems.filter(item =>
       item.type !== 'subkit_header' && !removedItems.includes(item.product_id || item.sub_kit_id)
     );
     return activeItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
@@ -107,14 +115,6 @@ export default function ResultsPage() {
     setCartAction('ordering');
     if (!isKitAlreadyInCart()) addItem(buildCartItem());
     router.push('/cart');
-  }
-
-  if (!kit) {
-    return (
-      <main className="min-h-screen bg-stone-950 text-white flex items-center justify-center">
-        <p className="text-stone-400">Loading your kit...</p>
-      </main>
-    );
   }
 
   return (
@@ -176,7 +176,7 @@ export default function ResultsPage() {
             <span className="text-xs uppercase tracking-[0.15em] text-stone-500">Click to remove items</span>
           </div>
           <div className="flex flex-col gap-3">
-            {kit.items.map((item, index) => {
+            {kitItems.map((item, index) => {
               if (item.type === 'subkit_header') {
                 return (
                   <div key={`header-${item.sub_kit_id}-${index}`} className="flex items-center gap-3 pt-2 pb-1">
