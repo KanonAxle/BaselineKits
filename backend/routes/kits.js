@@ -3,6 +3,26 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabase');
 const requireAdmin = require('../middleware/requireAdmin');
+const { buildKitResponses } = require('../utils/kitResponse');
+
+const PAGE_SIZE = 1000;
+const KIT_ITEM_COLUMNS = 'kit_id, quantity, product_id, sub_kit_id, selected_variants, is_person_slot, qty_rule, products(id, name, description, price_cents, weight_grams, requires_sizing, sizes, colors, image_url, images, brand)';
+
+async function fetchAllRows(table, columns, orderColumns) {
+  const rows = [];
+
+  for (let offset = 0; ; offset += PAGE_SIZE) {
+    let query = supabase.from(table).select(columns);
+    for (const column of orderColumns) query = query.order(column);
+
+    const { data, error } = await query.range(offset, offset + PAGE_SIZE - 1);
+    if (error) throw error;
+
+    const page = data || [];
+    rows.push(...page);
+    if (page.length < PAGE_SIZE) return rows;
+  }
+}
 
 // HELPER: Fetch all items for a given kit and calculate total price.
 // depth prevents infinite loops if kits accidentally reference each other.
@@ -77,17 +97,12 @@ async function getKitWithItems(kitId, depth = 0) {
 // -------------------------------------------------------
 router.get('/kits', async (req, res) => {
   try {
-    const { data: kits, error } = await supabase
-      .from('kits')
-      .select('id');
+    const [kits, kitItems] = await Promise.all([
+      fetchAllRows('kits', '*', ['created_at', 'id']),
+      fetchAllRows('kit_items', KIT_ITEM_COLUMNS, ['kit_id', 'id']),
+    ]);
 
-    if (error) {
-      return res.status(500).json({ error: 'Failed to fetch kits' });
-    }
-
-    const fullKits = await Promise.all(kits.map(k => getKitWithItems(k.id)));
-
-    res.status(200).json(fullKits.filter(Boolean));
+    res.status(200).json(buildKitResponses(kits, kitItems));
 
   } catch (error) {
     console.error('Get kits error:', error);
