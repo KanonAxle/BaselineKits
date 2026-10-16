@@ -14,12 +14,27 @@ type Person = {
 };
 
 // ── Helpers ───────────────────────────────────────────────────────
+function matchesPersonAudience(item: any, person?: { kind: string; gender: string }): boolean {
+  const name = (item.name || '').toLowerCase();
+  const isForWomenOrGirls = /\b(?:women|womens|woman|female|girls?|ladies)\b/.test(name);
+  const isForMenOrBoys = /\b(?:men|mens|man|male|boys?)\b/.test(name);
+  const isForChildren = /\b(?:kids?|children?|youth)\b/.test(name);
+  const isForAdults = /\badult\b/.test(name) || isForWomenOrGirls || isForMenOrBoys;
+  const gender = person?.gender?.trim().toLowerCase();
+
+  if (person?.kind === 'adult' && isForChildren) return false;
+  if (person?.kind === 'child' && isForAdults) return false;
+  if (gender === 'male' && isForWomenOrGirls) return false;
+  if (gender === 'female' && isForMenOrBoys) return false;
+  return true;
+}
+
 // Collect sizable items for a specific person, respecting person-slot filtering.
 function collectSizableForPerson(items: any[], person?: { kind: string; gender: string }): any[] {
   const result: any[] = [];
   for (const item of items) {
     if (item.type === 'product' && item.requires_sizing) {
-      result.push(item);
+      if (matchesPersonAudience(item, person)) result.push(item);
     } else if (item.type === 'kit' && Array.isArray(item.items)) {
       const packGender = item.person_pack_gender?.trim().toLowerCase();
       const packAge = item.person_pack_age?.trim().toLowerCase();
