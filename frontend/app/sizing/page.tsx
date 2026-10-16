@@ -16,16 +16,18 @@ type Person = {
 // ── Helpers ───────────────────────────────────────────────────────
 function matchesPersonAudience(item: any, person?: { kind: string; gender: string }): boolean {
   const name = (item.name || '').toLowerCase();
-  const isForWomenOrGirls = /\b(?:women|womens|woman|female|girls?|ladies)\b/.test(name);
-  const isForMenOrBoys = /\b(?:men|mens|man|male|boys?)\b/.test(name);
-  const isForChildren = /\b(?:kids?|children?|youth)\b/.test(name);
-  const isForAdults = /\badult\b/.test(name) || isForWomenOrGirls || isForMenOrBoys;
+  const isForAdultWomen = /\b(?:women|womens|woman|female|ladies)\b/.test(name);
+  const isForAdultMen = /\b(?:men|mens|man|male)\b/.test(name);
+  const isForGirls = /\bgirls?\b/.test(name);
+  const isForBoys = /\bboys?\b/.test(name);
+  const isForChildren = /\b(?:kids?|children?|youth)\b/.test(name) || isForGirls || isForBoys;
+  const isForAdults = /\badult\b/.test(name) || isForAdultWomen || isForAdultMen;
   const gender = person?.gender?.trim().toLowerCase();
 
   if (person?.kind === 'adult' && isForChildren) return false;
   if (person?.kind === 'child' && isForAdults) return false;
-  if (gender === 'male' && isForWomenOrGirls) return false;
-  if (gender === 'female' && isForMenOrBoys) return false;
+  if (gender === 'male' && (isForAdultWomen || isForGirls)) return false;
+  if (gender === 'female' && (isForAdultMen || isForBoys)) return false;
   return true;
 }
 
