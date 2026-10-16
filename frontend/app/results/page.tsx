@@ -2,21 +2,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { createOrder, createCheckout, getKit, getMe, getToken } from '../../lib/api';
 import Navbar from '../components/Navbar';
-import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
 import { useCart } from '../../lib/cartContext';
 import Link from 'next/link';
 import { calculateShippingCents } from '../../lib/shippingPricing';
-
-function collectSizable(items: any[]): any[] {
-  const result: any[] = [];
-  for (const item of items) {
-    if (item.type === 'product' && item.requires_sizing) result.push(item);
-    else if (item.type === 'kit' && Array.isArray(item.items)) result.push(...collectSizable(item.items));
-  }
-  return result;
-}
 
 function isBag(item: any): boolean {
   // Check category first (most reliable)
@@ -30,20 +19,11 @@ export default function ResultsPage() {
   const router = useRouter();
   const [kit, setKit] = useState(null);
   const [removedItems, setRemovedItems] = useState([]);
-  const [address, setAddress] = useState('');
-  const [address2, setAddress2] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zip, setZip] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [marketingOptIn, setMarketingOptIn] = useState(false);
-  const [error, setError] = useState('');
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [cartAction, setCartAction] = useState<'idle' | 'ordering'>('idle');
   const [quickViewItem, setQuickViewItem] = useState(null);
   const [bagRemovalWarning, setBagRemovalWarning] = useState(null);
-  const { addItem } = useCart();
+  const { addItem, items: cartItems } = useCart();
 
   useEffect(() => {
     const stored = localStorage.getItem('quizResult');
@@ -96,87 +76,36 @@ export default function ResultsPage() {
     return `$${(cents / 100).toFixed(2)}`;
   }
 
-  function buildShippingAddress() {
-    return [address, address2, city, state, zip].filter(Boolean).join(', ');
-  }
-
-  async function handleOrder() {
-    if (!getToken()) {
-      router.push('/register?next=%2Fresults');
-      return;
-    }
-    const formattedAddress = buildShippingAddress();
-    if (!address.trim()) { setError('Please enter your street address.'); return; }
-    if (!city.trim()) { setError('Please enter your city.'); return; }
-    if (!state.trim()) { setError('Please enter your state.'); return; }
-    if (!/^\d{5}(?:-\d{4})?$/.test(zip.trim())) { setError('Please enter a valid U.S. ZIP code.'); return; }
-    if (!termsAccepted) { setError('Please accept the Terms of Use to continue.'); return; }
-    setLoading(true);
-    setError('');
-
-    // Check if this kit has any requires_sizing items — if so, convert to cart flow
-    try {
-      const kitData = await getKit(kit.id);
-      const sizableItems = collectSizable(kitData.items || []);
-      if (sizableItems.length > 0) {
-        addItem({
-          id: kit.id,
-          type: 'kit' as const,
-          name: kit.name,
-          price_cents: calculateTotal(),
-          quantity: 1,
-          removedItems,
-        });
-        setLoading(false);
-        router.push('/sizing?kitIndex=0');
-        return;
-      }
-    } catch { /* can't check — proceed with direct order */ }
-
-    try {
-      const customer = await getMe();
-      setEmail(customer.email || '');
-      const order = await createOrder(
-        kit.id,
-        { remove_items: removedItems, add_items: [] },
-        formattedAddress,
-        'US',
-        phone || null,
-        termsAccepted,
-        marketingOptIn
-      );
-      const checkout = await createCheckout(
-        order.order_id,
-        `${window.location.origin}/success?order_id=${order.order_id}`,
-        `${window.location.origin}/cancel`
-      );
-      window.location.href = checkout.url;
-    } catch (err: any) {
-      setError(err.message || 'Failed to place order. Please try again.');
-      setLoading(false);
-    }
-  }
-
-  async function handleAddKitToCart() {
-    const cartItem = {
+  function buildCartItem() {
+    return {
       id: kit.id,
       type: 'kit' as const,
       name: kit.name,
+      image_url: kit.image_url || kit.images?.[0],
       price_cents: calculateTotal(),
       quantity: 1,
       removedItems,
     };
-    // Check if this kit has any requires_sizing items
-    try {
-      const kitData = await getKit(kit.id);
-      const sizableItems = collectSizable(kitData.items || []);
-      if (sizableItems.length > 0) {
-        addItem(cartItem);
-        router.push('/sizing?kitIndex=0');
-        return;
-      }
-    } catch { /* can't check — add normally */ }
-    addItem(cartItem);
+  }
+
+  function isKitAlreadyInCart() {
+    return cartItems.some(item =>
+      item.type === 'kit' &&
+      item.id === kit.id &&
+      JSON.stringify(item.removedItems || []) === JSON.stringify(removedItems)
+    );
+  }
+
+  function handleAddKitToCart() {
+    if (cartAction !== 'idle') return;
+    if (!isKitAlreadyInCart()) addItem(buildCartItem());
+    setAddedToCart(true);
+  }
+
+  function handleOrderNow() {
+    if (cartAction !== 'idle') return;
+    setCartAction('ordering');
+    if (!isKitAlreadyInCart()) addItem(buildCartItem());
     router.push('/cart');
   }
 
@@ -247,10 +176,6 @@ export default function ResultsPage() {
             <span className="text-xs uppercase tracking-[0.15em] text-stone-500">Click to remove items</span>
           </div>
           <div className="flex flex-col gap-3">
-            <p className="text-xs text-stone-400">
-              U.S. shipping only. Shipping is $14.95 on orders under $300 and free on orders of $300 or more.
-              Once Stripe Tax is configured, Stripe Checkout will ask you to confirm your shipping address and show any applicable sales tax before payment.
-            </p>
             {kit.items.map((item, index) => {
               if (item.type === 'subkit_header') {
                 return (
@@ -285,88 +210,6 @@ export default function ResultsPage() {
           </div>
         </div>
 
-        {/* Shipping & Contact */}
-        <div className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold">Shipping & Contact</h2>
-            <div className="flex items-center gap-3">
-              <span className="text-stone-600 text-xs">Checkout requires an account.</span>
-              <Link href="/login?next=%2Fresults" className="text-orange-400 hover:text-orange-300 text-xs underline transition-colors">Log in</Link>
-              <Link href="/register?next=%2Fresults" className="text-orange-400 hover:text-orange-300 text-xs underline transition-colors">Create account</Link>
-            </div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <GoogleAddressAutocomplete
-                value={address}
-                onChange={setAddress}
-                onAddressSelected={selected => {
-                  setAddress(selected.street);
-                  setAddress2(selected.street2 || '');
-                  setCity(selected.city);
-                  setState(selected.state);
-                  setZip(selected.zip);
-                }}
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500"
-              />
-              <input type="text" value={address2} onChange={e => setAddress2(e.target.value)}
-                placeholder="Apartment, suite, unit, etc."
-                autoComplete="address-line2"
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500 md:col-span-2" />
-              <input type="text" value={city} onChange={e => setCity(e.target.value)}
-                placeholder="City"
-                autoComplete="address-level2"
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
-              <input type="text" value={state} onChange={e => setState(e.target.value)}
-                placeholder="State"
-                autoComplete="address-level1"
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
-              <input type="text" value={zip} onChange={e => setZip(e.target.value)}
-                placeholder="ZIP code"
-                autoComplete="postal-code"
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500 md:col-span-2" />
-            </div>
-            <div className="rounded-lg border border-stone-800 bg-stone-950/50 px-4 py-3 text-sm text-stone-400">
-              Order updates will be sent to the email on your account{email ? `: ${email}` : '.'}
-            </div>
-            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)}
-              placeholder="Phone number (recommended — for shipping updates)"
-              className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 text-white placeholder-stone-500 focus:outline-none focus:border-orange-500" />
-            <label className="flex items-start gap-3 text-sm text-stone-300">
-              <input
-                type="checkbox"
-                checked={termsAccepted}
-                onChange={e => setTermsAccepted(e.target.checked)}
-                required
-                className="mt-1 h-4 w-4 accent-orange-500"
-              />
-              <span>
-                I agree to the <Link href="/terms" target="_blank" className="text-orange-400 underline">Terms of Use</Link> and acknowledge the <Link href="/privacy" target="_blank" className="text-orange-400 underline">Privacy Policy</Link>. Required to place an order.
-              </span>
-            </label>
-            <label className="flex items-start gap-3 text-sm text-stone-400">
-              <input
-                type="checkbox"
-                checked={marketingOptIn}
-                onChange={e => setMarketingOptIn(e.target.checked)}
-                className="mt-1 h-4 w-4 accent-orange-500"
-              />
-              <span>Yes, I consent to receive product news and offers by email. Optional and not required to place an order.</span>
-            </label>
-            <p className="text-stone-600 text-xs">
-              For best address matching, keep the street address and ZIP in the standard format. Full USPS/UPS address validation can be added later with a live address API service.
-            </p>
-            <p className="text-stone-600 text-xs">
-              Checkout requires an account.{' '}
-              <Link href="/login?next=%2Fresults" className="text-orange-400 hover:text-orange-300 underline">Log in</Link>
-              {' '}or{' '}
-              <Link href="/register?next=%2Fresults" className="text-orange-400 hover:text-orange-300 underline">create an account</Link>.
-            </p>
-          </div>
-        </div>
-
-        {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
-
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-stone-900 border border-stone-800 rounded-xl px-6 py-5">
           <div>
             <div className="flex justify-between gap-6 text-sm text-stone-400">
@@ -376,21 +219,32 @@ export default function ResultsPage() {
               <span>Shipping</span>
               <span>{calculateShippingCents(calculateTotal()) ? formatPrice(calculateShippingCents(calculateTotal())) : 'Free'}</span>
             </div>
-            <div className="text-stone-400 text-sm mt-2">Total</div>
+            <div className="text-stone-400 text-sm mt-2">Estimated total before tax</div>
             <div className="text-3xl font-bold">{formatPrice(calculateTotal() + calculateShippingCents(calculateTotal()))}</div>
+            <p className="text-xs text-stone-500 mt-1">Applicable tax is calculated at checkout.</p>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <button onClick={handleAddKitToCart}
+            <button type="button" onClick={handleAddKitToCart} disabled={cartAction !== 'idle'}
               className="border border-orange-500 text-orange-400 hover:bg-orange-500/10 font-semibold px-6 py-4 rounded-lg transition-colors text-sm text-center">
-              Add to Cart →
+              {addedToCart ? 'Added to Cart ✓' : 'Add to Cart →'}
             </button>
-            <button onClick={handleOrder} disabled={loading}
+            <button type="button" onClick={handleOrderNow} disabled={cartAction !== 'idle'}
               className="bg-orange-600 hover:bg-orange-500 disabled:opacity-40 text-white font-semibold px-8 py-4 rounded-lg transition-colors text-center">
-              {loading ? 'Processing...' : 'Order Now →'}
+              {cartAction === 'ordering' ? 'Opening Cart...' : 'Order Now →'}
             </button>
           </div>
         </div>
-        <p className="text-stone-600 text-xs text-center mt-4">You'll be redirected to Stripe for secure payment.</p>
+        {addedToCart && (
+          <p className="text-center text-sm text-green-400 mt-4">
+            This kit is in your cart. <Link href="/cart" className="underline hover:text-green-300">Go to cart</Link>
+          </p>
+        )}
+        <p className="text-center text-xs text-stone-500 mt-4">
+          Checkout requires an account.{' '}
+          <Link href="/login?next=%2Fcart" className="text-orange-400 underline hover:text-orange-300">Log in</Link>
+          {' '}or{' '}
+          <Link href="/register?next=%2Fcart" className="text-orange-400 underline hover:text-orange-300">create an account</Link>.
+        </p>
       </div>
 
       {/* Bag Removal Warning Modal */}
