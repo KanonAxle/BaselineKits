@@ -68,4 +68,4 @@ function buildKitResponses(kits, kitItemRows) {
     .filter(Boolean);
 }
 
-module.exports = { buildKitResponses };
+module.exports = { buildKitResponse, buildKitResponses };

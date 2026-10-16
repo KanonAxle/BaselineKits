@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabase');
 const requireAdmin = require('../middleware/requireAdmin');
-const { buildKitResponses } = require('../utils/kitResponse');
+const { buildKitResponse, buildKitResponses } = require('../utils/kitResponse');
 
 const PAGE_SIZE = 1000;
 const KIT_ITEM_COLUMNS = 'kit_id, quantity, product_id, sub_kit_id, selected_variants, is_person_slot, qty_rule, products(id, name, description, price_cents, weight_grams, requires_sizing, sizes, colors, image_url, images, brand)';
@@ -24,71 +24,62 @@ async function fetchAllRows(table, columns, orderColumns) {
   }
 }
 
-// HELPER: Fetch all items for a given kit and calculate total price.
-// depth prevents infinite loops if kits accidentally reference each other.
-async function getKitWithItems(kitId, depth = 0) {
+// Fetch a kit graph by loading item rows in batches at each nested level.
+async function getKitWithItems(kitId) {
   const { data: kit, error: kitError } = await supabase
     .from('kits')
     .select('*')
     .eq('id', kitId)
-    .single();
+    .maybeSingle();
 
-  if (kitError || !kit) return null;
+  if (kitError) throw kitError;
+  if (!kit) return null;
 
-  const { data: kitItems, error: itemsError } = await supabase
-    .from('kit_items')
-    .select('quantity, product_id, sub_kit_id, selected_variants, is_person_slot, qty_rule, products(id, name, description, price_cents, weight_grams, requires_sizing, sizes, colors, image_url, images, brand)')
-    .eq('kit_id', kitId);
+  const kits = [kit];
+  const kitIds = new Set([kitId]);
+  const kitItems = [];
+  let frontier = [kitId];
 
-  if (itemsError) return null;
+  for (let depth = 0; depth <= 3 && frontier.length > 0; depth++) {
+    let query = supabase
+      .from('kit_items')
+      .select(KIT_ITEM_COLUMNS)
+      .in('kit_id', frontier);
+    for (const column of ['kit_id', 'id']) query = query.order(column);
 
-  const items = [];
+    const { data: rows, error: itemsError } = await query;
+    if (itemsError) throw itemsError;
+    const page = rows || [];
+    kitItems.push(...page);
+    if (depth === 3) break;
 
-  for (const row of kitItems) {
-    if (row.product_id && row.products) {
-      // Regular product item
-      items.push({
-        type: 'product',
-        product_id: row.products.id,
-        name: row.products.name,
-        description: row.products.description,
-        brand: row.products.brand || null,
-        image_url: row.products.image_url || (Array.isArray(row.products.images) ? row.products.images[0] : null) || null,
-        quantity: row.quantity,
-        price_cents: row.products.price_cents,
-        weight_grams: row.products.weight_grams,
-        requires_sizing: row.products.requires_sizing || false,
-        sizes: row.products.sizes || [],
-        colors: row.products.colors || [],
-        selected_variants: row.selected_variants || null,
-        qty_rule: row.qty_rule || null,
-      });
-    } else if (row.sub_kit_id && depth < 3) {
-      // Sub-kit item — resolve it (limited depth to prevent circular refs)
-      const subKit = await getKitWithItems(row.sub_kit_id, depth + 1);
-      if (subKit) {
-        items.push({
-          type: 'kit',
-          sub_kit_id: row.sub_kit_id,
-          name: subKit.name,
-          description: subKit.description,
-          quantity: row.quantity,
-          price_cents: subKit.total_price_cents,
-          item_count: subKit.items.length,
-          items: subKit.items,
-          is_person_slot: row.is_person_slot || Boolean(subKit.person_pack_gender || subKit.person_pack_age),
-          person_pack_gender: subKit.person_pack_gender || null,
-          person_pack_age: subKit.person_pack_age || null,
-        });
-      }
+    const childIds = [...new Set(page
+      .map(row => row.sub_kit_id)
+      .filter(id => id && !kitIds.has(id)))];
+    if (childIds.length === 0) break;
+
+    const { data: childKits, error: childKitsError } = await supabase
+      .from('kits')
+      .select('*')
+      .in('id', childIds);
+    if (childKitsError) throw childKitsError;
+
+    for (const childKit of childKits || []) {
+      kits.push(childKit);
+      kitIds.add(childKit.id);
     }
+    frontier = (childKits || []).map(childKit => childKit.id);
   }
 
-  const total_price_cents = items.reduce(
-    (sum, item) => sum + item.price_cents * item.quantity, 0
-  );
+  const kitsById = new Map(kits.map(item => [item.id, item]));
+  const itemsByKitId = new Map();
+  for (const row of kitItems) {
+    const rows = itemsByKitId.get(row.kit_id) || [];
+    rows.push(row);
+    itemsByKitId.set(row.kit_id, rows);
+  }
 
-  return { ...kit, items, total_price_cents };
+  return buildKitResponse(kitId, kitsById, itemsByKitId);
 }
 
 // -------------------------------------------------------
