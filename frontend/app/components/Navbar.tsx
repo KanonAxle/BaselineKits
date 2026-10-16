@@ -29,13 +29,13 @@ export default function Navbar() {
 
   return (
     <nav className="border-b border-stone-800 bg-stone-950/90 backdrop-blur-sm sticky top-0 z-50">
-      <div className="flex items-center justify-between px-8 py-4">
+      <div className="flex items-center justify-between px-4 py-4 sm:px-8">
         {/* Left: Logo + nav links */}
         <div className="flex items-center gap-8">
           <Link href="/" className="text-sm font-extrabold uppercase tracking-[0.18em] hover:text-orange-500 transition-colors">
             BaselineKits
           </Link>
-          <div className="flex items-center gap-6">
+          <div className="hidden items-center gap-6 lg:flex">
             <Link href="/quiz" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
               Build My Kit
             </Link>
@@ -55,7 +55,7 @@ export default function Navbar() {
         </div>
 
         {/* Right: Cart + Auth + hamburger */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           {/* Cart icon */}
           <Link href="/cart" className="relative p-2 text-stone-400 hover:text-white transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -67,7 +67,7 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="hidden items-center gap-4 lg:flex">
             {loggedIn ? (
               <>
                 <Link href="/account" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
@@ -95,8 +95,10 @@ export default function Navbar() {
           {/* Hamburger button — mobile only */}
           <button
             onClick={() => setMenuOpen(v => !v)}
-            className="sm:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5"
-            aria-label="Toggle menu"
+            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded border border-stone-700 lg:hidden"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
           >
             <span className={`block w-5 h-px bg-stone-400 transition-all duration-200 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
             <span className={`block w-5 h-px bg-stone-400 transition-all duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
@@ -107,7 +109,7 @@ export default function Navbar() {
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="sm:hidden border-t border-stone-800 bg-stone-950 px-8 py-4 flex flex-col gap-4">
+        <div id="mobile-navigation" className="border-t border-stone-800 bg-stone-950 px-4 py-4 flex flex-col gap-2 sm:px-8 lg:hidden">
           <Link href="/quiz" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold py-2">
             Build My Kit
           </Link>
@@ -131,7 +133,7 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <div className="border-t border-stone-800 pt-4 flex flex-col gap-3">
+          <div className="border-t border-stone-800 pt-4 mt-2 flex flex-col gap-3">
             {loggedIn ? (
               <>
                 <Link href="/account" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold py-2">

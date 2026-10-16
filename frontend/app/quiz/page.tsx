@@ -14,6 +14,7 @@ export default function QuizPage() {
 
   // Flash + visual feedback state
   const [flashingId, setFlashingId] = useState(null);
+  const [expandedDescriptionId, setExpandedDescriptionId] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [advancing, setAdvancing] = useState(false);
@@ -169,34 +170,42 @@ export default function QuizPage() {
 
             return (
               <div key={answer.id} className="group">
-                <button
-                  onClick={() => handleClick(answer)}
-                  disabled={advancing || submitting}
-                  className={`w-full text-left px-5 py-4 rounded border transition-all disabled:opacity-40 ${
-                    isFlashing ? 'answer-flash' : ''
-                  } ${
-                    isSelected
-                      ? 'border-orange-500 bg-orange-500/10 text-white'
-                      : 'border-stone-700 hover:border-stone-500 text-stone-300 hover:text-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span>{answer.text}</span>
-                    {answer.description && (
-                      <span className="md:hidden text-[10px] uppercase tracking-[0.2em] text-stone-500 group-hover:text-orange-400 transition-colors">
-                        Info
-                      </span>
-                    )}
-                  </div>
-
+                <div className={`flex items-stretch rounded border transition-all ${
+                  isFlashing ? 'answer-flash' : ''
+                } ${
+                  isSelected
+                    ? 'border-orange-500 bg-orange-500/10 text-white'
+                    : 'border-stone-700 hover:border-stone-500 text-stone-300 hover:text-white'
+                }`}>
+                  <button
+                    onClick={() => handleClick(answer)}
+                    disabled={advancing || submitting}
+                    className="flex-1 text-left px-5 py-4 disabled:opacity-40"
+                  >
+                    {answer.text}
+                  </button>
                   {answer.description && (
-                    <p className={`mt-2 text-xs leading-relaxed text-stone-300 max-h-0 group-hover:max-h-96 transition-all duration-200 overflow-hidden ${
-                      isSelected ? 'max-h-96 md:max-h-0 md:group-hover:max-h-96' : ''
-                    }`}>
-                      {answer.description}
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setExpandedDescriptionId(current => current === answer.id ? null : answer.id)}
+                      aria-expanded={expandedDescriptionId === answer.id}
+                      aria-controls={`answer-description-${answer.id}`}
+                      className="md:hidden shrink-0 border-l border-stone-700 px-4 text-[10px] uppercase tracking-[0.2em] text-stone-400"
+                    >
+                      {expandedDescriptionId === answer.id ? 'Hide' : 'Info'}
+                    </button>
                   )}
-                </button>
+                </div>
+                {answer.description && (
+                  <p
+                    id={`answer-description-${answer.id}`}
+                    className={`mt-2 overflow-hidden text-xs leading-relaxed text-stone-300 transition-all duration-200 md:block md:max-h-0 md:group-hover:max-h-96 md:group-focus-within:max-h-96 ${
+                      expandedDescriptionId === answer.id ? 'block max-h-96' : 'hidden'
+                    }`}
+                  >
+                    {answer.description}
+                  </p>
+                )}
               </div>
             );
           })}
