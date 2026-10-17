@@ -158,6 +158,7 @@ export default function Home() {
             alt="BaselineKits"
             width={768}
             height={768}
+            unoptimized
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="h-auto w-full max-w-sm"
