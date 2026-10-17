@@ -1,86 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import Navbar from './components/Navbar';
-
-// ─── Tactical Emblem SVG ───────────────────────────────────────────────────
-function TacticalEmblem() {
-  const cx = 160;
-  const cy = 160;
-
-  // Generate tick marks around the ring
-  const ticks = [];
-  for (let deg = 0; deg < 360; deg += 10) {
-    if (deg % 90 === 0) continue; // skip cardinal positions (crosshairs go there)
-    const isLarge = deg % 45 === 0;
-    const r1 = 128;
-    const r2 = isLarge ? 141 : 135;
-    const rad = ((deg - 90) * Math.PI) / 180;
-    ticks.push({
-      x1: cx + r1 * Math.cos(rad), y1: cy + r1 * Math.sin(rad),
-      x2: cx + r2 * Math.cos(rad), y2: cy + r2 * Math.sin(rad),
-      isLarge, deg,
-    });
-  }
-
-  // Hexagon vertices (r=92, flat-top)
-  const hexPts = Array.from({ length: 6 }, (_, i) => {
-    const rad = ((i * 60 - 90) * Math.PI) / 180;
-    return `${cx + 92 * Math.cos(rad)},${cy + 92 * Math.sin(rad)}`;
-  }).join(' ');
-
-  return (
-    <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-[340px] mx-auto" aria-hidden="true">
-      {/* Outer atmosphere */}
-      <circle cx={cx} cy={cy} r={148} fill="none" stroke="#1c1917" strokeWidth="0.5" strokeDasharray="3 9" />
-      <circle cx={cx} cy={cy} r={136} fill="none" stroke="#292524" strokeWidth="1" />
-
-      {/* Tick marks */}
-      {ticks.map(t => (
-        <line key={t.deg} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
-          stroke={t.isLarge ? '#57534e' : '#3d3835'} strokeWidth={t.isLarge ? 1.5 : 0.75} />
-      ))}
-
-      {/* Cardinal crosshairs */}
-      {/* Top */}
-      <line x1={cx} y1="8"   x2={cx} y2="38"  stroke="#f97316" strokeWidth="2.5" />
-      <circle cx={cx} cy="8"   r="3" fill="#f97316" />
-      {/* Bottom */}
-      <line x1={cx} y1="282" x2={cx} y2="312" stroke="#f97316" strokeWidth="2.5" />
-      <circle cx={cx} cy="312" r="3" fill="#f97316" />
-      {/* Left */}
-      <line x1="8"   y1={cy} x2="38"  y2={cy} stroke="#f97316" strokeWidth="2.5" />
-      <circle cx="8"   cy={cy} r="3" fill="#f97316" />
-      {/* Right */}
-      <line x1="282" y1={cy} x2="312" y2={cy} stroke="#f97316" strokeWidth="2.5" />
-      <circle cx="312" cy={cy} r="3" fill="#f97316" />
-
-      {/* Corner brackets */}
-      <path d="M 32,72 L 32,32 L 72,32"   fill="none" stroke="#44403c" strokeWidth="1.5" />
-      <path d="M 288,72 L 288,32 L 248,32" fill="none" stroke="#44403c" strokeWidth="1.5" />
-      <path d="M 32,248 L 32,288 L 72,288" fill="none" stroke="#44403c" strokeWidth="1.5" />
-      <path d="M 288,248 L 288,288 L 248,288" fill="none" stroke="#44403c" strokeWidth="1.5" />
-
-      {/* Hexagon */}
-      <polygon points={hexPts} fill="none" stroke="#f97316" strokeWidth="1.5" opacity="0.45" />
-
-      {/* Hex corner dots */}
-      {Array.from({ length: 6 }, (_, i) => {
-        const rad = ((i * 60 - 90) * Math.PI) / 180;
-        return <circle key={i} cx={cx + 92 * Math.cos(rad)} cy={cy + 92 * Math.sin(rad)} r="2.5" fill="#f97316" opacity="0.5" />;
-      })}
-
-      {/* Inner rings */}
-      <circle cx={cx} cy={cy} r="64" fill="none" stroke="#f97316" strokeWidth="1" opacity="0.35" />
-
-      {/* Core */}
-      <circle cx={cx} cy={cy} r="46" fill="#0c0c0c" stroke="#f97316" strokeWidth="2" />
-
-      {/* BK monogram */}
-      <text x={cx} y={cy + 9} textAnchor="middle" fill="#f97316"
-        fontFamily="system-ui, -apple-system, Arial, sans-serif"
-        fontWeight="900" fontSize="28" letterSpacing="5">BK</text>
-    </svg>
-  );
-}
 
 // ─── Category Icons ────────────────────────────────────────────────────────
 const KIT_CATEGORIES = [
@@ -231,13 +151,17 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right: emblem */}
+        {/* Right: brand logo */}
         <div className="flex items-center justify-center lg:justify-end">
-          <div className="relative w-full max-w-sm">
-            {/* Glow effect behind emblem */}
-            <div className="absolute inset-0 rounded-full bg-orange-500/5 blur-3xl" />
-            <TacticalEmblem />
-          </div>
+          <Image
+            src="/baselinekits-logo.png"
+            alt="BaselineKits"
+            width={768}
+            height={768}
+            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="h-auto w-full max-w-sm"
+          />
         </div>
       </section>
 
