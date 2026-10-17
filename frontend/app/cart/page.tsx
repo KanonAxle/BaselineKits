@@ -40,6 +40,8 @@ export default function CartPage() {
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [accountLoading, setAccountLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [accountError, setAccountError] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [error, setError] = useState('');
@@ -55,11 +57,12 @@ export default function CartPage() {
 
   useEffect(() => {
     if (!getToken()) {
-      router.replace('/register?next=%2Fcart');
+      setAccountLoading(false);
       return;
     }
     getMe()
       .then(user => {
+        setIsAuthenticated(true);
         setEmail(user.email || '');
         setPhone(user.phone_number || '');
         const mailingAddress = user.mailing_address || {};
@@ -86,7 +89,9 @@ export default function CartPage() {
           setZip(nextAddress.zip);
         }
       })
-      .catch(() => router.replace('/login?next=%2Fcart'))
+      .catch(() => {
+        setAccountError('We could not verify your account. Please log in again before checkout.');
+      })
       .finally(() => setAccountLoading(false));
   }, [router]);
 
@@ -121,12 +126,15 @@ export default function CartPage() {
 
   async function handleCheckout() {
     setError('');
+    if (!getToken() || !isAuthenticated) {
+      router.push('/register?next=%2Fcart');
+      return;
+    }
     const shippingAddress = buildShippingAddress();
     if (!address.trim()) { setError('Please enter your shipping address.'); return; }
     if (!city.trim()) { setError('Please enter your city.'); return; }
     if (!state.trim()) { setError('Please enter your state.'); return; }
     if (!/^\d{5}(?:-\d{4})?$/.test(zip.trim())) { setError('Please enter a valid U.S. ZIP code.'); return; }
-    if (!getToken()) { router.push('/login?next=%2Fcart'); return; }
     if (!termsAccepted) { setError('Please accept the Terms of Use to continue.'); return; }
 
     for (let i = 0; i < items.length; i++) {
@@ -283,6 +291,7 @@ export default function CartPage() {
         </div>
 
         {/* Shipping & Contact */}
+        {isAuthenticated ? (
         <div className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold">Shipping & Contact</h2>
@@ -403,6 +412,19 @@ export default function CartPage() {
             </label>
           </div>
         </div>
+        ) : accountLoading ? (
+          <div className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
+            <p className="text-sm text-stone-400">Checking your account before showing checkout details…</p>
+          </div>
+        ) : (
+          <div className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
+            <h2 className="font-semibold mb-2">Account required for checkout</h2>
+            <p className="text-sm text-stone-400">
+              You can review and update your cart without an account. Create an account or log in when you are ready to continue to checkout.
+            </p>
+            {accountError && <p className="text-amber-400 text-sm mt-3">{accountError}</p>}
+          </div>
+        )}
 
         {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
 
@@ -418,15 +440,36 @@ export default function CartPage() {
             <div className="text-stone-400 text-sm mt-2">Total</div>
             <div className="text-3xl font-bold">{formatPrice(checkoutTotalCents)}</div>
           </div>
-          <button
-            onClick={handleCheckout}
-            disabled={loading || accountLoading}
-            className="bg-orange-600 hover:bg-orange-500 disabled:opacity-40 text-white font-semibold px-8 py-4 rounded-lg transition-colors text-center"
-          >
-            {loading ? 'Processing...' : 'Checkout →'}
-          </button>
+          {accountLoading ? (
+            <p className="text-sm text-stone-400">Checking account…</p>
+          ) : isAuthenticated ? (
+            <button
+              onClick={handleCheckout}
+              disabled={loading || accountLoading}
+              className="bg-orange-600 hover:bg-orange-500 disabled:opacity-40 text-white font-semibold px-8 py-4 rounded-lg transition-colors text-center"
+            >
+              {loading ? 'Processing...' : 'Checkout →'}
+            </button>
+          ) : (
+            <div className="flex flex-col gap-3 sm:min-w-56">
+              <Link
+                href="/register?next=%2Fcart"
+                className="bg-orange-600 hover:bg-orange-500 text-white font-semibold px-8 py-4 rounded-lg transition-colors text-center"
+              >
+                Create Account to Checkout
+              </Link>
+              <Link
+                href="/login?next=%2Fcart"
+                className="text-center text-sm text-stone-300 hover:text-white underline underline-offset-4"
+              >
+                Already have an account? Log in
+              </Link>
+            </div>
+          )}
         </div>
-        <p className="text-stone-600 text-xs text-center mt-4">You'll be redirected to Stripe for secure payment.</p>
+        {isAuthenticated && (
+          <p className="text-stone-600 text-xs text-center mt-4">You'll be redirected to Stripe for secure payment.</p>
+        )}
       </div>
     </main>
   );
