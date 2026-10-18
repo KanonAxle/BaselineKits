@@ -1,16 +1,24 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { getToken, removeToken } from '../../lib/api';
 import { useCart } from '../../lib/cartContext';
+
+const LEARN_LINKS = [
+  { href: '/education', label: 'Education', desc: 'Why we build kits the way we do' },
+  { href: '/mission', label: 'Mission', desc: 'What BaselineKits stands for' },
+];
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [loggedIn, setLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [learnOpen, setLearnOpen] = useState(false);
+  const learnRef = useRef<HTMLDivElement>(null);
   const { totalCount } = useCart();
+  const learnActive = LEARN_LINKS.some(link => pathname.startsWith(link.href));
 
   useEffect(() => {
     setLoggedIn(!!getToken());
@@ -19,6 +27,7 @@ export default function Navbar() {
   // Close mobile menu on route change
   useEffect(() => {
     setMenuOpen(false);
+    setLearnOpen(false);
   }, [pathname]);
 
   function handleLogout() {
@@ -35,7 +44,7 @@ export default function Navbar() {
           <Link href="/" className="text-sm font-extrabold uppercase tracking-[0.18em] hover:text-orange-500 transition-colors">
             BaselineKits
           </Link>
-          <div className="hidden items-center gap-6 lg:flex">
+          <div className="hidden items-center gap-5 xl:gap-6 lg:flex">
             <Link href="/quiz" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
               Build My Kit
             </Link>
@@ -45,9 +54,45 @@ export default function Navbar() {
             <Link href="/products" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
               Products
             </Link>
-            <Link href="/mission" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
-              Mission
-            </Link>
+            <div
+              ref={learnRef}
+              className="relative"
+              onMouseEnter={() => setLearnOpen(true)}
+              onMouseLeave={() => setLearnOpen(false)}
+              onBlur={event => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setLearnOpen(false);
+              }}
+              onKeyDown={event => {
+                if (event.key === 'Escape') setLearnOpen(false);
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setLearnOpen(v => !v)}
+                aria-expanded={learnOpen}
+                aria-haspopup="true"
+                className={`flex items-center gap-1 transition-colors text-xs uppercase tracking-widest font-semibold ${
+                  learnActive ? 'text-white' : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                Learn
+                <svg className={`w-3 h-3 transition-transform ${learnOpen ? 'rotate-180' : ''}`} viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                  <path d="M2 4l4 4 4-4" />
+                </svg>
+              </button>
+              {learnOpen && (
+                <div className="absolute left-0 top-full pt-3 z-50">
+                  <div className="w-64 rounded-lg border border-stone-800 bg-stone-950 shadow-xl p-2">
+                    {LEARN_LINKS.map(link => (
+                      <Link key={link.href} href={link.href} onClick={() => setLearnOpen(false)} className="block rounded px-3 py-3 hover:bg-stone-900 transition-colors">
+                        <span className="block text-xs uppercase tracking-widest font-semibold text-white">{link.label}</span>
+                        <span className="block text-xs text-stone-500 mt-1 normal-case tracking-normal">{link.desc}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             <Link href="/contact" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
               Contact
             </Link>
@@ -119,9 +164,11 @@ export default function Navbar() {
           <Link href="/products" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold py-2">
             Products
           </Link>
-          <Link href="/mission" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold py-2">
-            Mission
-          </Link>
+          {LEARN_LINKS.map(link => (
+            <Link key={link.href} href={link.href} className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold py-2">
+              {link.label}
+            </Link>
+          ))}
           <Link href="/contact" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold py-2">
             Contact
           </Link>
