@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { login, saveToken } from '../../lib/api';
+import { login, resendVerificationEmail, saveToken } from '../../lib/api';
 import Navbar from '../components/Navbar';
 
 function getNextPath() {
   const requestedPath = new URLSearchParams(window.location.search).get('next');
-  return requestedPath?.startsWith('/') && !requestedPath.startsWith('//') ? requestedPath : '/account';
+  return requestedPath?.startsWith('/') && !requestedPath.startsWith('//') && !requestedPath.includes('\\') ? requestedPath : '/account';
 }
 
 export default function LoginPage() {
@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
+  const [verificationMessage, setVerificationMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -24,11 +25,24 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      const data = await login(email, password, rememberMe);
+      const data = await login(email, password, rememberMe, getNextPath());
       saveToken(data.token);
       router.push(getNextPath());
     } catch (err: any) {
       setError(err.message || 'Login failed. Check your email and password.');
+      setLoading(false);
+    }
+  }
+
+  async function handleResendVerification() {
+    setLoading(true);
+    setVerificationMessage('');
+    try {
+      const result = await resendVerificationEmail(email, getNextPath());
+      setVerificationMessage(result.message);
+    } catch (err: any) {
+      setVerificationMessage(err.message || 'Unable to send a verification email. Please try again.');
+    } finally {
       setLoading(false);
     }
   }
@@ -56,6 +70,18 @@ export default function LoginPage() {
                   placeholder="••••••••" />
               </div>
               {error && <p className="text-red-400 text-sm">{error}</p>}
+              {verificationMessage && <p className="text-green-400 text-sm">{verificationMessage}</p>}
+              <div className="flex justify-between text-sm">
+                <Link
+                  href="/forgot-password"
+                  onClick={event => {
+                    event.preventDefault();
+                    router.push(`/forgot-password?next=${encodeURIComponent(getNextPath())}`);
+                  }}
+                  className="text-orange-500 hover:text-orange-400"
+                >Forgot password?</Link>
+                <button type="button" onClick={handleResendVerification} disabled={!email || loading} className="text-orange-500 hover:text-orange-400 disabled:opacity-40">Resend verification</button>
+              </div>
               <label className="flex items-center gap-3 cursor-pointer select-none">
                 <input
                   type="checkbox"

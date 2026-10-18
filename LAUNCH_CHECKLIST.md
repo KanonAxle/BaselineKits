@@ -65,7 +65,9 @@ Keep staging and production credentials separate. The frontend uses the same-ori
 - Current draft terms describe U.S.-only shipping, $14.95 shipping below a $300 merchandise subtotal and free shipping at $300 or more, variable order processing estimates, cancellations before fulfillment begins, and the return/refund rules provided by the business. They remain drafts pending review.
 - Shippo live rate quotes are not connected yet. Checkout currently uses the fixed shipping policy above; decide package dimensions before adding live rates. Pirate Ship does not offer an API for checkout rate quotes.
 - Confirm required Terms acceptance is recorded with each order and the optional marketing opt-in stays separate.
-- Configure an email provider and unsubscribe handling before sending marketing emails; the current app records consent but does not provide mailing-list delivery.
+- Configure `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_EMAIL`, and `PUBLIC_SITE_URL` in the backend environment. Verify the sending domain in Resend and use `BaselineKits <info@baselinekits.com>` only after the domain is authorized.
+- Transactional email sends verification and password-reset links for accounts, a welcome message after email verification, contact-form submissions to `CONTACT_EMAIL`, and order confirmations after Stripe marks an order paid. Apply `docs/migrations/20261017_email_verification_password_reset.sql` to Supabase before deploying these authentication changes, then verify each email flow before launch.
+- Marketing email is not sent by this integration. The app records optional marketing consent, but a marketing provider, unsubscribe handling, and compliant mailing-list workflows must be implemented separately before sending promotional email.
 - Define how orders will be fulfilled, shipped, tracked, refunded, and supported. Confirm the published catalog reflects actual stock and prices.
 
 ## 7. Run a production-like smoke test

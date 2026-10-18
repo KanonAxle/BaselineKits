@@ -142,7 +142,7 @@ export default function AccountPage() {
     }
 
     try {
-      await updateProfile({
+      const updatedProfile = await updateProfile({
         name,
         email: email.trim(),
         ...(emailChanged ? { current_password: currentPassword } : {}),
@@ -150,6 +150,11 @@ export default function AccountPage() {
         billing_address: billingAddress,
         mailing_address: sameAsBilling ? billingAddress : mailingAddress,
       });
+      if (updatedProfile.email_verification_required) {
+        removeToken();
+        router.push(`/verify-email?email=${encodeURIComponent(updatedProfile.email)}&next=%2Faccount&email_sent=${updatedProfile.email_sent ? 'true' : 'false'}`);
+        return;
+      }
       const refreshedUser = await getMe();
       setUser(refreshedUser);
       setName(refreshedUser.name || '');

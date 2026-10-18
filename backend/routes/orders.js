@@ -14,11 +14,14 @@ async function getCheckoutCustomer(req) {
 
   const { data: user, error } = await supabase
     .from('users')
-    .select('id, email')
+    .select('id, email, email_verified_at')
     .eq('id', userId)
     .single();
 
   if (error || !user) return { error: 'Account not found. Please log in again.', status: 401 };
+  if (!user.email_verified_at) {
+    return { error: 'Verify your account email before placing an order.', status: 403 };
+  }
   if (!user.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
     return { error: 'A valid email address is required on your account to place an order.', status: 400 };
   }

@@ -6,6 +6,7 @@ const {
   buildUserAddressPayload,
   normalizeEmail,
   isValidEmail,
+  safeReturnPath,
 } = require('../routes/auth');
 
 test('normalizeAddressInput accepts object input and preserves postal data', () => {
@@ -42,4 +43,11 @@ test('email normalization trims whitespace and lowercases the address', () => {
   assert.equal(normalizeEmail('  User.Name@Example.COM '), 'user.name@example.com');
   assert.equal(isValidEmail(normalizeEmail('  User.Name@Example.COM ')), true);
   assert.equal(isValidEmail('not-an-email'), false);
+});
+
+test('email return paths allow local destinations and reject external redirects', () => {
+  assert.equal(safeReturnPath('/cart?checkout=1'), '/cart?checkout=1');
+  assert.equal(safeReturnPath('https://example.com'), '/account');
+  assert.equal(safeReturnPath('//example.com'), '/account');
+  assert.equal(safeReturnPath('/\\example.com'), '/account');
 });

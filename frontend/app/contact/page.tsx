@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import { sendContactMessage } from '../../lib/api';
 
 const CONTACT_REASONS = [
   'Order Issue',
@@ -19,6 +20,7 @@ function ContactContent() {
   const [form, setForm] = useState({ name: '', email: '', reason: fromQuiz ? 'Kit Recommendation' : '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!fromQuiz) return;
@@ -32,10 +34,15 @@ function ContactContent() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    // Simulate submission delay — wire up to backend/email service when ready
-    await new Promise(r => setTimeout(r, 800));
-    setSubmitted(true);
-    setSubmitting(false);
+    setError('');
+    try {
+      await sendContactMessage(form);
+      setSubmitted(true);
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'We could not send your message. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -149,6 +156,7 @@ function ContactContent() {
               <div className="bg-stone-900/60 border border-stone-800 rounded p-8">
                 <p className="label-tactical text-orange-500 mb-6 tracking-[0.15em]">// Send a Message</p>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  {error && <p role="alert" className="text-red-400 text-sm">{error}</p>}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="label-tactical text-stone-500 mb-1 block">Name *</label>

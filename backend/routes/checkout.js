@@ -4,6 +4,7 @@ const router = express.Router();
 const supabase = require('../config/supabase');
 const Stripe = require('stripe');
 const jwt = require('jsonwebtoken');
+const { sendEmail, buildOrderConfirmationEmail } = require('../utils/email');
 const {
   isStripeTaxEnabled,
   buildStripeTaxSessionParams,
@@ -73,11 +74,14 @@ router.post('/checkout', async (req, res) => {
 
     const { data: customer, error: customerError } = await supabase
       .from('users')
-      .select('email')
+      .select('email, email_verified_at')
       .eq('id', userId)
       .single();
     if (customerError || !customer?.email) {
       return res.status(401).json({ error: 'Account email not found. Please log in again.' });
+    }
+    if (!customer.email_verified_at) {
+      return res.status(403).json({ error: 'Verify your account email before checking out.' });
     }
 
     // Fetch the order items to display in Stripe
@@ -244,7 +248,7 @@ router.post('/webhooks/stripe', express.raw({ type: 'application/json' }), async
 
     const { data: order, error: orderError } = await supabase
       .from('orders')
-      .select('customizations')
+      .select('customizations, user_id')
       .eq('id', orderId)
       .single();
     if (orderError || !order) {
@@ -295,6 +299,52 @@ router.post('/webhooks/stripe', express.raw({ type: 'application/json' }), async
     if (updateError || !updatedOrders?.length) {
       console.error('Failed to mark paid order from Stripe webhook:', updateError || `Order ${orderId} not found`);
       return res.status(500).json({ error: 'Failed to update order after payment' });
+    }
+
+    if (!order.customizations?.order_confirmation_email_sent_at) {
+      try {
+        const [{ data: customer, error: customerError }, { data: items, error: itemsError }] = await Promise.all([
+          supabase.from('users').select('email').eq('id', order.user_id).single(),
+          supabase.from('order_items').select('quantity, product_name, products(name)').eq('order_id', orderId),
+        ]);
+        if (customerError || !customer?.email) {
+          throw new Error('Unable to find customer email for paid order');
+        }
+        if (itemsError) {
+          throw new Error(`Unable to fetch paid order items: ${itemsError.message}`);
+        }
+
+        await sendEmail({
+          to: customer.email,
+          ...buildOrderConfirmationEmail({
+            orderId,
+            items: items || [],
+            totalCents: session.amount_total,
+          }),
+          idempotencyKey: `order-confirmation-${orderId}`,
+        });
+
+        const { error: emailMarkerError } = await supabase
+          .from('orders')
+          .update({
+            customizations: {
+              ...(order.customizations || {}),
+              ...updatedCustomizations,
+              order_confirmation_email_sent_at: new Date().toISOString(),
+            },
+          })
+          .eq('id', orderId);
+        if (emailMarkerError) {
+          throw new Error(`Confirmation sent but email status could not be saved: ${emailMarkerError.message}`);
+        }
+      } catch (emailError) {
+        if (emailError.name === 'EmailConfigurationError') {
+          console.error('Paid order confirmation email skipped: Resend is not configured');
+        } else {
+          console.error('Paid order confirmation email failed:', emailError.message);
+          return res.status(500).json({ error: 'Paid order confirmation email could not be delivered' });
+        }
+      }
     }
 
     console.log(`Order ${orderId} marked as paid`);

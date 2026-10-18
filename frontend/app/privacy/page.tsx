@@ -8,7 +8,7 @@ const sections = [
   },
   {
     title: 'Payments and service providers',
-    body: 'Stripe processes checkout payments. When you use address autocomplete, the address text you enter and the selected address are sent to Google Places. The site is hosted by Vercel and uses Supabase for data storage. We use shipping providers to prepare and fulfill orders; shipping labels may currently be purchased through Pirate Ship. Those providers receive information needed to perform their services. Before publishing a final policy, confirm the provider list, their applicable privacy practices, and any applicable international data transfers.',
+    body: 'Stripe processes checkout payments. Resend delivers account welcome messages, contact-form submissions, and paid-order confirmations; contact messages include the name, email address, topic, and message you provide. When you use address autocomplete, the address text you enter and the selected address are sent to Google Places. The site is hosted by Vercel and uses Supabase for data storage. We use shipping providers to prepare and fulfill orders; shipping labels may currently be purchased through Pirate Ship. Those providers receive information needed to perform their services. Before publishing a final policy, confirm the provider list, their applicable privacy practices, and any applicable international data transfers.',
   },
   {
     title: 'How information is used',
@@ -16,7 +16,7 @@ const sections = [
   },
   {
     title: 'Optional marketing choice',
-    body: 'At checkout you may separately opt in to product and offer emails. This choice is optional and does not affect checkout. The current checkout records your choice with the order; no mailing-list delivery provider is configured by this change. Before sending marketing, connect an email provider and provide a working unsubscribe method.',
+    body: 'At checkout you may separately opt in to product and offer emails. This choice is optional and does not affect checkout. The current email integration sends transactional messages only and does not send promotional email. Before sending marketing, configure a mailing-list provider and provide a working unsubscribe method.',
   },
   {
     title: 'Retention, security, and your choices',

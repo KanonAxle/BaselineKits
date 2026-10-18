@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { register, saveToken } from '../../lib/api';
+import { register } from '../../lib/api';
 import Navbar from '../components/Navbar';
 import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
 
@@ -11,7 +11,7 @@ const emptyAddress = () => ({ street: '', street2: '', city: '', state: '', zip:
 
 function getNextPath() {
   const requestedPath = new URLSearchParams(window.location.search).get('next');
-  return requestedPath?.startsWith('/') && !requestedPath.startsWith('//') ? requestedPath : '/account';
+  return requestedPath?.startsWith('/') && !requestedPath.startsWith('//') && !requestedPath.includes('\\') ? requestedPath : '/account';
 }
 
 export default function RegisterPage() {
@@ -49,10 +49,10 @@ export default function RegisterPage() {
         name.trim(),
         phoneNumber.trim(),
         { ...billingAddress, street2: billingAddress.street2 || '' },
-        { ...addressForMailing, street2: addressForMailing.street2 || '' }
+        { ...addressForMailing, street2: addressForMailing.street2 || '' },
+        getNextPath()
       );
-      saveToken(data.token);
-      router.push(getNextPath());
+      router.push(`/verify-email?email=${encodeURIComponent(email.trim())}&next=${encodeURIComponent(getNextPath())}&email_sent=${data.email_sent ? 'true' : 'false'}`);
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
       setLoading(false);

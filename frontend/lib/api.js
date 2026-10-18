@@ -108,14 +108,26 @@ async function adminFetch(path, options = {}) {
 }
 
 // Auth
-export const register = (email, password, name, phone_number = '', billing_address = null, mailing_address = null) =>
+export const register = (email, password, name, phone_number = '', billing_address = null, mailing_address = null, next = '/account') =>
   apiFetch('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ email, password, name, phone_number, billing_address, mailing_address })
+    body: JSON.stringify({ email, password, name, phone_number, billing_address, mailing_address, next })
   });
 
-export const login = (email, password, rememberMe = false) =>
-  apiFetch('/auth/login', { method: 'POST', body: JSON.stringify({ email, password, rememberMe }) });
+export const login = (email, password, rememberMe = false, next = '/account') =>
+  apiFetch('/auth/login', { method: 'POST', body: JSON.stringify({ email, password, rememberMe, next }) });
+
+export const resendVerificationEmail = (email, next = '/account') =>
+  apiFetch('/auth/email/verification/resend', { method: 'POST', body: JSON.stringify({ email, next }) });
+
+export const verifyEmail = (token) =>
+  apiFetch('/auth/email/verify', { method: 'POST', body: JSON.stringify({ token }) });
+
+export const requestPasswordReset = (email, next = '/account') =>
+  apiFetch('/auth/password-reset/request', { method: 'POST', body: JSON.stringify({ email, next }) });
+
+export const completePasswordReset = (token, password) =>
+  apiFetch('/auth/password-reset/complete', { method: 'POST', body: JSON.stringify({ token, password }) });
 
 export const getMe = () => apiFetch('/auth/me');
 
@@ -181,6 +193,9 @@ export const createShopifyCart = (items, email) =>
       email,
     })
   });
+
+export const sendContactMessage = (message) =>
+  apiFetch('/contact', { method: 'POST', body: JSON.stringify(message) });
 
 // Recommendation engine
 export const getHybridRecommendation = ({ products, answers, manualWeights, aiEnabled = true, maxResults = 5 }) =>
