@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const { ProductSelectionError, resolveProductCartItem } = require('../utils/productPricing');
 const { calculateShippingCents } = require('../utils/shippingPricing');
 const { isUsShippingCountry } = require('../utils/shippingCountry');
-const TERMS_VERSION = '2026-10-15-draft';
+const TERMS_VERSION = '2026-10-19';
 
 async function getCheckoutCustomer(req) {
   const userId = verifyToken(req);

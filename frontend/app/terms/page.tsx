@@ -3,32 +3,48 @@ import Navbar from '../components/Navbar';
 
 const sections = [
   {
-    title: '1. Accounts',
-    body: 'You must provide accurate account information and keep your password secure. You are responsible for activity carried out through your account. Contact us promptly if you believe your account has been accessed without permission.',
+    title: '1. Business identity and scope',
+    body: 'BaselineKits is a DBA of Harrington Innovations LLC. These Terms of Use govern your access to and use of the BaselineKits website, product information, kit recommendations, account features, and purchase transactions. By visiting, creating an account, or ordering through the site, you agree to these terms and any policies we link from the site, including the Privacy Policy.',
   },
   {
-    title: '2. Products, kits, and orders',
-    body: 'We make reasonable efforts to show product details, kit contents, prices, and availability accurately. Product availability may change. An order request is not accepted until we confirm it. If we cannot fulfill an accepted order or a listed price is materially incorrect, we will contact you before charging or arrange an appropriate correction.',
+    title: '2. Accounts',
+    body: 'You must provide accurate account information and keep your password secure. You are responsible for all activity conducted through your account. If you believe your account has been accessed without authorization, contact us immediately at info@baselinekits.com. We may suspend or terminate access to the site when necessary to protect the security of the service or comply with legal obligations.',
   },
   {
-    title: '3. Payment',
-    body: 'Payments are processed by Stripe. We do not ask you to provide full payment-card details directly to BaselineKits. Stripe’s terms and privacy practices also apply to its payment services.',
+    title: '3. Products, kits, and orders',
+    body: 'We make reasonable efforts to describe products, kit contents, pricing, and availability accurately. Product availability, pricing, and configuration options may change without notice. A purchase is not complete until we accept the order and any required payment is authorized. If we cannot fulfill an order, if a price is materially incorrect, or if a product is unavailable after an order is submitted, we may contact you to confirm whether to proceed, cancel the order, or offer a suitable replacement.',
   },
   {
-    title: '4. Shipping, returns, and cancellations',
-    body: 'We currently ship to addresses in the United States only. Shipping is $14.95 for orders with a merchandise subtotal below $300 and free for orders with a merchandise subtotal of $300 or more. Once Stripe Tax is configured, any applicable sales tax will be calculated at checkout based on the shipping destination. Order processing time varies with order size and product availability and may exceed two weeks. We will email an estimated processing and shipping timeframe after an order is placed; estimates are not guarantees, and we will contact you if we become aware of a material delay. You are responsible for providing a complete and accurate shipping address. To request cancellation, contact info@baselinekits.com before fulfillment work begins; we will issue a full refund for an order we are able to cancel at that stage. Once fulfillment work has begun, cancellation may no longer be possible. To request a return, email info@baselinekits.com within 30 days after delivery. Change-of-mind returns must be unopened and unused; the customer pays return shipping, and an eligible refund is subject to a 10% restocking fee on the returned item price. We provide return instructions and the return address by email. For items that arrive damaged or incorrect, contact us promptly; we waive the restocking fee and return shipping cost. Approved refunds are issued to the original payment method after we receive and inspect the return. Nothing in these terms limits rights that cannot legally be waived.',
+    title: '4. Payment and checkout',
+    body: 'Payments are processed through Stripe. We do not store your full credit card details on our servers. Stripe’s terms and privacy practices apply to the payment process. By placing an order, you represent that you are authorized to use the selected payment method and that all information you provide is accurate. In addition to the purchase price, applicable sales tax and shipping fees may be charged at checkout as described on the site.',
   },
   {
-    title: '5. Preparedness information',
-    body: 'Products and kits are intended to support preparedness. They are not a guarantee of safety, rescue, survival, or uninterrupted operation, and they are not a substitute for professional medical advice, training, or instructions supplied with a product. Check product limitations, expiration dates, and safe-use instructions before use.',
+    title: '5. Shipping, taxes, and delivery',
+    body: 'We currently ship within the United States only. Shipping is $14.95 for merchandise subtotals below $300 and free for merchandise subtotals of $300 or more, unless a different shipping or tax policy is stated for a specific order. Applicable sales tax will be calculated based on the shipping destination and the settings in effect at checkout. Order processing times vary based on product availability, customization, and order volume. We will provide an estimate when possible, but processing and shipping estimates are not guarantees and may change. We are not liable for delays caused by weather, carrier disruptions, inventory shortages, acts of third parties, or other circumstances beyond our reasonable control.',
   },
   {
-    title: '6. Acceptable use and content',
-    body: 'Do not misuse the site, interfere with its operation, attempt unauthorized access, or use it in violation of applicable law. Site text, design, and other materials may not be copied or redistributed except as allowed by law or with permission.',
+    title: '6. Cancellations, returns, and refunds',
+    body: 'To request cancellation, contact us at info@baselinekits.com before fulfillment begins. If we are able to cancel the order before work starts, we will refund the full purchase price. Once fulfillment has begun, cancellations may no longer be possible. If you receive a damaged, incorrect, or incomplete item, contact us promptly at info@baselinekits.com and we will help resolve the issue. You may return unopened and unused items within 30 days of delivery, subject to return shipping costs and a 10% restocking fee on the returned item price for change-of-mind returns. We may require a return authorization and may provide a return address by email. Approved refunds will be issued to the original payment method after we receive and inspect the return. We do not provide returns for products that have been used, opened, or damaged by the customer beyond normal handling. Nothing in these terms limits consumer rights that cannot be waived under applicable law.',
   },
   {
-    title: '7. Changes and contact',
-    body: 'We may update these terms by publishing a revised version. The effective date and version should be updated when the terms change. Questions about orders or these terms: BaselineKits at info@baselinekits.com.',
+    title: '7. Preparedness information and product use',
+    body: 'Our products and kits are intended to support preparedness and personal readiness. They are not guarantees of safety, rescue, survival, uninterrupted service, or the ability to avoid all hazards. Product instructions, warnings, and safety information must be reviewed before use. Some items may require training, maintenance, replacement, or professional guidance. We are not a medical professional, emergency responder, or insurer, and the information on the site is informational only and not a substitute for professional advice.',
+  },
+  {
+    title: '8. Acceptable use and intellectual property',
+    body: 'You may use the site for lawful purposes only. You may not interfere with the operation of the site, attempt unauthorized access, misuse account credentials, disclose restricted information, or use the site to transmit harmful, deceptive, unlawful, or abusive content. All text, graphics, product descriptions, images, brand names, trademarks, and site design are the property of BaselineKits or its licensors and may not be copied, redistributed, republished, or used without written permission except as allowed by applicable law.',
+  },
+  {
+    title: '9. Disclaimers and limitation of liability',
+    body: 'The site and all products, content, and recommendations are provided on an “as is” and “as available” basis. To the maximum extent permitted by law, BaselineKits, Harrington Innovations LLC, and their affiliates, officers, employees, and agents disclaim all warranties, express or implied, including warranties of merchantability, fitness for a particular purpose, non-infringement, and reliability. We do not guarantee that the site will be error-free, uninterrupted, or free from external disruption. To the maximum extent permitted by law, BaselineKits and Harrington Innovations LLC shall not be liable for indirect, incidental, consequential, or punitive damages, including loss of use, lost profits, or loss of data, arising from the use of the site or products, even if advised of the possibility of such damages. Our aggregate liability for any claim arising from the site or a product order is limited to the amounts actually paid by you for the applicable order, unless applicable law provides a different remedy.',
+  },
+  {
+    title: '10. Privacy and cookies',
+    body: 'Our Privacy Policy explains what information we collect, how we use it, and how we handle contact, payment, and site analytics information. We use cookies, local browser storage, and analytics tools to keep the site functioning, support your account experience, and understand usage patterns. By using the site, you consent to those practices as described in our Privacy Policy, subject to your browser settings and applicable law.',
+  },
+  {
+    title: '11. Governing law and updates',
+    body: 'These terms are governed by the laws of the State of Indiana, without regard to conflict-of-law principles. We may update or revise these terms from time to time by publishing a revised version on the site. The date of the most recent revision appears on this page. Continued use of the site after a revision becomes effective constitutes your acceptance of that revision. Questions about these terms can be sent to info@baselinekits.com.',
   },
 ];
 
@@ -37,16 +53,10 @@ export default function TermsPage() {
     <main className="min-h-screen bg-stone-950 text-white">
       <Navbar />
       <article className="max-w-3xl mx-auto px-6 py-16">
-        <div className="mb-8 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-amber-200">
-          <p className="font-bold uppercase tracking-widest text-sm">Draft for business and legal review</p>
-          <p className="mt-1 text-sm text-amber-100/80">
-            Review these draft policies for the business and applicable consumer-protection requirements before treating them as final.
-          </p>
-        </div>
         <h1 className="text-3xl font-extrabold uppercase tracking-wide">Terms of Use</h1>
-        <p className="mt-2 text-sm text-stone-500">Draft version 2026-10-15. Effective date to be confirmed.</p>
+        <p className="mt-2 text-sm text-stone-500">Effective October 19, 2026.</p>
         <p className="mt-6 text-stone-300 leading-relaxed">
-          These draft terms describe use of the BaselineKits website and purchases made through it. They need review and completion for the business and the places where it operates.
+          These Terms of Use govern your use of the BaselineKits website, account features, product information, kit recommendations, and purchase transactions. BaselineKits is a DBA of Harrington Innovations LLC, and by using the site or placing an order, you agree to these terms and our Privacy Policy.
         </p>
         <div className="mt-8 space-y-7">
           {sections.map(section => (
@@ -56,7 +66,7 @@ export default function TermsPage() {
             </section>
           ))}
         </div>
-        <Link href="/privacy" className="mt-10 inline-block text-orange-400 underline">Read the draft Privacy Policy</Link>
+        <Link href="/privacy" className="mt-10 inline-block text-orange-400 underline">Read the Privacy Policy</Link>
       </article>
     </main>
   );

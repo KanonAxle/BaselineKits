@@ -3,28 +3,44 @@ import Navbar from '../components/Navbar';
 
 const sections = [
   {
-    title: 'Information handled',
-    body: 'Depending on how you use the site, this may include account name and email, password credentials stored in protected form, phone number and addresses you provide, order and kit details, sizing selections, quiz responses, and customer-support messages. The site also stores cart and sign-in data in your browser’s local storage.',
+    title: '1. Who we are',
+    body: 'BaselineKits is a DBA of Harrington Innovations LLC. We operate the website and related services used to help customers evaluate, order, and manage preparedness kits and related products. This Privacy Policy explains how we collect, use, disclose, and protect information when you visit our site, create an account, contact us, or place an order.',
   },
   {
-    title: 'Payments and service providers',
-    body: 'Stripe processes checkout payments. Resend delivers account welcome messages, contact-form submissions, and paid-order confirmations; contact messages include the name, email address, topic, and message you provide. When you use address autocomplete, the address text you enter and the selected address are sent to Google Places. The site is hosted by Vercel and uses Supabase for data storage. We use shipping providers to prepare and fulfill orders; shipping labels may currently be purchased through Pirate Ship. Those providers receive information needed to perform their services. Before publishing a final policy, confirm the provider list, their applicable privacy practices, and any applicable international data transfers.',
+    title: '2. Information we collect',
+    body: 'Depending on how you use the site, we may collect your name, email address, phone number, billing and shipping addresses, order history, product selections, quiz responses, support messages, and account information. We also store login and cart-related data in your browser and in our own application systems as needed to provide the service. When you interact with address autocomplete, the address text and selected address details may be sent to Google to complete address entry. When you contact us or place an order, we may collect the content of your message and any information needed to respond to you.',
   },
   {
-    title: 'How information is used',
-    body: 'Information is used to create and secure accounts, prepare and fulfill orders, provide order and account communications, support sizing and product-related notices, respond to requests, prevent misuse, and operate or improve the site. Account email is used for necessary purchase and service messages.',
+    title: '3. How we use information',
+    body: 'We use personal information to create and maintain accounts, process and fulfill orders, communicate about order status, respond to customer support requests, maintain security, prevent fraud, operate the website, improve the customer experience, comply with legal obligations, and provide product or sizing-related notices. We may also use information to maintain records of orders, support account access, and maintain the integrity of the service.',
   },
   {
-    title: 'Optional marketing choice',
-    body: 'At checkout you may separately opt in to product and offer emails. This choice is optional and does not affect checkout. The current email integration sends transactional messages only and does not send promotional email. Before sending marketing, configure a mailing-list provider and provide a working unsubscribe method.',
+    title: '4. Service providers and disclosures',
+    body: 'We rely on third-party service providers to operate parts of the business, including payment processing with Stripe, transactional email delivery with Resend, web hosting with Vercel, data storage with Supabase, and location assistance through Google address services. These providers receive only the information needed to provide their services. We may also disclose information when required by law, court order, or legal process, or when necessary to protect the rights, safety, or property of BaselineKits, our customers, or others.',
   },
   {
-    title: 'Retention, security, and your choices',
-    body: 'We use reasonable safeguards, but no online service can guarantee absolute security. To ask about, access, or request deletion of personal information, contact BaselineKits at info@baselinekits.com. We may retain information when needed to complete orders, meet legal or accounting obligations, resolve disputes, or protect the service. Requests will be handled subject to applicable law and required recordkeeping.',
+    title: '5. Cookies, analytics, and local storage',
+    body: 'We use cookies, browser local storage, and analytics tools to keep the site functioning, remember your preferences, support account access, preserve cart activity, and better understand traffic and usage patterns. Analytics tools may collect general information such as page visits, device and browser details, referring pages, and aggregate interaction data. If you do not want cookies or analytics, you may adjust your browser settings, although some features of the site may not function properly if cookies are blocked. We may update our analytics practices as the site evolves.',
   },
   {
-    title: 'Updates',
-    body: 'This draft should be revised when the site’s data practices change. Publish an effective date and explain how material changes will be communicated before treating this as a final policy.',
+    title: '6. Email and marketing communications',
+    body: 'Transactional email is used for account verification, password reset, order confirmations, and customer support-related communication. We may also ask for separate consent to receive optional product or marketing emails. Any marketing communication will include a clear way to opt out and unsubscribe, and we will not send promotional email without a valid consent or lawful basis. If you opt out, we will stop marketing messages but may still send transactional messages needed to manage your account or order.',
+  },
+  {
+    title: '7. Data retention, security, and your choices',
+    body: 'We use reasonable administrative, technical, and physical safeguards designed to protect information, but no system is completely secure. We retain information for as long as necessary to fulfill the purposes described in this policy, comply with legal obligations, resolve disputes, and maintain business records. You may contact us at info@baselinekits.com to ask about your information, request correction of inaccurate information, or request that we delete personal information where allowed by law. Some information may need to be retained to complete a transaction, protect against fraud, or satisfy legal recordkeeping requirements.',
+  },
+  {
+    title: '8. Children and sensitive personal information',
+    body: 'The site is intended for individuals who are at least 18 years of age or who otherwise have the capacity to enter into a contract in their jurisdiction. We do not knowingly collect personal information from children under the age of 13 without parental consent where required by law. We also ask that you not provide sensitive personal information beyond what is needed to complete the transaction or support request.',
+  },
+  {
+    title: '9. International use',
+    body: 'Unless otherwise stated, the site is intended for use in the United States. If you access the site from outside the United States, you are responsible for complying with local laws and for understanding that your information may be transferred to and processed in the United States, where our service providers and systems are located.',
+  },
+  {
+    title: '10. Updates and contact',
+    body: 'This Privacy Policy may be updated from time to time to reflect changes in our practices, services, or legal requirements. The effective date at the top of this policy indicates the most recent revision. Continued use of the site after an update becomes effective means you accept the updated policy. If you have questions or would like to exercise your rights, contact us at info@baselinekits.com.',
   },
 ];
 
@@ -33,16 +49,10 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-stone-950 text-white">
       <Navbar />
       <article className="max-w-3xl mx-auto px-6 py-16">
-        <div className="mb-8 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-amber-200">
-          <p className="font-bold uppercase tracking-widest text-sm">Draft for business and legal review</p>
-          <p className="mt-1 text-sm text-amber-100/80">
-            Review this draft against the business’s actual data practices and applicable privacy laws before treating it as final.
-          </p>
-        </div>
         <h1 className="text-3xl font-extrabold uppercase tracking-wide">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-stone-500">Draft version 2026-10-15. Effective date to be confirmed.</p>
+        <p className="mt-2 text-sm text-stone-500">Effective October 19, 2026.</p>
         <p className="mt-6 text-stone-300 leading-relaxed">
-          This draft explains information BaselineKits may handle when you browse the site, create an account, or place an order.
+          This Privacy Policy explains how BaselineKits, a DBA of Harrington Innovations LLC, collects, uses, stores, and protects personal information when you use our website, create an account, place an order, or contact us.
         </p>
         <div className="mt-8 space-y-7">
           {sections.map(section => (
@@ -52,7 +62,7 @@ export default function PrivacyPage() {
             </section>
           ))}
         </div>
-        <Link href="/terms" className="mt-10 inline-block text-orange-400 underline">Read the draft Terms of Use</Link>
+        <Link href="/terms" className="mt-10 inline-block text-orange-400 underline">Read the Terms of Use</Link>
       </article>
     </main>
   );
