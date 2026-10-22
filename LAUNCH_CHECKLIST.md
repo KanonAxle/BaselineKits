@@ -40,6 +40,7 @@ Keep staging and production credentials separate. The frontend uses the same-ori
 - Apply the current schema and required migrations from `docs/database-schema.sql` to the intended production Supabase project.
 - For an existing database, do not blindly rerun the full schema file; apply only migrations that have not already been run.
 - `docs/migrations/20261015_recommendation_config.sql` and `docs/migrations/20261016_launch_schema_compat.sql` have been applied to the current Supabase project.
+- Apply `docs/migrations/20261022_education_content.sql` to Supabase before deploying the admin Education manager (`/admin/education`); it creates and seeds the Education tables.
 - Confirm required tables, policies, quiz content, products, kits, and recommendation data are present and correct.
 - Create the `product-images` Storage bucket and verify its access settings support public product images and authorized admin uploads.
 - Confirm the backend uses the correct production project and a server-only key.

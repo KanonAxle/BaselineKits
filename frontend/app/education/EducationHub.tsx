@@ -1,9 +1,10 @@
 'use client';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ARTICLES, CATEGORIES } from '../../lib/education';
+import { useEducation } from '../../lib/useEducation';
 
 export default function EducationHub() {
+  const { loading, categories: CATEGORIES, articles: ARTICLES } = useEducation();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
 
@@ -14,7 +15,7 @@ export default function EducationHub() {
       if (!needle) return true;
       return `${article.title} ${article.summary} ${article.ourApproach}`.toLowerCase().includes(needle);
     });
-  }, [query, category]);
+  }, [query, category, ARTICLES]);
 
   return (
     <>
@@ -46,7 +47,9 @@ export default function EducationHub() {
         </div>
       </div>
 
-      {results.length === 0 ? (
+      {loading ? (
+        <p className="text-stone-400">Loading...</p>
+      ) : results.length === 0 ? (
         <p className="text-stone-400">No articles match your search.</p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

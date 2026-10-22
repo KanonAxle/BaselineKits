@@ -139,6 +139,17 @@ export const getProducts = () => apiFetch('/products');
 export const getProduct = (id) => apiFetch(`/products/${id}`);
 export const adminGetProducts = () => adminFetch('/admin/products');
 
+// Education
+export const getEducation = () => apiFetch('/education');
+export const adminGetEducation = () => adminFetch('/admin/education');
+const eduBody = (data) => ({ body: JSON.stringify(data) });
+export const adminCreateEducationCategory = (data) => adminFetch('/admin/education/categories', { method: 'POST', ...eduBody(data) });
+export const adminUpdateEducationCategory = (id, data) => adminFetch(`/admin/education/categories/${id}`, { method: 'PUT', ...eduBody(data) });
+export const adminDeleteEducationCategory = (id) => adminFetch(`/admin/education/categories/${id}`, { method: 'DELETE' });
+export const adminCreateEducationArticle = (data) => adminFetch('/admin/education/articles', { method: 'POST', ...eduBody(data) });
+export const adminUpdateEducationArticle = (slug, data) => adminFetch(`/admin/education/articles/${slug}`, { method: 'PUT', ...eduBody(data) });
+export const adminDeleteEducationArticle = (slug) => adminFetch(`/admin/education/articles/${slug}`, { method: 'DELETE' });
+
 // Kits
 export const getKits = () => apiFetch('/kits');
 export const getKit = (id) => apiFetch(`/kits/${id}`);

@@ -253,6 +253,18 @@ export default function AdminPage() {
             </div>
             <span className="label-tactical text-orange-500 group-hover:text-orange-400 tracking-widest">Open →</span>
           </Link>
+
+          <Link
+            href="/admin/education"
+            className="bg-stone-900/80 border border-stone-800 hover:border-orange-500/50 rounded p-8 flex flex-col gap-4 transition-colors group"
+          >
+            <div className="w-10 h-10 rounded border border-orange-500/40 flex items-center justify-center text-orange-500 font-bold text-lg">E</div>
+            <div>
+              <h2 className="text-xl font-bold uppercase tracking-wider mb-2 group-hover:text-orange-400 transition-colors">Education</h2>
+              <p className="text-stone-400 text-sm leading-relaxed">Add, edit, and remove education cards and categories shown on the public Education page.</p>
+            </div>
+            <span className="label-tactical text-orange-500 group-hover:text-orange-400 tracking-widest">Open →</span>
+          </Link>
         </div>
 
         <div className="mt-12 border-t border-stone-800 pt-10 space-y-10">

@@ -18,6 +18,7 @@ const adminOrdersRouter = require('./routes/adminOrders');
 const hybridRecommendationRouter = require('./routes/hybridRecommendation');
 const addressLookupRouter = require('./routes/addressLookup');
 const contactRouter = require('./routes/contact');
+const educationRouter = require('./routes/education');
 
 // Create the Express app
 const app = express();
@@ -49,6 +50,7 @@ app.use('/api', adminOrdersRouter);
 app.use('/api', hybridRecommendationRouter);
 app.use('/api', addressLookupRouter);
 app.use('/api', contactRouter);
+app.use('/api', educationRouter);
 
 // Health check - visit /api/health to confirm the API is running
 app.get('/api/health', (req, res) => {
