@@ -146,7 +146,8 @@ router.post('/admin/orders', requireAdmin, async (req, res) => {
       });
     }
 
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    // FRONTEND_URL may list several origins; redirects use the first one.
+    const baseUrl = (process.env.FRONTEND_URL || 'http://localhost:3000').split(',')[0].trim().replace(/\/+$/, '');
 
     // Stripe checkout sessions expire max 24 hours
     const expiresAt = Math.floor(Date.now() / 1000) + (24 * 60 * 60);
