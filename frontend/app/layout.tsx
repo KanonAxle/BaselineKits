@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "../lib/cartContext";
+import { Analytics } from '@vercel/analytics/next';
 
 const barlow = Barlow({
   weight: ['400', '500', '600'],
@@ -31,6 +32,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${barlow.variable} ${barlowCondensed.variable} antialiased`} suppressHydrationWarning>
         <CartProvider>{children}</CartProvider>
+        <Analytics />
       </body>
     </html>
   );
