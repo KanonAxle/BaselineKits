@@ -252,7 +252,7 @@ export default function AdminEducationPage() {
       <div className="max-w-5xl mx-auto flex flex-col gap-10">
         <div>
           <Link href="/admin" className="text-xs uppercase tracking-widest text-stone-500 hover:text-orange-400">&larr; Admin</Link>
-          <p className="label-tactical text-orange-500 mt-4 mb-2 tracking-[0.2em]">// Content</p>
+          <p className="label-tactical text-orange-500 mt-4 mb-2 tracking-[0.2em]">{"// Content"}</p>
           <h1 className="text-4xl font-extrabold uppercase tracking-wide">Education</h1>
           <p className="text-stone-400 mt-3 max-w-2xl">
             Add, edit, and remove education cards and categories. Changes appear on the public Education page right away. The &quot;All&quot; filter is built in and always shown.

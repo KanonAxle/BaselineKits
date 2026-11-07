@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import SiteFooter from '../components/SiteFooter';
 import { getProducts } from '../../lib/api';
 
 type Product = {
@@ -175,6 +176,7 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
-    </main>
+          <SiteFooter />
+</main>
   );
 }

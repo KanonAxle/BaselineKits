@@ -1,5 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import SiteFooter from '../components/SiteFooter';
+
+export const metadata: Metadata = {
+  title: "Our Mission",
+  description: "Why BaselineKits exists: quality over quantity, honest curation, and preparedness for real people.",
+  alternates: { canonical: "/mission" },
+};
 
 const PRINCIPLES = [
   {
@@ -60,7 +68,7 @@ export default function MissionPage() {
 
       {/* ── Header ── */}
       <section className="max-w-4xl mx-auto px-6 py-20">
-        <p className="label-tactical text-orange-500 mb-4 tracking-[0.2em]">// Why We Exist</p>
+        <p className="label-tactical text-orange-500 mb-4 tracking-[0.2em]">{"// Why We Exist"}</p>
         <h1 className="text-5xl lg:text-6xl font-extrabold uppercase tracking-wide leading-tight mb-6">
           Our Mission
         </h1>
@@ -78,7 +86,7 @@ export default function MissionPage() {
       <section className="max-w-4xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <div>
-            <p className="label-tactical text-stone-500 mb-3 tracking-[0.2em]">// The Problem</p>
+            <p className="label-tactical text-stone-500 mb-3 tracking-[0.2em]">{"// The Problem"}</p>
             <h2 className="text-3xl font-bold uppercase tracking-wider mb-6">Preparedness Shouldn&apos;t Require a Degree</h2>
             <p className="text-stone-400 leading-relaxed mb-4">
               The emergency preparedness market is flooded with generic, low-quality kits stuffed with
@@ -106,7 +114,7 @@ export default function MissionPage() {
       <div className="border-t border-stone-800 bg-stone-900/20">
         {/* ── Principles ── */}
         <section className="max-w-4xl mx-auto px-6 py-20">
-          <p className="label-tactical text-stone-500 mb-3 tracking-[0.2em]">// How We Operate</p>
+          <p className="label-tactical text-stone-500 mb-3 tracking-[0.2em]">{"// How We Operate"}</p>
           <h2 className="text-3xl font-bold uppercase tracking-wider mb-12">Our Principles</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {PRINCIPLES.map(p => (
@@ -127,7 +135,7 @@ export default function MissionPage() {
 
       {/* ── CTA ── */}
       <section className="max-w-4xl mx-auto px-6 py-20 text-center">
-        <p className="label-tactical text-orange-500 mb-4 tracking-[0.2em]">// Ready to Start?</p>
+        <p className="label-tactical text-orange-500 mb-4 tracking-[0.2em]">{"// Ready to Start?"}</p>
         <h2 className="text-4xl font-extrabold uppercase tracking-wide mb-4">Build Your Baseline</h2>
         <p className="text-stone-400 mb-8 text-lg">Two minutes. Zero guesswork. A kit built for exactly your situation.</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -146,9 +154,7 @@ export default function MissionPage() {
         </div>
       </section>
 
-      <footer className="border-t border-stone-800 text-center text-stone-600 text-xs py-8 tracking-widest uppercase">
-        © {new Date().getFullYear()} BaselineKits. All rights reserved.
-      </footer>
+      <SiteFooter />
     </main>
   );
 }
