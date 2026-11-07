@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 import { adminGetProducts, getAdminToken } from '../../../lib/api';
@@ -279,7 +280,7 @@ export default function ProductsPage() {
                   <div className="overflow-hidden rounded border border-orange-500/30 bg-stone-950/95 p-2 shadow-2xl shadow-black/40 backdrop-blur-sm">
                     <div className="relative w-full aspect-video overflow-hidden rounded mb-2 bg-stone-900">
                       {product.images?.[0] ? (
-                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                        <Image src={product.images[0]} alt={product.name} fill sizes="300px" className="object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-stone-700 text-2xl">{categoryIcons[product.category] || '📦'}</div>
                       )}
@@ -293,10 +294,12 @@ export default function ProductsPage() {
                 {/* Cover image */}
                 <div className={`w-full aspect-video overflow-hidden rounded-t border-b border-stone-800 relative ${product.image_fit === 'contain' ? 'bg-white' : 'bg-stone-900'}`}>
                   {product.images?.[0] ? (
-                    <img
+                    <Image
                       src={product.images[0]}
                       alt={product.name}
-                      className={`w-full h-full ${product.image_fit === 'contain' ? 'object-contain' : 'object-cover group-hover:scale-105 transition-transform duration-300'}`}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
+                      className={product.image_fit === 'contain' ? 'object-contain' : 'object-cover group-hover:scale-105 transition-transform duration-300'}
                       onError={e => { (e.target as HTMLImageElement).parentElement!.classList.add('no-img'); (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
                   ) : (
@@ -308,7 +311,7 @@ export default function ProductsPage() {
                   <div className="absolute bottom-2 left-2 flex items-center gap-1.5">
                     {isUSA(product.country_of_origin || '') && (
                       <div className="bg-stone-950/80 backdrop-blur-sm rounded px-1.5 py-0.5 flex items-center gap-1 border border-stone-700">
-                        <img src="https://flagcdn.com/w20/us.png" alt="US flag" className="w-4 h-auto" />
+                        <Image src="https://flagcdn.com/w20/us.png" alt="US flag" width={20} height={13} unoptimized className="w-4 h-auto" />
                         <span className="label-tactical text-stone-300 tracking-widest" style={{ fontSize: '0.55rem' }}>USA</span>
                       </div>
                     )}

@@ -1,0 +1,2085 @@
+{
+ "url": "http://localhost:3000/?v=4",
+ "at": "2026-11-07T04:47:27.949Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 7,
+   "filled": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "motion": {
+    "elements": 1,
+    "css": 1,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 6270,
+     "screens": 7,
+     "words": 277,
+     "img": 18,
+     "video": 0,
+     "canvas": 0,
+     "svg": 8,
+     "sections": 8,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 17,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fhero-kit.jpg&w=828&q=75",
+      "image?url=%2Flanding%2Fbanner-1.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-2.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-3.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-4.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-5.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-6.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-1.jpg&w=256&q=75"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+     "words": 6,
+     "chars": 32,
+     "lines": 2,
+     "size": 60,
+     "vw": 4.2,
+     "font": "Barlow Condensed",
+     "weight": 800,
+     "tracking": 0.04,
+     "leading": 1.1,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.37,
+     "top": 238,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+     "words": 6,
+     "lines": 2,
+     "size": 60,
+     "font": "Barlow Condensed"
+    },
+    "headings": [
+     {
+      "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+      "words": 6,
+      "chars": 32,
+      "lines": 2,
+      "size": 60,
+      "vw": 4.2,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.37,
+      "top": 238,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "ANSWER",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 216,
+      "vw": 15,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 2425,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "PACK",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 216,
+      "vw": 15,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 3550,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "SHIP",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 216,
+      "vw": 15,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 4675,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "BUILD YOUR BASELINE",
+      "words": 3,
+      "chars": 19,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.23,
+      "top": 5550,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 5,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Barlow",
+       "share": 0.92,
+       "mono": false
+      },
+      {
+       "family": "Barlow Condensed",
+       "share": 0.08,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      12,
+      13,
+      14,
+      16,
+      18,
+      24,
+      36,
+      60,
+      216
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Barlow",
+      "size": 16,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.6
+     },
+     "measureChars": 57,
+     "max": {
+      "size": 216,
+      "vw": 15,
+      "font": "Barlow Condensed",
+      "text": "Answer"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 13,
+     "microLabelShare": 0.158,
+     "microSamples": [
+      "// Emergency Preparedness System",
+      "100% Custom Built",
+      "Quality Sourced Brands",
+      "Hand-Packed & Verified",
+      "// Kit Life",
+      "· 6 photographs"
+     ],
+     "upperShare": 0.42,
+     "centerShare": 0.09,
+     "smallText": 8
+    },
+    "eyebrows": [
+     {
+      "text": "// Emergency Preparedness System",
+      "above": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 197
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0c0c0c",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 0.05
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#0c0a09",
+       "top": 0,
+       "hsl": {
+        "h": 20,
+        "s": 0.14,
+        "l": 0.04
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#a6a09b",
+       "share": 0.63
+      },
+      {
+       "color": "#e7e5e4",
+       "share": 0.13
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.1
+      },
+      {
+       "color": "#79716b",
+       "share": 0.08
+      },
+      {
+       "color": "#ff6900",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#f54a00",
+      "hsl": {
+       "h": 18,
+       "s": 1,
+       "l": 0.48
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Build My Kit →",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 14,
+       "fg": "#ffffff",
+       "bg": "#f54a00"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 3,
+     "inHero": 2,
+     "radius": 4,
+     "height": 54,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 3,
+     "heroLabels": [
+      "BUILD MY KIT →",
+      "BROWSE KITS"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 4,
+     "hairlineSamples": [
+      "nav.border-b.border-stone-800 1440px",
+      "div.flex.flex-wrap 528px",
+      "footer.border-t.border-stone-800 1440px",
+      "div.border-t.border-stone-800 1104px"
+     ],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 4,
+     "roundedMedia": 1,
+     "mediaRadius": 4,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.14
+     }
+    ],
+    "nav": {
+     "links": 8,
+     "fixed": true,
+     "height": 69,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "barlow",
+     "barlow condensed"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 6270,
+    "margins": {
+     "left": 24,
+     "right": 162
+    },
+    "sections": [
+     {
+      "sel": "section.max-w-6xl.mx-auto",
+      "tag": "section",
+      "top": 69,
+      "height": 773,
+      "words": 47,
+      "media": 1,
+      "middle": 75,
+      "heading": {
+       "text": "Your Survival Kit,",
+       "size": 60,
+       "tag": "h1"
+      },
+      "left": 168,
+      "right": 168,
+      "textLeft": 168,
+      "textRight": 771,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.banner-section.relative",
+      "tag": "section",
+      "top": 842,
+      "height": 371,
+      "words": 6,
+      "media": 12,
+      "middle": 865,
+      "heading": null,
+      "left": 0,
+      "right": 0,
+      "textLeft": 24,
+      "textRight": 1197,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.mx-auto.max-w-6xl",
+      "tag": "section",
+      "top": 1213,
+      "height": 277,
+      "words": 18,
+      "media": 0,
+      "middle": 90,
+      "heading": null,
+      "left": 196,
+      "right": 217,
+      "textLeft": 196,
+      "textRight": 217,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.mx-auto.max-w-6xl",
+      "tag": "section",
+      "top": 1491,
+      "height": 556,
+      "words": 75,
+      "media": 0,
+      "middle": 148,
+      "heading": {
+       "text": "Why BaselineKits",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 168,
+      "right": 181,
+      "textLeft": 168,
+      "textRight": 181,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.h-[125svh]",
+      "tag": "section",
+      "top": 2047,
+      "height": 1125,
+      "words": 15,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Answer",
+       "size": 216,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 696,
+      "textLeft": 24,
+      "textRight": 696,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.h-[125svh]",
+      "tag": "section",
+      "top": 3172,
+      "height": 1125,
+      "words": 17,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Pack",
+       "size": 216,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 971,
+      "textLeft": 24,
+      "textRight": 971,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.h-[125svh]",
+      "tag": "section",
+      "top": 4297,
+      "height": 1125,
+      "words": 9,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Ship",
+       "size": 216,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 1026,
+      "textLeft": 24,
+      "textRight": 1026,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.overflow-hidden",
+      "tag": "section",
+      "top": 5422,
+      "height": 536,
+      "words": 32,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Build Your Baseline",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 936,
+      "right": 180,
+      "textLeft": 936,
+      "textRight": 180,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.border-t.border-stone-800",
+      "tag": "footer",
+      "top": 5958,
+      "height": 312,
+      "words": 49,
+      "media": 0,
+      "middle": 138,
+      "heading": null,
+      "left": 168,
+      "right": 260,
+      "textLeft": 168,
+      "textRight": 260,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+      "size": 60,
+      "top": 238,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 168,
+      "n": 5
+     },
+     {
+      "x": 24,
+      "n": 3
+     },
+     {
+      "x": 40,
+      "n": 2
+     },
+     {
+      "x": 936,
+      "n": 2
+     },
+     {
+      "x": 452,
+      "n": 1
+     },
+     {
+      "x": 736,
+      "n": 1
+     },
+     {
+      "x": 1020,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 15,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.16,
+    "voidBox": {
+     "x": 300,
+     "y": 720,
+     "w": 1140,
+     "h": 180
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 8,
+   "filled": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "motion": {
+    "elements": 2,
+    "css": 1,
+    "transitions": 0,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 8183,
+     "screens": 8,
+     "words": 309,
+     "img": 18,
+     "video": 0,
+     "canvas": 0,
+     "svg": 8,
+     "sections": 8,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 5,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fhero-kit.jpg&w=828&q=75",
+      "image?url=%2Flanding%2Fprocess-answer.jpg&w=828&",
+      "image?url=%2Flanding%2Fprocess-pack.jpg&w=828&q=",
+      "image?url=%2Flanding%2Fprocess-ship.jpg&w=828&q=",
+      "image?url=%2Fhero-kit.jpg&w=828&q=75"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+     "words": 6,
+     "chars": 32,
+     "lines": 2,
+     "size": 48,
+     "vw": 6.3,
+     "font": "Barlow Condensed",
+     "weight": 800,
+     "tracking": 0.04,
+     "leading": 1.1,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.94,
+     "top": 194,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+     "words": 6,
+     "lines": 2,
+     "size": 48,
+     "font": "Barlow Condensed"
+    },
+    "headings": [
+     {
+      "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+      "words": 6,
+      "chars": 32,
+      "lines": 2,
+      "size": 48,
+      "vw": 6.3,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 194,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "ANSWER",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 115.2,
+      "vw": 15,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 3403,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "PACK",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 115.2,
+      "vw": 15,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 4683,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "SHIP",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 115.2,
+      "vw": 15,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 5963,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "BUILD YOUR BASELINE",
+      "words": 3,
+      "chars": 19,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 6893,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 5,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Barlow",
+       "share": 0.93,
+       "mono": false
+      },
+      {
+       "family": "Barlow Condensed",
+       "share": 0.07,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      12,
+      13,
+      14,
+      16,
+      18,
+      24,
+      36,
+      48,
+      115
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Barlow",
+      "size": 16,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.6
+     },
+     "measureChars": 68,
+     "max": {
+      "size": 115.2,
+      "vw": 15,
+      "font": "Barlow Condensed",
+      "text": "Answer"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 13,
+     "microLabelShare": 0.14,
+     "microSamples": [
+      "// Emergency Preparedness System",
+      "100% Custom Built",
+      "Quality Sourced Brands",
+      "Hand-Packed & Verified",
+      "// Kit Life",
+      "· 6 photographs"
+     ],
+     "upperShare": 0.34,
+     "centerShare": 0.08,
+     "smallText": 6
+    },
+    "eyebrows": [
+     {
+      "text": "// Emergency Preparedness System",
+      "above": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 153
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0c0c0c",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 0.05
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#0c0a09",
+       "top": 0,
+       "hsl": {
+        "h": 20,
+        "s": 0.14,
+        "l": 0.04
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#a6a09b",
+       "share": 0.67
+      },
+      {
+       "color": "#e7e5e4",
+       "share": 0.12
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.09
+      },
+      {
+       "color": "#79716b",
+       "share": 0.07
+      },
+      {
+       "color": "#ff6900",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#f54a00",
+      "hsl": {
+       "h": 18,
+       "s": 1,
+       "l": 0.48
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Build My Kit →",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 14,
+       "fg": "#ffffff",
+       "bg": "#f54a00"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 3,
+     "inHero": 2,
+     "radius": 4,
+     "height": 54,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 3,
+     "heroLabels": [
+      "BUILD MY KIT →",
+      "BROWSE KITS"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 4,
+     "hairlineSamples": [
+      "nav.border-b.border-stone-800 768px",
+      "div.flex.flex-wrap 720px",
+      "footer.border-t.border-stone-800 768px",
+      "div.border-t.border-stone-800 720px"
+     ],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 4,
+     "roundedMedia": 1,
+     "mediaRadius": 4,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.28
+     }
+    ],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 73,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "barlow",
+     "barlow condensed"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 8183,
+    "margins": {
+     "left": 24,
+     "right": 72
+    },
+    "sections": [
+     {
+      "sel": "section.max-w-6xl.mx-auto",
+      "tag": "section",
+      "top": 73,
+      "height": 1038,
+      "words": 47,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Your Survival Kit,",
+       "size": 48,
+       "tag": "h1"
+      },
+      "left": 24,
+      "right": 96,
+      "textLeft": 24,
+      "textRight": 105,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.banner-section.relative",
+      "tag": "section",
+      "top": 1111,
+      "height": 273,
+      "words": 6,
+      "media": 0,
+      "middle": 458,
+      "heading": null,
+      "left": 0,
+      "right": 0,
+      "textLeft": 24,
+      "textRight": 525,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.mx-auto.max-w-6xl",
+      "tag": "section",
+      "top": 1384,
+      "height": 357,
+      "words": 18,
+      "media": 0,
+      "middle": 105,
+      "heading": null,
+      "left": 82,
+      "right": 69,
+      "textLeft": 82,
+      "textRight": 69,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.mx-auto.max-w-6xl",
+      "tag": "section",
+      "top": 1741,
+      "height": 1232,
+      "words": 120,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Why BaselineKits",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 223,
+      "textLeft": 24,
+      "textRight": 223,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.h-[125svh]",
+      "tag": "section",
+      "top": 2973,
+      "height": 1280,
+      "words": 15,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Answer",
+       "size": 115,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 355,
+      "textLeft": 24,
+      "textRight": 355,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.h-[125svh]",
+      "tag": "section",
+      "top": 4253,
+      "height": 1280,
+      "words": 17,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Pack",
+       "size": 115,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 355,
+      "textLeft": 24,
+      "textRight": 355,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.h-[125svh]",
+      "tag": "section",
+      "top": 5533,
+      "height": 1280,
+      "words": 9,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Ship",
+       "size": 115,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 382,
+      "textLeft": 24,
+      "textRight": 382,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.overflow-hidden",
+      "tag": "section",
+      "top": 6813,
+      "height": 843,
+      "words": 32,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Build Your Baseline",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 341,
+      "textLeft": 24,
+      "textRight": 341,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.border-t.border-stone-800",
+      "tag": "footer",
+      "top": 7656,
+      "height": 528,
+      "words": 49,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 24,
+      "right": 154,
+      "textLeft": 24,
+      "textRight": 154,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+      "size": 48,
+      "top": 194,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 24,
+      "n": 15
+     },
+     {
+      "x": 40,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 17,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 9,
+   "filled": [
+    0.99,
+    1,
+    1,
+    0.99,
+    0.99,
+    0.99,
+    0.99,
+    0.99,
+    0.99
+   ],
+   "motion": {
+    "elements": 2,
+    "css": 1,
+    "transitions": 0,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 7527,
+     "screens": 8.9,
+     "words": 309,
+     "img": 18,
+     "video": 0,
+     "canvas": 0,
+     "svg": 8,
+     "sections": 8,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 17,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fhero-kit.jpg&w=640&q=75",
+      "image?url=%2Flanding%2Fbanner-1.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-2.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-3.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-4.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-5.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-6.jpg&w=256&q=75",
+      "image?url=%2Flanding%2Fbanner-1.jpg&w=256&q=75"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+     "words": 6,
+     "chars": 32,
+     "lines": 2,
+     "size": 30,
+     "vw": 7.7,
+     "font": "Barlow Condensed",
+     "weight": 800,
+     "tracking": 0.04,
+     "leading": 1.1,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.88,
+     "top": 194,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+     "words": 6,
+     "lines": 2,
+     "size": 30,
+     "font": "Barlow Condensed"
+    },
+    "headings": [
+     {
+      "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+      "words": 6,
+      "chars": 32,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 194,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "WHY BASELINEKITS",
+      "words": 2,
+      "chars": 16,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Barlow Condensed",
+      "weight": 700,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 1912,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "ANSWER",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 72,
+      "vw": 18.5,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 3512,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "PACK",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 72,
+      "vw": 18.5,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 4567,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "SHIP",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 72,
+      "vw": 18.5,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 5622,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "BUILD YOUR BASELINE",
+      "words": 3,
+      "chars": 19,
+      "lines": 1,
+      "size": 36,
+      "vw": 9.2,
+      "font": "Barlow Condensed",
+      "weight": 800,
+      "tracking": 0.04,
+      "leading": 1.1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 6402,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 6,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Barlow",
+       "share": 0.93,
+       "mono": false
+      },
+      {
+       "family": "Barlow Condensed",
+       "share": 0.07,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      12,
+      13,
+      14,
+      16,
+      18,
+      24,
+      30,
+      36,
+      72
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Barlow",
+      "size": 16,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.6
+     },
+     "measureChars": 43,
+     "max": {
+      "size": 72,
+      "vw": 18.5,
+      "font": "Barlow Condensed",
+      "text": "Answer"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 13,
+     "microLabelShare": 0.14,
+     "microSamples": [
+      "// Emergency Preparedness System",
+      "100% Custom Built",
+      "Quality Sourced Brands",
+      "Hand-Packed & Verified",
+      "// Kit Life",
+      "· 6 photographs"
+     ],
+     "upperShare": 0.34,
+     "centerShare": 0.08,
+     "smallText": 6
+    },
+    "eyebrows": [
+     {
+      "text": "// Emergency Preparedness System",
+      "above": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 153
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0c0c0c",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 0.05
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#0c0a09",
+       "top": 0,
+       "hsl": {
+        "h": 20,
+        "s": 0.14,
+        "l": 0.04
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#a6a09b",
+       "share": 0.67
+      },
+      {
+       "color": "#e7e5e4",
+       "share": 0.12
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.09
+      },
+      {
+       "color": "#79716b",
+       "share": 0.07
+      },
+      {
+       "color": "#ff6900",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#f54a00",
+      "hsl": {
+       "h": 18,
+       "s": 1,
+       "l": 0.48
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Build My Kit →",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 14,
+       "fg": "#ffffff",
+       "bg": "#f54a00"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 3,
+     "inHero": 2,
+     "radius": 4,
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 3,
+     "heroLabels": [
+      "BUILD MY KIT →",
+      "BROWSE KITS"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 4,
+     "hairlineSamples": [
+      "nav.border-b.border-stone-800 390px",
+      "div.flex.flex-wrap 342px",
+      "footer.border-t.border-stone-800 390px",
+      "div.border-t.border-stone-800 342px"
+     ],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 4,
+     "roundedMedia": 1,
+     "mediaRadius": 4,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 73,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "barlow",
+     "barlow condensed"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 7527,
+    "margins": {
+     "left": 24,
+     "right": 24
+    },
+    "sections": [
+     {
+      "sel": "section.max-w-6xl.mx-auto",
+      "tag": "section",
+      "top": 73,
+      "height": 1000,
+      "words": 47,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Your Survival Kit,",
+       "size": 30,
+       "tag": "h1"
+      },
+      "left": 24,
+      "right": 24,
+      "textLeft": 24,
+      "textRight": 25,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.banner-section.relative",
+      "tag": "section",
+      "top": 1073,
+      "height": 305,
+      "words": 6,
+      "media": 12,
+      "middle": 1118,
+      "heading": null,
+      "left": 0,
+      "right": 0,
+      "textLeft": 24,
+      "textRight": 147,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.mx-auto.max-w-6xl",
+      "tag": "section",
+      "top": 1378,
+      "height": 470,
+      "words": 18,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 34,
+      "right": 60,
+      "textLeft": 34,
+      "textRight": 60,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.mx-auto.max-w-6xl",
+      "tag": "section",
+      "top": 1848,
+      "height": 1310,
+      "words": 120,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Why BaselineKits",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 32,
+      "textLeft": 24,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.h-[125svh]",
+      "tag": "section",
+      "top": 3157,
+      "height": 1055,
+      "words": 15,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Answer",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 20,
+      "textLeft": 24,
+      "textRight": 20,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.h-[125svh]",
+      "tag": "section",
+      "top": 4212,
+      "height": 1055,
+      "words": 17,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Pack",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 29,
+      "textLeft": 24,
+      "textRight": 29,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.h-[125svh]",
+      "tag": "section",
+      "top": 5267,
+      "height": 1055,
+      "words": 9,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Ship",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 43,
+      "textLeft": 24,
+      "textRight": 43,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.relative.overflow-hidden",
+      "tag": "section",
+      "top": 6322,
+      "height": 620,
+      "words": 32,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Build Your Baseline",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 42,
+      "textLeft": 24,
+      "textRight": 42,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.border-t.border-stone-800",
+      "tag": "footer",
+      "top": 6943,
+      "height": 584,
+      "words": 49,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 24,
+      "right": 45,
+      "textLeft": 24,
+      "textRight": 45,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "YOUR SURVIVAL KIT, BUILT FOR YOU",
+      "size": 30,
+      "top": 194,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 24,
+      "n": 15
+     },
+     {
+      "x": 40,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 17,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "eyebrow",
+   "width": 1440,
+   "message": "1 eyebrow/kicker label(s) above headings: \"// Emergency Preparedness System\" above \"YOUR SURVIVAL KIT, BUILT FOR YOU\"",
+   "fix": "Delete them. If the label carried real information, fold it into the headline or the supporting sentence.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "micro-label",
+   "width": 1440,
+   "message": "13 tiny uppercase letter-spaced labels (e.g. \"// Emergency Preparedness System\", \"100% Custom Built\", \"Quality Sourced Brands\", \"Hand-Packed & Verified\").",
+   "fix": "Use sentence-case text at a readable size, or delete the label.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "hairline",
+   "width": 1440,
+   "message": "4 thin rule(s)/divider line(s): nav.border-b.border-stone-800 1440px | div.flex.flex-wrap 528px | footer.border-t.border-stone-800 1440px | div.border-t.border-stone-800 1104px",
+   "fix": "Delete. Separate with space, a tone change, or scale. Lines are only for real tables and form fields.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"Build My Kit →\" 3.6:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "FAIL",
+   "id": "small-text",
+   "width": 1440,
+   "message": "8 text blocks under 13px.",
+   "fix": "Nothing meant to be read goes below 13px.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "focal-point",
+   "width": 1440,
+   "message": "The first screen has no dominant element: the largest type is 60px (4.2vw) and no single picture holds a third of the viewport.",
+   "fix": "Make one thing lead: the headline at display size, or one large picture. A grid of many small pictures is not one thing; in blind tests jurors marked a first screen without a headline down every time. On the strongest studied sites the largest type has a median of 8.4vw."
+  },
+  {
+   "level": "FAIL",
+   "id": "off-centre",
+   "width": 1440,
+   "message": "The page sits off-centre: its content comes to 24px from the left edge but only to 162px from the right, at 1440px.",
+   "fix": "Give the page one pair of equal margins. Check the wrapper for a max-width without margin-inline: auto, a grid with an empty last column, or padding on one side only. If one side is meant to hold air, it must still be closed by something that reaches the margin (a picture, the navigation's last item, a figure).",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "lopsided",
+   "width": 1440,
+   "message": "A section keeps its content on one side and leaves 936px of the width empty: \"Build Your Baseline\".",
+   "fix": "Fill the other side with what the section has (its picture, a second column, the figure), or defend the void in one sentence."
+  },
+  {
+   "level": "WARN",
+   "id": "pinned-over-picture",
+   "width": 1440,
+   "message": "Pinned large text slides across pictures while the page scrolls: \"ANSWER\" (screen 3, 100% over a picture); \"PACK\" (screen 5, 100% over a picture); \"SHIP\" (screen 6, 100% over a picture)",
+   "fix": "Jurors read a pinned title crossing drawings or photographs as a collision. Keep the pictures in the column the title does not occupy, or unpin it.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "still-page",
+   "width": 1440,
+   "message": "Only 1 element(s) moved while the page loaded and scrolled.",
+   "fix": "Build the motion layer (SKILL.md step 9, references/motion.md): the signature move, an entrance for the parts of every section, feedback on every control, and one moving picture. Transform and opacity only, with a reduced-motion fallback."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/home/user/workspace/BaselineKits/.taste-skill/inspect/desktop-fold.jpg",
+   "pages": [
+    "/home/user/workspace/BaselineKits/.taste-skill/inspect/desktop-page-01.jpg",
+    "/home/user/workspace/BaselineKits/.taste-skill/inspect/desktop-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/home/user/workspace/BaselineKits/.taste-skill/inspect/tablet-fold.jpg",
+   "pages": [
+    "/home/user/workspace/BaselineKits/.taste-skill/inspect/tablet-page-01.jpg",
+    "/home/user/workspace/BaselineKits/.taste-skill/inspect/tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/home/user/workspace/BaselineKits/.taste-skill/inspect/mobile-fold.jpg",
+   "pages": [
+    "/home/user/workspace/BaselineKits/.taste-skill/inspect/mobile-page-01.jpg",
+    "/home/user/workspace/BaselineKits/.taste-skill/inspect/mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

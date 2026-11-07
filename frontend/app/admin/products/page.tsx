@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Product, ProductColor, ProductSize } from '../../../lib/types';
 import {
   adminGetProducts, getAdminToken,
@@ -895,7 +896,7 @@ export default function AdminProductsPage() {
                         >⠿</span>
                         <div className="w-10 h-10 rounded border border-stone-700 overflow-hidden shrink-0 bg-stone-800 flex items-center justify-center">
                           {url ? (
-                            <img src={url} alt="" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                            <Image src={url} alt="" width={40} height={40} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           ) : (
                             <span className="text-stone-700 text-xs">?</span>
                           )}
@@ -1387,7 +1388,7 @@ export default function AdminProductsPage() {
                 {/* Cover image thumbnail */}
                 {product.images?.[0] && (
                   <div className="w-12 h-12 rounded border border-stone-700 overflow-hidden shrink-0 bg-stone-800">
-                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                    <Image src={product.images[0]} alt={product.name} width={48} height={48} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                   </div>
                 )}
                 <div className="flex flex-col min-w-0">

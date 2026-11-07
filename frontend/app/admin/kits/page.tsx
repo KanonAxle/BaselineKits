@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Kit, KitCollection, Product, ProductColor, ProductSize, VariantGroup, VariantOption } from '../../../lib/types';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   getAdminToken,
@@ -569,7 +570,7 @@ export default function AdminKitsPage() {
                       {imageUploading ? 'Uploading image...' : 'Upload Image'}
                     </button>
                     {form.image_url && (
-                      <img src={form.image_url} alt="Kit preview" className="w-12 h-12 object-cover rounded border border-stone-700" />
+                      <Image src={form.image_url} alt="Kit preview" width={48} height={48} className="w-12 h-12 object-cover rounded border border-stone-700" />
                     )}
                   </div>
                 </div>
@@ -782,10 +783,12 @@ export default function AdminKitsPage() {
                             {/* Image */}
                             <div className="w-full aspect-square bg-stone-900 overflow-hidden relative">
                               {img ? (
-                                <img
+                                <Image
                                   src={img}
                                   alt={p.name}
-                                  className="w-full h-full object-contain p-1"
+                                  fill
+                                  sizes="180px"
+                                  className="object-contain p-1"
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center text-stone-700 text-xs">No image</div>
@@ -1081,7 +1084,7 @@ export default function AdminKitsPage() {
             {filteredKits.map(kit => (
               <div key={kit.id} className="bg-stone-900/60 border border-stone-800 hover:border-stone-700 rounded p-5 flex items-start gap-4 transition-colors">
                 {kit.image_url && (
-                  <img src={kit.image_url} alt={kit.name} className="w-16 h-16 object-cover rounded border border-stone-700 flex-shrink-0" />
+                  <Image src={kit.image_url} alt={kit.name} width={64} height={64} className="w-16 h-16 object-cover rounded border border-stone-700 flex-shrink-0" />
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-4">
