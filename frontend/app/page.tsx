@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from './components/Navbar';
 import SiteFooter from './components/SiteFooter';
+import FeatureColumns from './components/FeatureColumns';
 
 // ─── Category Icons ────────────────────────────────────────────────────────
 const KIT_CATEGORIES = [
@@ -70,41 +71,32 @@ const KIT_CATEGORIES = [
   },
 ];
 
-// ─── How-It-Works Icons ────────────────────────────────────────────────────
-const HOW_STEPS = [
+// ─── Photo Banner ──────────────────────────────────────────────────────────
+const BANNER_PHOTOS = [
+  { src: '/landing/banner-1.jpg', alt: 'Open survival backpack with water, first aid, and flashlight' },
+  { src: '/landing/banner-2.jpg', alt: 'Hands packing emergency supplies into a kit bag' },
+  { src: '/landing/banner-3.jpg', alt: 'Emergency supplies laid out: water bottle, crank flashlight, first aid kit' },
+  { src: '/landing/banner-4.jpg', alt: 'Hiker walking a forest trail at dusk with a loaded backpack' },
+  { src: '/landing/banner-5.jpg', alt: 'Car trunk at dusk with an organized emergency kit' },
+  { src: '/landing/banner-6.jpg', alt: 'Hand holding a crank flashlight in the dark' },
+];
+
+// ─── How It Works ──────────────────────────────────────────────────────────
+const STAGES = [
   {
-    num: '01',
-    label: 'Answer Questions',
-    desc: 'Tell us your use case, duration, and environment.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-        <path d="M9 11l3 3L22 4" />
-        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-      </svg>
-    ),
+    verb: 'Answer',
+    img: '/landing/process-answer.jpg',
+    sentence: 'Tell us your use case, duration, and environment — two minutes of plain questions.',
   },
   {
-    num: '02',
-    label: 'Get a Recommendation',
-    desc: 'We match you to the right kit and let you customize it.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-        <circle cx="11" cy="11" r="8" />
-        <path d="M21 21l-4.35-4.35M11 8v6M8 11h6" />
-      </svg>
-    ),
+    verb: 'Pack',
+    img: '/landing/process-pack.jpg',
+    sentence: 'We match you to the right kit, you customize it, and we hand-pack every item.',
   },
   {
-    num: '03',
-    label: 'We Pack & Ship',
-    desc: 'We hand-pack your kit and ship it directly to you.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-        <path d="M5 12H3l9-9 9 9h-2" />
-        <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
-        <path d="M9 21v-6h6v6" />
-      </svg>
-    ),
+    verb: 'Ship',
+    img: '/landing/process-ship.jpg',
+    sentence: 'Verified, sealed, and shipped straight to your door.',
   },
 ];
 
@@ -157,7 +149,7 @@ export default function Home() {
             <span className="text-orange-500">Built for You</span>
           </h1>
           <p className="text-stone-400 text-lg leading-relaxed mb-10 max-w-lg">
-            Answer a few questions about your situation and we&apos;ll assemble a custom kit from quality brands — packed and shipped to your door.
+            Answer a few questions about your situation and we&rsquo;ll assemble a custom kit from quality brands — packed and shipped to your door.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
@@ -179,7 +171,7 @@ export default function Home() {
             {['100% Custom Built', 'Quality Sourced Brands', 'Hand-Packed & Verified'].map(t => (
               <div key={t} className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-                <span className="label-tactical text-stone-500 tracking-widest">{t}</span>
+                <span className="label-tactical text-stone-400 tracking-widest">{t}</span>
               </div>
             ))}
           </div>
@@ -193,115 +185,110 @@ export default function Home() {
             width={1200}
             height={800}
             priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="h-auto w-full max-w-md rounded border border-stone-800 shadow-2xl shadow-black/60"
+            sizes="(max-width: 1024px) 100vw, 55vw"
+            className="h-auto w-full max-w-xl rounded"
           />
         </div>
       </section>
 
+      {/* ── Auto-scrolling photo banner (full bleed) ── */}
+      <section aria-label="Kit life photographs" className="banner-section relative overflow-hidden bg-stone-950">
+        <p className="label-tactical absolute left-6 top-6 z-10 tracking-[0.2em] text-stone-400">
+          {"// Kit Life"} <span className="text-stone-500">· 6 photographs</span>
+        </p>
+        <div className="banner-track flex w-max items-center py-16 sm:py-20">
+          {[...BANNER_PHOTOS, ...BANNER_PHOTOS].map((photo, i) => (
+            <div
+              key={i}
+              aria-hidden={i >= BANNER_PHOTOS.length}
+              className="relative mr-[5vw] aspect-[3/4] w-[34vw] shrink-0 overflow-hidden sm:w-[11vw]"
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                sizes="(max-width: 640px) 34vw, 11vw"
+                className="object-cover brightness-[0.85] contrast-[1.05]"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ── Kit Categories Strip ── */}
-      <section className="border-y border-stone-800 bg-stone-900/30">
-        <div className="max-w-6xl mx-auto px-6 py-10">
-          <p className="label-tactical text-stone-600 text-center mb-8 tracking-[0.2em]">{"// What's In Every Kit"}</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {KIT_CATEGORIES.map(cat => (
-              <Link
-                key={cat.label}
-                href={`/products?category=${cat.category}`}
-                className="flex flex-col items-center gap-3 p-4 rounded border border-stone-800 hover:border-orange-500/40 hover:bg-stone-900 transition-all group text-center"
-              >
-                <span className="text-stone-500 group-hover:text-orange-400 transition-colors">
-                  {cat.icon}
-                </span>
-                <span className="label-tactical text-stone-600 group-hover:text-stone-400 transition-colors tracking-wider leading-tight">
-                  {cat.label}
-                </span>
-              </Link>
-            ))}
+      <section className="mx-auto max-w-6xl px-6 py-16">
+        <p className="label-tactical text-stone-400 text-center mb-10 tracking-[0.2em]">{"// What's In Every Kit"}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+          {KIT_CATEGORIES.map(cat => (
+            <Link
+              key={cat.label}
+              href={`/products?category=${cat.category}`}
+              className="flex flex-col items-center gap-3 p-2 text-center group"
+            >
+              <span className="text-stone-500 group-hover:text-orange-400 transition-colors">
+                {cat.icon}
+              </span>
+              <span className="label-tactical text-stone-400 group-hover:text-white transition-colors tracking-wider leading-tight">
+                {cat.label}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Features: one-size name columns ── */}
+      <FeatureColumns />
+
+      {/* ── How It Works: one verb at a time (full bleed) ── */}
+      {STAGES.map((stage, i) => (
+        <section key={stage.verb} aria-label={`Step ${i + 1}: ${stage.verb}`} className="relative h-[125svh] overflow-hidden">
+          <Image
+            src={stage.img}
+            alt={stage.sentence}
+            fill
+            sizes="100vw"
+            className="object-cover brightness-[0.55] contrast-[1.05]"
+          />
+          <div className="sticky top-[42svh]">
+            <h2 className="px-6 text-[clamp(72px,15vw,260px)] font-extrabold uppercase leading-none tracking-wide text-white">
+              {stage.verb}
+            </h2>
+          </div>
+          <p className="absolute bottom-8 left-6 max-w-md rounded bg-stone-950/80 px-4 py-3 text-base leading-relaxed text-stone-200">
+            {stage.sentence}
+          </p>
+        </section>
+      ))}
+
+      {/* ── CTA: the object returns ── */}
+      <section className="relative overflow-hidden">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center lg:grid-cols-12">
+          {/* Image: over-scaled, cropped by the section edges */}
+          <div className="order-2 lg:order-1 lg:col-span-8 lg:-ml-[12%] lg:-mb-[14%]">
+            <Image
+              src="/hero-kit.jpg"
+              alt="Your kit, hand-packed and ready to ship"
+              width={1200}
+              height={800}
+              sizes="(max-width: 1024px) 100vw, 70vw"
+              className="h-auto w-full"
+            />
+          </div>
+          {/* Text */}
+          <div className="order-1 px-6 pt-20 lg:order-2 lg:col-span-4 lg:py-32">
+            <h2 className="text-4xl font-extrabold uppercase tracking-wide leading-tight">Build Your Baseline</h2>
+            <p className="mt-4 max-w-md text-lg leading-relaxed text-stone-400">
+              Two minutes of questions. A kit built for exactly your situation — packed, verified, and shipped.
+            </p>
+            <p className="mt-6 label-tactical tracking-widest text-stone-400">Free shipping · Hand-packed in the USA</p>
+            <Link
+              href="/quiz"
+              className="mt-8 inline-block bg-orange-600 hover:bg-orange-500 text-white font-bold px-10 py-5 rounded transition-colors uppercase tracking-widest text-sm"
+            >
+              Start the Assessment →
+            </Link>
           </div>
         </div>
-      </section>
-
-      {/* ── How It Works ── */}
-      <section className="max-w-5xl mx-auto px-6 py-24">
-        <p className="label-tactical text-stone-500 text-center mb-3 tracking-[0.2em]">{"// Procedure"}</p>
-        <h2 className="text-3xl font-bold text-center mb-16 uppercase tracking-wider">How It Works</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {HOW_STEPS.map((step, i) => (
-            <div key={step.num} className="relative bg-stone-900/60 border border-stone-800 rounded p-8 flex flex-col gap-4">
-              {/* Connector line (not on last) */}
-              {i < 2 && (
-                <div className="hidden sm:block absolute top-1/2 -right-2 w-4 h-px bg-stone-800 z-10" />
-              )}
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded border border-orange-500/40 flex items-center justify-center text-orange-500 shrink-0">
-                  {step.icon}
-                </div>
-                <span className="label-tactical text-orange-500/60 text-lg font-bold">{step.num}</span>
-              </div>
-              <h3 className="font-bold text-lg uppercase tracking-wider">{step.label}</h3>
-              <p className="text-stone-400 text-sm leading-relaxed">{step.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Features ── */}
-      <section className="border-t border-stone-800 bg-stone-900/20">
-        <div className="max-w-5xl mx-auto px-6 py-20 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {[
-            {
-              title: 'Sourced from Trusted Brands',
-              desc: "We don't manufacture — we curate. Every item comes from established gear and supply companies and is hand-selected for reliability.",
-              icon: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-              ),
-            },
-            {
-              title: 'Tailored to Your Needs',
-              desc: 'No generic kits. Every order starts with your answers — your scenario, your environment, your duration — and is built from there.',
-              icon: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
-                </svg>
-              ),
-            },
-            {
-              title: 'Packed & Shipped Fast',
-              desc: 'Once you place your order, we hand-pack and verify your kit before it ships. Every item is checked before it leaves our facility.',
-              icon: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-                  <rect x="1" y="3" width="15" height="13" rx="1" />
-                  <path d="M16 8h4l3 5v3h-7V8z" />
-                  <circle cx="5.5" cy="18.5" r="2.5" />
-                  <circle cx="18.5" cy="18.5" r="2.5" />
-                </svg>
-              ),
-            },
-          ].map(f => (
-            <div key={f.title} className="flex flex-col gap-4 p-6 border border-stone-800 rounded bg-stone-900/40">
-              <span className="text-orange-500">{f.icon}</span>
-              <h3 className="font-bold text-base uppercase tracking-wider">{f.title}</h3>
-              <p className="text-stone-400 text-sm leading-relaxed">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── CTA Banner ── */}
-      <section className="max-w-4xl mx-auto px-6 py-20 text-center">
-        <p className="label-tactical text-orange-500 mb-4 tracking-[0.2em]">{"// Ready?"}</p>
-        <h2 className="text-4xl font-extrabold uppercase tracking-wide mb-4">Build Your Baseline</h2>
-        <p className="text-stone-400 mb-8 text-lg">Two minutes. Zero guesswork. A kit built for exactly your situation.</p>
-        <Link
-          href="/quiz"
-          className="inline-block bg-orange-600 hover:bg-orange-500 text-white font-bold px-10 py-5 rounded transition-colors uppercase tracking-widest text-sm"
-        >
-          Start the Assessment →
-        </Link>
       </section>
 
       {/* Footer */}
