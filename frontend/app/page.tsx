@@ -185,16 +185,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right: brand logo */}
+        {/* Right: lifestyle hero image */}
         <div className="flex items-center justify-center lg:justify-end">
           <Image
-            src="/baselinekits-wordmark.png"
-            alt="BaselineKits"
-            width={1979}
-            height={237}
+            src="/hero-kit.jpg"
+            alt="Hand-packed emergency survival kit with water filter, first aid supplies, flashlight, paracord, and food rations"
+            width={1200}
+            height={800}
             priority
-            sizes="(max-width: 1024px) 100vw, 66vw"
-            className="h-auto w-full max-w-2xl"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="h-auto w-full max-w-md rounded border border-stone-800 shadow-2xl shadow-black/60"
           />
         </div>
       </section>
