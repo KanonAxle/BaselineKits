@@ -154,14 +154,13 @@ export default function Home() {
         {/* Right: brand logo */}
         <div className="flex items-center justify-center lg:justify-end">
           <Image
-            src="/baselinekits-logo.png"
+            src="/baselinekits-wordmark.png"
             alt="BaselineKits"
-            width={768}
-            height={768}
-            unoptimized
+            width={1979}
+            height={237}
             priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="h-auto w-full max-w-sm"
+            sizes="(max-width: 1024px) 100vw, 66vw"
+            className="h-auto w-full max-w-2xl"
           />
         </div>
       </section>

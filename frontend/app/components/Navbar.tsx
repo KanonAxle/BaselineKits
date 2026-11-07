@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { getToken, removeToken } from '../../lib/api';
 import { useCart } from '../../lib/cartContext';
@@ -41,8 +42,15 @@ export default function Navbar() {
       <div className="flex items-center justify-between px-4 py-4 sm:px-8">
         {/* Left: Logo + nav links */}
         <div className="flex items-center gap-8">
-          <Link href="/" className="text-sm font-extrabold uppercase tracking-[0.18em] hover:text-orange-500 transition-colors">
-            BaselineKits
+          <Link href="/" aria-label="BaselineKits home" className="shrink-0">
+            <Image
+              src="/baselinekits-wordmark.png"
+              alt="BaselineKits"
+              width={1979}
+              height={237}
+              priority
+              className="h-auto w-32 sm:w-40"
+            />
           </Link>
           <div className="hidden items-center gap-5 xl:gap-6 lg:flex">
             <Link href="/quiz" className="text-stone-400 hover:text-white transition-colors text-xs uppercase tracking-widest font-semibold">
