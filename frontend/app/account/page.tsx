@@ -297,7 +297,7 @@ export default function AccountPage() {
         <h2 className="text-xl font-bold mb-4">Order History</h2>
         {orders.length === 0 ? (
           <div className="bg-stone-900 border border-stone-800 rounded-xl p-8 text-center">
-            <p className="text-stone-400 mb-4">You haven't placed any orders yet.</p>
+            <p className="text-stone-400 mb-4">You haven&apos;t placed any orders yet.</p>
             <Link href="/quiz" className="bg-orange-600 hover:bg-orange-500 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
               Build My First Kit →
             </Link>

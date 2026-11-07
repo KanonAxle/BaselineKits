@@ -1,5 +1,12 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "How BaselineKits collects, uses, and protects your information.",
+  alternates: { canonical: "/privacy" },
+};
 
 const sections = [
   {

@@ -7,7 +7,7 @@ export default function CancelPage() {
         <div className="text-6xl mb-6">↩️</div>
         <h1 className="text-3xl font-bold mb-3">Payment Cancelled</h1>
         <p className="text-stone-400 mb-8">
-          No worries — your kit recommendation is saved. You can go back and try again whenever you're ready.
+          No worries — your kit recommendation is saved. You can go back and try again whenever you&apos;re ready.
         </p>
         <div className="flex gap-4 justify-center">
           <Link

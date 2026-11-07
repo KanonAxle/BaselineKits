@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from './components/Navbar';
+import SiteFooter from './components/SiteFooter';
 
 // ─── Category Icons ────────────────────────────────────────────────────────
 const KIT_CATEGORIES = [
@@ -111,19 +112,52 @@ const HOW_STEPS = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-stone-950 text-white">
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "BaselineKits",
+          url: "https://www.baselinekits.com",
+          logo: "https://www.baselinekits.com/baselinekits-logo.png",
+          description: "Custom survival kits built from quality brands, hand-packed and shipped to your door.",
+          parentOrganization: {
+            "@type": "Organization",
+            name: "Harrington Innovations LLC",
+          },
+        }),
+      }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "BaselineKits",
+          url: "https://www.baselinekits.com",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://www.baselinekits.com/products?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }),
+      }}
+    />
       <Navbar />
 
       {/* ── Hero ── */}
       <section className="max-w-6xl mx-auto px-6 py-20 lg:py-32 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Left: copy */}
         <div>
-          <p className="label-tactical text-orange-500 mb-5 tracking-[0.2em]">// Emergency Preparedness System</p>
+          <p className="label-tactical text-orange-500 mb-5 tracking-[0.2em]">{"// Emergency Preparedness System"}</p>
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-wide leading-tight uppercase mb-6">
             Your Survival Kit,<br />
             <span className="text-orange-500">Built for You</span>
           </h1>
           <p className="text-stone-400 text-lg leading-relaxed mb-10 max-w-lg">
-            Answer a few questions about your situation and we'll assemble a custom kit from quality brands — packed and shipped to your door.
+            Answer a few questions about your situation and we&apos;ll assemble a custom kit from quality brands — packed and shipped to your door.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
@@ -168,7 +202,7 @@ export default function Home() {
       {/* ── Kit Categories Strip ── */}
       <section className="border-y border-stone-800 bg-stone-900/30">
         <div className="max-w-6xl mx-auto px-6 py-10">
-          <p className="label-tactical text-stone-600 text-center mb-8 tracking-[0.2em]">// What's In Every Kit</p>
+          <p className="label-tactical text-stone-600 text-center mb-8 tracking-[0.2em]">{"// What's In Every Kit"}</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {KIT_CATEGORIES.map(cat => (
               <Link
@@ -190,7 +224,7 @@ export default function Home() {
 
       {/* ── How It Works ── */}
       <section className="max-w-5xl mx-auto px-6 py-24">
-        <p className="label-tactical text-stone-500 text-center mb-3 tracking-[0.2em]">// Procedure</p>
+        <p className="label-tactical text-stone-500 text-center mb-3 tracking-[0.2em]">{"// Procedure"}</p>
         <h2 className="text-3xl font-bold text-center mb-16 uppercase tracking-wider">How It Works</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {HOW_STEPS.map((step, i) => (
@@ -259,7 +293,7 @@ export default function Home() {
 
       {/* ── CTA Banner ── */}
       <section className="max-w-4xl mx-auto px-6 py-20 text-center">
-        <p className="label-tactical text-orange-500 mb-4 tracking-[0.2em]">// Ready?</p>
+        <p className="label-tactical text-orange-500 mb-4 tracking-[0.2em]">{"// Ready?"}</p>
         <h2 className="text-4xl font-extrabold uppercase tracking-wide mb-4">Build Your Baseline</h2>
         <p className="text-stone-400 mb-8 text-lg">Two minutes. Zero guesswork. A kit built for exactly your situation.</p>
         <Link
@@ -271,9 +305,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-stone-800 text-center text-stone-600 text-xs py-8 tracking-widest uppercase">
-        © {new Date().getFullYear()} BaselineKits. All rights reserved.
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

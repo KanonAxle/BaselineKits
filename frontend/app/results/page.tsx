@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../components/Navbar';
+import SiteFooter from '../components/SiteFooter';
 import { useCart } from '../../lib/cartContext';
 import Link from 'next/link';
 import { calculateShippingCents } from '../../lib/shippingPricing';
@@ -262,7 +263,7 @@ export default function ResultsPage() {
                 <li>Packing guide</li>
                 <li>Protective backpack structure</li>
               </ul>
-              <p>You'll need to source your own backpack if removed.</p>
+              <p>You&apos;ll need to source your own backpack if removed.</p>
             </div>
             <div className="flex gap-3">
               <button onClick={() => setBagRemovalWarning(null)}
@@ -394,6 +395,7 @@ export default function ResultsPage() {
           </div>
         </div>
       )}
-    </main>
+          <SiteFooter />
+</main>
   );
 }

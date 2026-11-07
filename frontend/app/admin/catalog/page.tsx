@@ -142,7 +142,7 @@ export default function ProductsPage() {
 
         {/* Page header */}
         <div className="mb-8">
-          <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Equipment Catalog</p>
+          <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Equipment Catalog"}</p>
           <h1 className="text-2xl sm:text-4xl font-extrabold uppercase tracking-wide">Products</h1>
         </div>
 

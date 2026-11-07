@@ -105,7 +105,7 @@ export default function AdminOrdersPage() {
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Order Management</p>
+            <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Order Management"}</p>
             <h1 className="text-3xl font-extrabold uppercase tracking-wide">Orders</h1>
           </div>
           <Link

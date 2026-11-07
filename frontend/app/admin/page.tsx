@@ -64,7 +64,7 @@ function RecommendationWeightsPanel() {
     <div className="rounded border border-stone-800 bg-stone-900/80 p-6">
       <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Recommendation Tuning</p>
+          <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Recommendation Tuning"}</p>
           <h3 className="text-2xl font-extrabold uppercase tracking-wide">Quiz Scoring Weights</h3>
         </div>
         <button
@@ -138,7 +138,7 @@ export default function AdminPage() {
     return (
       <main className="min-h-screen bg-stone-950 text-white flex items-center justify-center px-6">
         <div className="w-full max-w-sm">
-          <p className="label-tactical text-orange-500 mb-3 tracking-[0.2em]">// Admin Access</p>
+          <p className="label-tactical text-orange-500 mb-3 tracking-[0.2em]">{"// Admin Access"}</p>
           <h1 className="text-3xl font-extrabold uppercase tracking-wide mb-8">BaselineKits Admin</h1>
 
           <div className="bg-stone-900/80 border border-stone-800 rounded p-8">
@@ -178,7 +178,7 @@ export default function AdminPage() {
       <nav className="flex items-center justify-between px-8 py-4 border-b border-stone-800">
         <div className="flex items-center gap-4">
           <span className="text-sm font-extrabold uppercase tracking-[0.18em]">BaselineKits</span>
-          <span className="label-tactical text-orange-500 tracking-widest">// Admin Panel</span>
+          <span className="label-tactical text-orange-500 tracking-widest">{"// Admin Panel"}</span>
         </div>
         <div className="flex items-center gap-4">
           <Link href="/" className="label-tactical text-stone-500 hover:text-white transition-colors tracking-widest">View Site</Link>
@@ -192,7 +192,7 @@ export default function AdminPage() {
       </nav>
 
       <div className="max-w-4xl mx-auto px-6 py-16">
-        <p className="label-tactical text-orange-500 mb-3 tracking-[0.2em]">// Control Center</p>
+        <p className="label-tactical text-orange-500 mb-3 tracking-[0.2em]">{"// Control Center"}</p>
         <h1 className="text-4xl font-extrabold uppercase tracking-wide mb-10">Admin Dashboard</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -270,7 +270,7 @@ export default function AdminPage() {
         <div className="mt-12 border-t border-stone-800 pt-10 space-y-10">
           <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Recommendation Control</p>
+              <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Recommendation Control"}</p>
               <h2 className="text-3xl font-extrabold uppercase tracking-wide">Scoring & Quiz Logic</h2>
             </div>
             <Link
@@ -286,7 +286,7 @@ export default function AdminPage() {
           <div>
             <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
               <div>
-                <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Questionnaire Control</p>
+                <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Questionnaire Control"}</p>
                 <h2 className="text-3xl font-extrabold uppercase tracking-wide">Quiz Editor</h2>
               </div>
             </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getStartQuestion, getQuestion, submitQuiz } from '../../lib/api';
 import Navbar from '../components/Navbar';
+import SiteFooter from '../components/SiteFooter';
 
 export default function QuizPage() {
   const router = useRouter();
@@ -139,7 +140,7 @@ export default function QuizPage() {
 
       {/* Header label */}
       <div className="w-full max-w-xl mb-6">
-        <p className="label-tactical text-orange-500 tracking-[0.2em]">// Kit Assessment</p>
+        <p className="label-tactical text-orange-500 tracking-[0.2em]">{"// Kit Assessment"}</p>
       </div>
 
       {/* Step indicator */}
@@ -225,7 +226,8 @@ export default function QuizPage() {
         </div>
       </div>
 
-    </main>
+          <SiteFooter />
+</main>
     </>
   );
 }
