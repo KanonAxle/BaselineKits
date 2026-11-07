@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { lookupOrder } from '../../lib/api';
 import Navbar from '../components/Navbar';
+import SiteFooter from '../components/SiteFooter';
 
 function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -137,6 +138,7 @@ export default function TrackPage() {
       <Suspense fallback={<div className="flex items-center justify-center py-32"><p className="text-stone-400">Loading...</p></div>}>
         <TrackContent />
       </Suspense>
-    </main>
+          <SiteFooter />
+</main>
   );
 }

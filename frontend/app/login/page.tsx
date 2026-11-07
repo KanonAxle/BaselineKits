@@ -98,7 +98,7 @@ export default function LoginPage() {
             </form>
 
             <p className="text-stone-500 text-sm text-center mt-6">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link
                 href="/register"
                 onClick={event => {

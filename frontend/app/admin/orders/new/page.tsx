@@ -93,7 +93,7 @@ export default function NewPhoneOrderPage() {
           <div className="w-14 h-14 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mx-auto mb-6">
             <span className="text-green-400 text-2xl">✓</span>
           </div>
-          <p className="label-tactical text-green-400 mb-2 tracking-[0.2em]">// Order Created</p>
+          <p className="label-tactical text-green-400 mb-2 tracking-[0.2em]">{"// Order Created"}</p>
           <h1 className="text-2xl font-extrabold uppercase tracking-wide mb-2">Payment Link Ready</h1>
           <p className="text-stone-400 text-sm mb-8">
             Send this link to <span className="text-white">{form.customer_name}</span> at <span className="text-white">{form.customer_email}</span>.
@@ -155,15 +155,15 @@ export default function NewPhoneOrderPage() {
 
       <div className="max-w-xl mx-auto px-6 py-12">
         <div className="mb-8">
-          <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Phone Order</p>
+          <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Phone Order"}</p>
           <h1 className="text-3xl font-extrabold uppercase tracking-wide">New Phone Order</h1>
-          <p className="text-stone-400 text-sm mt-2">Fill in the customer's details and select a kit. A Stripe payment link will be generated for you to share with the customer.</p>
+          <p className="text-stone-400 text-sm mt-2">Fill in the customer&apos;s details and select a kit. A Stripe payment link will be generated for you to share with the customer.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           {/* Customer section */}
           <div className="bg-stone-900/80 border border-stone-800 rounded p-5">
-            <p className="label-tactical text-orange-500/70 mb-4" style={{ fontSize: '0.65rem' }}>// CUSTOMER INFO</p>
+            <p className="label-tactical text-orange-500/70 mb-4" style={{ fontSize: '0.65rem' }}>{"// CUSTOMER INFO"}</p>
             <div className="flex flex-col gap-4">
               <div>
                 <label className="label-tactical text-stone-500 mb-1 block">Full Name *</label>
@@ -203,7 +203,7 @@ export default function NewPhoneOrderPage() {
 
           {/* Kit selection */}
           <div className="bg-stone-900/80 border border-stone-800 rounded p-5">
-            <p className="label-tactical text-orange-500/70 mb-4" style={{ fontSize: '0.65rem' }}>// KIT SELECTION</p>
+            <p className="label-tactical text-orange-500/70 mb-4" style={{ fontSize: '0.65rem' }}>{"// KIT SELECTION"}</p>
             <div>
               <label className="label-tactical text-stone-500 mb-1 block">Kit *</label>
               {kits.length === 0 ? (
@@ -226,7 +226,7 @@ export default function NewPhoneOrderPage() {
 
           {/* Shipping */}
           <div className="bg-stone-900/80 border border-stone-800 rounded p-5">
-            <p className="label-tactical text-orange-500/70 mb-4" style={{ fontSize: '0.65rem' }}>// SHIPPING</p>
+            <p className="label-tactical text-orange-500/70 mb-4" style={{ fontSize: '0.65rem' }}>{"// SHIPPING"}</p>
             <div className="flex flex-col gap-4">
               <div>
                 <label className="label-tactical text-stone-500 mb-1 block">Shipping Address *</label>

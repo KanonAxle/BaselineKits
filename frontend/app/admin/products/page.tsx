@@ -439,7 +439,7 @@ export default function AdminProductsPage() {
       <div className="max-w-5xl mx-auto px-6 py-12">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Equipment Catalog</p>
+            <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Equipment Catalog"}</p>
             <h1 className="text-3xl font-extrabold uppercase tracking-wide">Manage Products</h1>
           </div>
           {!showForm && (
@@ -462,7 +462,7 @@ export default function AdminProductsPage() {
 
               {/* ── Import from URL ─────────────────────────────────────── */}
               <div className="bg-stone-800/60 border border-stone-700 rounded p-4 mb-5">
-                <p className="label-tactical text-stone-400 mb-3 tracking-widest">// Import from URL</p>
+                <p className="label-tactical text-stone-400 mb-3 tracking-widest">{"// Import from URL"}</p>
                 <div className="flex gap-2">
                   <input
                     type="url"

@@ -457,9 +457,9 @@ export default function ProductDetailPage() {
                 </button>
               )}
               <div className="bg-stone-900/80 border border-orange-500/20 rounded p-5 flex flex-col gap-3">
-                <p className="label-tactical text-orange-500 tracking-[0.15em]">// This item is included in custom kits</p>
+                <p className="label-tactical text-orange-500 tracking-[0.15em]">{"// This item is included in custom kits"}</p>
                 <p className="text-stone-400 text-sm leading-relaxed">
-                  Take the assessment and we'll recommend the right kit for your situation.
+                  Take the assessment and we&apos;ll recommend the right kit for your situation.
                 </p>
                 <Link
                   href="/quiz"
@@ -474,7 +474,7 @@ export default function ProductDetailPage() {
 
         {/* ── Specs table ── */}
         <div className="bg-stone-900/80 border border-stone-800 rounded p-6">
-          <p className="label-tactical text-stone-500 mb-4">// Specifications</p>
+          <p className="label-tactical text-stone-500 mb-4">{"// Specifications"}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
             <div className="flex flex-col gap-0">
               <div className="flex justify-between border-b border-stone-800 py-2.5">

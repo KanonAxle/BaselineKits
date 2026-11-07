@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import SiteFooter from '../components/SiteFooter';
 import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
 import { useCart } from '../../lib/cartContext';
 import { createCartOrder, createCheckout, getKit, getMe, getToken } from '../../lib/api';
@@ -468,9 +469,10 @@ export default function CartPage() {
           )}
         </div>
         {isAuthenticated && (
-          <p className="text-stone-600 text-xs text-center mt-4">You'll be redirected to Stripe for secure payment.</p>
+          <p className="text-stone-600 text-xs text-center mt-4">You&apos;ll be redirected to Stripe for secure payment.</p>
         )}
       </div>
-    </main>
+          <SiteFooter />
+</main>
   );
 }

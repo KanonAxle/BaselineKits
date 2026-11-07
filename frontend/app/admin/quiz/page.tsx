@@ -426,7 +426,7 @@ export default function AdminQuizPage({ embedded = false }) {
     <div className={embedded ? 'w-full' : 'max-w-3xl mx-auto px-6 py-12'}>
       <div className="flex items-end justify-between mb-4">
         <div>
-          <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Assessment Config</p>
+          <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Assessment Config"}</p>
           <h1 className="text-3xl font-extrabold uppercase tracking-wide">Edit Questionnaire</h1>
         </div>
         <button
@@ -438,8 +438,8 @@ export default function AdminQuizPage({ embedded = false }) {
       </div>
 
       <div className="bg-stone-900/60 border border-stone-800 rounded p-4 mb-6 text-sm text-stone-400 leading-relaxed">
-        <p className="label-tactical text-orange-500/70 mb-2">// How branching works</p>
-        <p>Each answer can route to a <span className="text-stone-200">Next Question</span> (branching) or <span className="text-stone-200">End the quiz</span> with a kit recommendation (terminal). Mark one question as the <span className="text-orange-400">Start</span> — that's where the quiz begins.</p>
+        <p className="label-tactical text-orange-500/70 mb-2">{"// How branching works"}</p>
+        <p>Each answer can route to a <span className="text-stone-200">Next Question</span> (branching) or <span className="text-stone-200">End the quiz</span> with a kit recommendation (terminal). Mark one question as the <span className="text-orange-400">Start</span> — that&apos;s where the quiz begins.</p>
       </div>
 
       <div className="flex items-center gap-2 flex-wrap mb-6 pb-5 border-b border-stone-800">
@@ -663,7 +663,7 @@ export default function AdminQuizPage({ embedded = false }) {
                       >
                         {isEditingThis ? (
                           <div className="bg-stone-800 border border-orange-500/30 rounded p-4">
-                            <p className="label-tactical text-orange-500 mb-3 tracking-widest">// Edit Answer</p>
+                            <p className="label-tactical text-orange-500 mb-3 tracking-widest">{"// Edit Answer"}</p>
                             <form onSubmit={saveAnswer}>
                               <div className="mb-3">
                                 <label className="label-tactical text-stone-500 mb-1 block">Answer Text *</label>
@@ -811,7 +811,7 @@ export default function AdminQuizPage({ embedded = false }) {
 
                   {editingAnswer?.questionId === q.id && editingAnswer?.answerId === 'new' && (
                     <div className="bg-stone-800 border border-orange-500/30 rounded p-4">
-                      <p className="label-tactical text-orange-500 mb-3 tracking-widest">// New Answer</p>
+                      <p className="label-tactical text-orange-500 mb-3 tracking-widest">{"// New Answer"}</p>
                       <form onSubmit={saveAnswer}>
                         <div className="mb-3">
                           <label className="label-tactical text-stone-500 mb-1 block">Answer Text *</label>

@@ -19,8 +19,52 @@ const barlowCondensed = Barlow_Condensed({
 });
 
 export const metadata: Metadata = {
-  title: "BaselineKits — Custom Survival Kits",
-  description: "Answer a few questions and get a custom survival kit packed and shipped to your door.",
+  metadataBase: new URL("https://www.baselinekits.com"),
+  title: {
+    default: "BaselineKits — Custom Survival Kits, Built for You",
+    template: "%s — BaselineKits",
+  },
+  description:
+    "Answer a few questions and get a custom survival kit packed and shipped to your door. Quality sourced brands, hand-packed and verified.",
+  keywords: [
+    "survival kit",
+    "custom survival kit",
+    "emergency preparedness",
+    "emergency kit",
+    "bug out bag",
+    "disaster preparedness",
+    "72 hour kit",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "BaselineKits",
+    title: "BaselineKits — Custom Survival Kits, Built for You",
+    description:
+      "Answer a few questions and get a custom survival kit packed and shipped to your door.",
+    url: "/",
+    images: [
+      {
+        url: "/baselinekits-logo.png",
+        width: 768,
+        height: 768,
+        alt: "BaselineKits — custom survival kits",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "BaselineKits — Custom Survival Kits, Built for You",
+    description:
+      "Answer a few questions and get a custom survival kit packed and shipped to your door.",
+    images: ["/baselinekits-logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

@@ -1,5 +1,12 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+
+export const metadata: Metadata = {
+  title: "Terms of Use",
+  description: "Terms of use for the BaselineKits website, accounts, and purchases.",
+  alternates: { canonical: "/terms" },
+};
 
 const sections = [
   {

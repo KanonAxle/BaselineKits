@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import SiteFooter from '../components/SiteFooter';
 import { getKits } from '../../lib/api';
 
 type Kit = {
@@ -164,6 +165,7 @@ export default function KitsPage() {
           </div>
         )}
       </div>
-    </main>
+          <SiteFooter />
+</main>
   );
 }

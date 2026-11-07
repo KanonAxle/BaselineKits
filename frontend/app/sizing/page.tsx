@@ -1,6 +1,7 @@
 // @ts-nocheck
 'use client';
 import { Suspense, useState, useEffect, useCallback } from 'react';
+import SiteFooter from '../components/SiteFooter';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '../../lib/cartContext';
@@ -273,10 +274,10 @@ function SizingPageContent() {
         {/* ── STEP: Group Setup ── */}
         {step === 'group' && (
           <div>
-            <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Before You Check Out</p>
+            <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Before You Check Out"}</p>
             <h1 className="text-3xl font-extrabold uppercase tracking-wide mb-2">Who Are We Sizing For?</h1>
             <p className="text-stone-500 text-sm mb-8">
-              Your kit includes items that require per-person sizing. Confirm child genders, then we'll collect sizes for each person.
+              Your kit includes items that require per-person sizing. Confirm child genders, then we&apos;ll collect sizes for each person.
             </p>
 
             <div className="flex flex-col gap-3 mb-6">
@@ -351,7 +352,7 @@ function SizingPageContent() {
         {typeof step === 'number' && step < personList.length && (
           <div>
             <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">
-              // Person {step + 1} of {personList.length}
+              {'// Person '}{step + 1} of {personList.length}
             </p>
             <h1 className="text-3xl font-extrabold uppercase tracking-wide mb-1">
               {buildLabel(personList[step], step, personList)}
@@ -475,7 +476,7 @@ function SizingPageContent() {
         {/* ── STEP: Review ── */}
         {step === 'review' && (
           <div>
-            <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">// Review Sizes</p>
+            <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Review Sizes"}</p>
             <h1 className="text-3xl font-extrabold uppercase tracking-wide mb-8">Confirm Your Selections</h1>
 
             <div className="flex flex-col gap-4 mb-8">
@@ -548,7 +549,8 @@ export default function SizingPage() {
     <Suspense fallback={
       <main className="min-h-screen bg-stone-950 text-white flex items-center justify-center">
         <p className="label-tactical text-stone-500 tracking-widest">Loading sizing...</p>
-      </main>
+            <SiteFooter />
+</main>
     }>
       <SizingPageContent />
     </Suspense>

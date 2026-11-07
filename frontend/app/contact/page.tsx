@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import SiteFooter from '../components/SiteFooter';
 import { sendContactMessage } from '../../lib/api';
 
 const CONTACT_REASONS = [
@@ -60,7 +61,7 @@ function ContactContent() {
               </svg>
             </div>
             <div>
-              <p className="label-tactical text-orange-400 mb-1 tracking-widest">// Your situation needs a custom recommendation</p>
+              <p className="label-tactical text-orange-400 mb-1 tracking-widest">{"// Your situation needs a custom recommendation"}</p>
               <p className="text-stone-300 text-sm leading-relaxed">
                 Our standard kits may not be the best fit for your needs. Fill out the form below and we&apos;ll
                 help you find the right solution — or build something custom.
@@ -73,7 +74,7 @@ function ContactContent() {
 
           {/* ── Left: Info ── */}
           <div>
-            <p className="label-tactical text-orange-500 mb-4 tracking-[0.2em]">// Get in Touch</p>
+            <p className="label-tactical text-orange-500 mb-4 tracking-[0.2em]">{"// Get in Touch"}</p>
             <h1 className="text-5xl font-extrabold uppercase tracking-wide leading-tight mb-6">
               Contact Us
             </h1>
@@ -140,7 +141,7 @@ function ContactContent() {
                     <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
                   </svg>
                 </div>
-                <p className="label-tactical text-orange-500 tracking-[0.15em]">// Message Received</p>
+                <p className="label-tactical text-orange-500 tracking-[0.15em]">{"// Message Received"}</p>
                 <h2 className="text-2xl font-bold uppercase tracking-wide">We&apos;ll Be in Touch</h2>
                 <p className="text-stone-400 text-sm leading-relaxed">
                   Thanks for reaching out. Expect a reply within 1–2 business days.
@@ -154,7 +155,7 @@ function ContactContent() {
               </div>
             ) : (
               <div className="bg-stone-900/60 border border-stone-800 rounded p-8">
-                <p className="label-tactical text-orange-500 mb-6 tracking-[0.15em]">// Send a Message</p>
+                <p className="label-tactical text-orange-500 mb-6 tracking-[0.15em]">{"// Send a Message"}</p>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                   {error && <p role="alert" className="text-red-400 text-sm">{error}</p>}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -222,9 +223,7 @@ function ContactContent() {
         </div>
       </div>
 
-      <footer className="border-t border-stone-800 text-center text-stone-600 text-xs py-8 tracking-widest uppercase">
-        © {new Date().getFullYear()} BaselineKits. All rights reserved.
-      </footer>
+      <SiteFooter />
     </main>
   );
 }
