@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -6,7 +5,7 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import SiteFooter from '../components/SiteFooter';
 import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
-import { useCart } from '../../lib/cartContext';
+import { useCart, type CartItem } from '../../lib/cartContext';
 import { createCartOrder, createCheckout, getKit, getMe, getToken } from '../../lib/api';
 import { calculateShippingCents } from '../../lib/shippingPricing';
 
@@ -14,8 +13,16 @@ function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-function collectSizable(items: any[]): any[] {
-  const result: any[] = [];
+// Works on both cart items and kit items from the API — both can carry
+// requires_sizing or nested items.
+type SizableItem = {
+  type?: string;
+  requires_sizing?: boolean;
+  items?: SizableItem[];
+};
+
+function collectSizable(items: SizableItem[]): SizableItem[] {
+  const result: SizableItem[] = [];
   for (const item of items) {
     if (item.type === 'product' && item.requires_sizing) result.push(item);
     else if (item.type === 'kit' && Array.isArray(item.items)) result.push(...collectSizable(item.items));
@@ -49,7 +56,7 @@ export default function CartPage() {
   const [kitSizingChecks, setKitSizingChecks] = useState<Record<string, KitSizingCheck>>({});
   const [kitSizingRefresh, setKitSizingRefresh] = useState(0);
 
-  function variantSummary(item: any) {
+  function variantSummary(item: CartItem) {
     const parts: string[] = [];
     if (item.selectedColor) parts.push(item.selectedColor);
     if (item.selectedSize) parts.push(item.selectedSize);
@@ -58,8 +65,9 @@ export default function CartPage() {
 
   useEffect(() => {
     if (!getToken()) {
-      setAccountLoading(false);
-      return;
+      // Defer so the effect body itself has no synchronous setState.
+      const t = window.setTimeout(() => setAccountLoading(false), 0);
+      return () => window.clearTimeout(t);
     }
     getMe()
       .then(user => {
@@ -157,7 +165,7 @@ export default function CartPage() {
 
     setLoading(true);
     try {
-      const order = await createCartOrder(items, shippingAddress, 'US', phone || null, termsAccepted, marketingOptIn);
+      const order = await createCartOrder(items, shippingAddress, 'US', phone || '', termsAccepted, marketingOptIn);
       const checkout = await createCheckout(
         order.order_id,
         `${window.location.origin}/success?order_id=${order.order_id}`,
@@ -165,8 +173,8 @@ export default function CartPage() {
       );
       clearCart();
       window.location.href = checkout.url;
-    } catch (err: any) {
-      setError(err.message || 'Failed to place order. Please try again.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to place order. Please try again.');
       setLoading(false);
     }
   }

@@ -9,18 +9,18 @@ import { useCart } from '../../../lib/cartContext';
 type KitItem = {
   type?: 'product' | 'kit';
   name: string;
-  description?: string;
+  description?: string | null;
   quantity: number;
-  image_url?: string;
+  image_url?: string | null;
   items?: KitItem[];
 };
 
 type Kit = {
   id: string;
   name: string;
-  description?: string;
-  image_url?: string;
-  tag?: string;
+  description?: string | null;
+  image_url?: string | null;
+  tag?: string | null;
   total_price_cents: number;
   items: KitItem[];
 };

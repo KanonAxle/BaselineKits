@@ -1,10 +1,10 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { lookupOrder } from '../../lib/api';
 import Navbar from '../components/Navbar';
 import SiteFooter from '../components/SiteFooter';
+import type { LookupOrder } from '../../lib/api';
 
 function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -18,7 +18,7 @@ function TrackContent() {
   const params = useSearchParams();
   const [orderId, setOrderId] = useState(params.get('order_id') || '');
   const [email, setEmail] = useState('');
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<LookupOrder | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -38,8 +38,8 @@ function TrackContent() {
     try {
       const data = await lookupOrder(id, lookupEmail || undefined);
       setOrder(data);
-    } catch (err: any) {
-      setError(err.message || 'Order not found. Double-check your email and order number.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Order not found. Double-check your email and order number.');
     } finally {
       setLoading(false);
     }

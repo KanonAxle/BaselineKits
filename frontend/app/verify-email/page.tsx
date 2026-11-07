@@ -38,7 +38,7 @@ export default function VerifyEmailPage() {
 
     verifyEmail(token)
       .then(result => {
-        saveToken(result.token);
+        if (result.token) saveToken(result.token);
         router.replace(returnPath);
       })
       .catch((verificationError: unknown) => {

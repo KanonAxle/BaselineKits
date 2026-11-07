@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,30 +6,58 @@ import SiteFooter from '../components/SiteFooter';
 import { useCart } from '../../lib/cartContext';
 import Link from 'next/link';
 import { calculateShippingCents } from '../../lib/shippingPricing';
+import type { Kit } from '../../lib/types';
 
-function isBag(item: any): boolean {
+// The quiz result stored in localStorage flattens kit items (including
+// synthetic 'subkit_header' rows) and carries extra display fields, so it is
+// looser than the strict KitItem domain type.
+type ResultKitItem = {
+  type: string;
+  product_id?: string;
+  sub_kit_id?: string;
+  name: string;
+  quantity: number;
+  price_cents: number;
+  image_url?: string | null;
+  images?: string[] | null;
+  description?: string | null;
+  category?: string | null;
+  is_bag?: boolean;
+  brand?: string | null;
+  weight_grams?: number | null;
+  sizes?: string[] | null;
+  colors?: string[] | null;
+};
+
+type ResultKit = Omit<Kit, 'items'> & { items?: ResultKitItem[] | null; images?: string[] | null };
+
+const itemId = (item: ResultKitItem): string => item.product_id || item.sub_kit_id || '';
+
+function isBag(item: ResultKitItem): boolean {
   // Check category first (most reliable)
   if (item.category === 'bag') return true;
   // Fallback to name matching
   const name = (item.name || '').toLowerCase();
-  return name.includes('bag') || name.includes('backpack') || item.is_bag;
+  return name.includes('bag') || name.includes('backpack') || item.is_bag === true;
 }
 
 export default function ResultsPage() {
   const router = useRouter();
-  const [kit, setKit] = useState(null);
-  const [removedItems, setRemovedItems] = useState([]);
+  const [kit, setKit] = useState<ResultKit | null>(null);
+  const [removedItems, setRemovedItems] = useState<string[]>([]);
   const [addedToCart, setAddedToCart] = useState(false);
   const [cartAction, setCartAction] = useState<'idle' | 'ordering'>('idle');
-  const [quickViewItem, setQuickViewItem] = useState(null);
-  const [bagRemovalWarning, setBagRemovalWarning] = useState(null);
+  const [quickViewItem, setQuickViewItem] = useState<ResultKitItem | null>(null);
+  const [bagRemovalWarning, setBagRemovalWarning] = useState<ResultKitItem | null>(null);
   const { addItem, items: cartItems } = useCart();
 
   useEffect(() => {
     const stored = localStorage.getItem('quizResult');
     if (!stored) { router.push('/quiz'); return; }
     const parsed = JSON.parse(stored);
-    setKit(parsed.recommended_kit);
+    // Defer so the effect body itself has no synchronous setState.
+    const t = window.setTimeout(() => setKit(parsed.recommended_kit), 0);
+    return () => window.clearTimeout(t);
   }, [router]);
 
   if (!kit) {
@@ -43,18 +70,18 @@ export default function ResultsPage() {
 
   const kitItems = Array.isArray(kit.items) ? kit.items : [];
   const kitDescription = kit?.description || 'This recommendation was selected based on your answers and household situation. You can remove extra items or continue with the full kit as-is.';
-  const productCount = kitItems.filter((item: any) => item.type !== 'subkit_header').length;
+  const productCount = kitItems.filter((item: ResultKitItem) => item.type !== 'subkit_header').length;
   const topHighlights = [
     'Built around your answers',
     `${productCount} selected essentials`,
     'Customizable before checkout',
   ];
-  const featuredItems = kitItems.filter((item: any) => item.type !== 'subkit_header').slice(0, 3);
+  const featuredItems = kitItems.filter((item: ResultKitItem) => item.type !== 'subkit_header').slice(0, 3);
 
-  function toggleItem(itemId: string) {
+  function toggleItem(id: string) {
     // Check if this is a bag being removed
-    const item = kitItems.find(i => (i.product_id || i.sub_kit_id) === itemId);
-    const isRemoving = !removedItems.includes(itemId);
+    const item = kitItems.find(i => itemId(i) === id);
+    const isRemoving = !removedItems.includes(id);
     
     if (item && isRemoving && isBag(item)) {
       setBagRemovalWarning(item);
@@ -62,21 +89,21 @@ export default function ResultsPage() {
     }
     
     setRemovedItems(prev =>
-      prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
     );
   }
 
   function confirmBagRemoval() {
     if (bagRemovalWarning) {
-      const itemId = bagRemovalWarning.product_id || bagRemovalWarning.sub_kit_id;
-      setRemovedItems(prev => [...prev, itemId]);
+      const id = bagRemovalWarning.product_id || bagRemovalWarning.sub_kit_id || '';
+      setRemovedItems(prev => [...prev, id]);
       setBagRemovalWarning(null);
     }
   }
 
   function calculateTotal() {
     const activeItems = kitItems.filter(item =>
-      item.type !== 'subkit_header' && !removedItems.includes(item.product_id || item.sub_kit_id)
+      item.type !== 'subkit_header' && !removedItems.includes(itemId(item))
     );
     return activeItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
   }
@@ -86,6 +113,7 @@ export default function ResultsPage() {
   }
 
   function buildCartItem() {
+    if (!kit) return null;
     return {
       id: kit.id,
       type: 'kit' as const,
@@ -98,6 +126,7 @@ export default function ResultsPage() {
   }
 
   function isKitAlreadyInCart() {
+    if (!kit) return false;
     return cartItems.some(item =>
       item.type === 'kit' &&
       item.id === kit.id &&
@@ -107,14 +136,16 @@ export default function ResultsPage() {
 
   function handleAddKitToCart() {
     if (cartAction !== 'idle') return;
-    if (!isKitAlreadyInCart()) addItem(buildCartItem());
+    const item = buildCartItem();
+    if (!isKitAlreadyInCart() && item) addItem(item);
     setAddedToCart(true);
   }
 
   function handleOrderNow() {
     if (cartAction !== 'idle') return;
     setCartAction('ordering');
-    if (!isKitAlreadyInCart()) addItem(buildCartItem());
+    const item = buildCartItem();
+    if (!isKitAlreadyInCart() && item) addItem(item);
     router.push('/cart');
   }
 
@@ -151,7 +182,7 @@ export default function ResultsPage() {
           </p>
           <div className="flex flex-wrap gap-2">
             {featuredItems.map((item, idx) => {
-              const id = item.product_id || item.sub_kit_id;
+              const id = itemId(item);
               const removed = removedItems.includes(id);
               return (
                 <button
@@ -188,7 +219,7 @@ export default function ResultsPage() {
                   </div>
                 );
               }
-              const id = item.product_id || item.sub_kit_id;
+              const id = itemId(item);
               const removed = removedItems.includes(id);
               return (
                 <div key={`item-${id}-${index}`} 
@@ -368,12 +399,12 @@ export default function ResultsPage() {
             {/* Footer */}
             <div className="border-t border-stone-800 px-6 py-4 flex gap-3">
               {(() => {
-                const itemId = quickViewItem.product_id || quickViewItem.sub_kit_id;
-                const isRemoved = removedItems.includes(itemId);
+                const qvId = quickViewItem.product_id || quickViewItem.sub_kit_id || '';
+                const isRemoved = removedItems.includes(qvId);
                 return (
                   <>
                     <button 
-                      onClick={() => { setQuickViewItem(null); toggleItem(itemId); }}
+                      onClick={() => { setQuickViewItem(null); toggleItem(qvId); }}
                       className={`flex-1 font-semibold px-4 py-3 rounded-lg transition-colors text-sm ${
                         isRemoved
                           ? 'bg-green-600/20 border border-green-500/30 hover:bg-green-600/30 text-green-400'
