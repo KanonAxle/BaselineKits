@@ -34,7 +34,7 @@ h1, h2, h3, h4 {
 /* Tactical label utility */
 .label-tactical {
   font-family: var(--font-barlow), sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -48,4 +48,25 @@ h1, h2, h3, h4 {
 }
 .answer-flash {
   animation: answer-flash 0.4s ease-out forwards;
+}
+
+/* Auto-scrolling photo banner */
+@keyframes banner-scroll {
+  to { transform: translateX(-50%); }
+}
+.banner-track {
+  animation: banner-scroll 48s linear infinite;
+}
+.banner-section:hover .banner-track,
+.banner-section:focus-within .banner-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner-track {
+    animation: none;
+  }
+  .banner-section {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
 }

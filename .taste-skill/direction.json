@@ -1,0 +1,514 @@
+{
+ "version": 1,
+ "at": "2026-11-07T04:33:34.363Z",
+ "seed": 524799998,
+ "redraws": 0,
+ "input": {
+  "brief": "Custom survival kits hand-built from your quiz answers, hand-packed and shipped to your door",
+  "sector": "physical-product",
+  "tone": null,
+  "have": [
+   "product-photo"
+  ],
+  "keep": [
+   "palette",
+   "type"
+  ],
+  "avoid": [],
+  "sections": [
+   "gallery",
+   "features",
+   "how-it-works",
+   "showcase",
+   "faq",
+   "cta"
+  ],
+  "direction": "dark-room"
+ },
+ "imagery": "own",
+ "allow": [],
+ "direction": {
+  "id": "dark-room",
+  "name": "The dark room",
+  "sectors": [
+   "hospitality",
+   "restaurant",
+   "music",
+   "fashion",
+   "physical-product",
+   "finance",
+   "architecture",
+   "studio-portfolio",
+   "ai-product",
+   "personal-portfolio"
+  ],
+  "tones": [
+   "quiet",
+   "luxury"
+  ],
+  "needs": [],
+  "idea": "One dark field from top to bottom, and in it, lit things. Photographs and objects appear like exhibits in a dim gallery: each with space around it, each the brightest thing on its screen. Type is light, small and sparse. The darkness is not a theme switch; it is a room, and the page is a slow walk through it. It suits subjects sold on atmosphere and material: an evening restaurant, a metal card, a record, a house at dusk.",
+  "composition": "A single near-black or deep-toned ground runs the full page with no section bands. First screen: either the name at full width in a light weight along the bottom edge with one dim photograph above it, or one object or photograph centred at 40–50% of the viewport with a line of text beneath at 16–18px. Each later screen holds one or two lit items at a generous size (the main one 40–60% of the screen width) with its text set beside it at full reading size; the darkness frames the items, it does not replace content. Images vary in size but all share the same darkness at their edges so they sit in the ground without frames. Practical details come last in a simple two-column text block. The only solid light element on the page is the single primary action.",
+  "typography": "Light or regular weights; they glow on dark. Avoid heavy bold, which looks cheap on black. Headings 4–7vw at most; text 16–18px with leading 1.6 and a slightly lifted ink (not pure white).",
+  "typeClasses": [
+   "grotesk-light",
+   "serif-light-large",
+   "serif-display",
+   "extended-heavy"
+  ],
+  "colour": "A dark ground with a tint (blue-black, green-black, brown-black), a soft light ink, a dimmer ink for secondary text, and one warm or bright accent used once per screen at most.",
+  "paletteTags": [
+   "dark-neutral"
+  ],
+  "imagery": "Low-key photographs: dark backgrounds, one light source, subjects emerging from shadow. Their dark edges should blend into the page ground.",
+  "photoTreatment": "If a photograph's background is lighter than the page, darken the image slightly (`filter: brightness(0.85) contrast(1.05)`) rather than adding a frame.",
+  "sectionTags": [
+   "photo-led",
+   "quiet",
+   "object-led"
+  ],
+  "motion": "slow-crossfade",
+  "richness": "Light against dark, and the slow pacing.",
+  "pitfalls": "Grey text on black fails contrast quickly: check it. No glow effects, no neon accent, no coloured light blobs. A dark page with a bright busy photograph is not this direction; choose low-key images. Dark does not mean empty: every screen still carries its content at a readable size, and running text is a light ink at 7:1 or more, not a dim grey.",
+  "seenIn": [
+   "opl-kereliott",
+   "aww-moto-finance",
+   "aww-izanami",
+   "aww-cipher",
+   "opl-deeo-studio-2"
+  ],
+  "allow": [],
+  "photoTone": "dark"
+ },
+ "hero": {
+  "id": "two-doors-on-a-dark-wall",
+  "name": "Two doors on a dark wall",
+  "archetype": "split",
+  "directions": [
+   "dark-room",
+   "quiet-instrument"
+  ],
+  "needs": [],
+  "blueprint": "For a subject with two halves a visitor must choose between: two exhibitions, two audiences, two places, two collections. One near-black flat field. Two portrait photographs at 3:4, each 280×373px, stand side by side 80px apart, so the pair spans x 400–1040 (44% of the width) with their tops at 300px; square corners, no frame, the pictures supplying every colour on the screen. Each photograph is the link to its half, and directly beneath it, left-aligned to the frame, sit its name at 22px in the light ink and one line at 16px in the soft ink. The headline is centred above the pair: two lines at clamp(36px, 3.4vw, 52px), leading 1.05, its first line 104px from the top, at most 26 characters per line. Wordmark top-left and one text link top-right at 15px on 32px margins. About 150px of dark ground stays below the pair and 400px either side of it, closed by the two doors at the centre. Pointing at or focusing one door keeps it at full strength and dims the other to 50%. The page continues below with the two halves in order, so each door is also an anchor to its half.",
+  "mobile": "The pair stays side by side: each photograph 168px wide at 3:4 with a 14px gap, centred at 46% of the height, its name at 17px and its line at 16px beneath it. The headline sits above at 8vw on two lines, centred, 64px down. The wordmark and the link stay in the top corners.",
+  "headline": "A 4–8 word sentence on two lines that names the choice, at most 26 characters per line.",
+  "motion": "stillness",
+  "seenIn": [
+   "aww-hearst-exhibit-2026"
+  ]
+ },
+ "type": null,
+ "palette": null,
+ "photos": {
+  "set": "hands-and-making",
+  "title": "Hands and making",
+  "note": "hands at work, craft and making",
+  "treatment": "If a photograph's background is lighter than the page, darken the image slightly (`filter: brightness(0.85) contrast(1.05)`) rather than adding a frame.",
+  "others": [
+   "architecture",
+   "interior-and-table",
+   "transport",
+   "forest"
+  ],
+  "photos": [
+   {
+    "id": 785,
+    "alt": "Two cupped hands holding a pile of green spruce tips",
+    "tone": "mid",
+    "colours": [
+     "fresh green",
+     "dark green",
+     "warm skin"
+    ],
+    "mono": false,
+    "calm": "none",
+    "quality": 4,
+    "ratio": 1.5,
+    "by": "Jean Lakosnyk",
+    "page": "https://unsplash.com/photos/N9yFjkDc0vA"
+   },
+   {
+    "id": 304,
+    "alt": "Hand adjusting faders on an audio mixing console",
+    "tone": "mid",
+    "colours": [
+     "warm white",
+     "navy",
+     "amber"
+    ],
+    "mono": false,
+    "calm": "none",
+    "quality": 4,
+    "ratio": 1.5,
+    "by": "Drew Patrick Miller",
+    "page": "https://unsplash.com/photos/_o6AAx9dl_Y"
+   },
+   {
+    "id": 491,
+    "alt": "Axe, hammer, pliers and leather gloves laid out on dark wood",
+    "tone": "dark",
+    "colours": [
+     "dark brown",
+     "tan",
+     "steel grey"
+    ],
+    "mono": false,
+    "calm": "none",
+    "quality": 4,
+    "ratio": 1.23,
+    "by": "Todd Quackenbush",
+    "page": "https://unsplash.com/photos/IClZBVw5W5A"
+   },
+   {
+    "id": 1060,
+    "alt": "Kettle pouring water over a pour-over coffee dripper on a dark counter",
+    "tone": "dark",
+    "colours": [
+     "dark teal",
+     "black",
+     "warm brown"
+    ],
+    "mono": false,
+    "calm": "none",
+    "quality": 4,
+    "ratio": 1.5,
+    "by": "Karl Fredrickson",
+    "page": "https://unsplash.com/photos/TYIzeCiZ_60"
+   },
+   {
+    "id": 407,
+    "alt": "Hands lighting a sparkler that throws bright sparks in the dark",
+    "tone": "dark",
+    "colours": [
+     "charcoal",
+     "warm white",
+     "amber"
+    ],
+    "mono": false,
+    "calm": "right",
+    "quality": 4,
+    "ratio": 1.5,
+    "by": "Kelley Bozarth",
+    "page": "https://unsplash.com/photos/n6vS3xlnsCc"
+   },
+   {
+    "id": 319,
+    "alt": "Hands holding a vintage rangefinder camera against a denim jacket",
+    "tone": "mid",
+    "colours": [
+     "denim blue",
+     "mustard",
+     "silver"
+    ],
+    "mono": false,
+    "calm": "none",
+    "quality": 4,
+    "ratio": 1.97,
+    "by": "Kristian Karlsson",
+    "page": "https://unsplash.com/photos/3V6ZTpZS-ag"
+   },
+   {
+    "id": 674,
+    "alt": "Cupped hands holding a heap of dark blue grapes",
+    "tone": "mid",
+    "colours": [
+     "pale blue",
+     "dark purple",
+     "tan"
+    ],
+    "mono": false,
+    "calm": "none",
+    "quality": 4,
+    "ratio": 1.5,
+    "by": "Maja Petric",
+    "page": "https://unsplash.com/photos/vGQ49l9I4EE"
+   }
+  ]
+ },
+ "motion": {
+  "id": "stillness",
+  "name": "Stillness",
+  "description": "No showpiece. The page is simply there, instantly, and the discipline is the statement. Motion is limited to exact feedback: a 140ms press on the button, a 180ms colour change on links, focus rings that appear without delay. Do not add a load animation or scroll reveals to this direction."
+ },
+ "sections": [
+  {
+   "id": "gallery-small-frames-wide-space",
+   "role": "gallery",
+   "name": "Small frames, wide space",
+   "shape": "strip",
+   "tags": [
+    "quiet",
+    "object-led",
+    "photo-led"
+   ],
+   "directions": [
+    "quiet-instrument",
+    "specimen-catalogue",
+    "hero-object",
+    "contact-sheet",
+    "dark-room",
+    "name-as-monument"
+   ],
+   "needs": [],
+   "blueprint": "A flat, quiet viewport 100svh tall in which about 70% of the screen is empty. At mid-height a single row of small portrait frames runs across and off both sides: each frame 11vw wide and 24svh tall (roughly 2:3), spaced 5vw apart, vertically centred, six or seven visible at 1440. Frames have square corners and sit directly on the ground with no border. The row scrolls sideways by drag or trackpad (`overflow-x: auto` with the scrollbar hidden) and may hold 12–24 frames. One line of text overlaps the top-left of the first frame by 12px: a title of two or three words at 20–24px followed by the count, placed above the frame in the stacking order. Hovering a frame scales it to 1.1 from its centre over 250ms; nothing else moves. No captions under frames, no arrows, and no other text in the section.",
+   "mobile": "The row sits at 45% of an 80svh section. Frames are 34vw wide at 2:3 and 5vw apart, so two and a half are visible and the row scrolls by touch with snapping. The title line sits 20px above the row at the left margin.",
+   "seenIn": [
+    "aww-julien-calot",
+    "aww-2xa-studio"
+   ]
+  },
+  {
+   "id": "features-one-size-name-columns",
+   "role": "features",
+   "name": "One-size name columns",
+   "shape": "index",
+   "tags": [
+    "quiet",
+    "type-led",
+    "dense"
+   ],
+   "directions": [
+    "contact-sheet",
+    "quiet-instrument",
+    "name-as-monument",
+    "dark-room",
+    "uneven-photographs"
+   ],
+   "needs": [],
+   "blueprint": "Pure text at one size. Three columns start on columns 1, 4 and 7 of the 12-column grid, leaving columns 10–12 empty on purpose. Each column opens with a group name in full ink and continues with a tight stack of six to ten capability names in the soft ink, all at 16–17px, regular weight, line-height 1.25, no bullets and no symbols; one blank line separates group name from stack. Hovering a name brings it to full ink and shows a one-line description in a fixed spot: the top of the empty columns 10–12, at the same size. The heading is no larger than 28px; two or three words, alone on column 1, 96px above the columns. Give the section 20vh of empty ground above and below, so the smallness reads as decided. Works on light or deep grounds.",
+   "mobile": "Columns stack with 40px between groups; text rises to 18px with line-height 1.4 for touch. Group names stay in full ink. Hover descriptions are dropped; each group ends instead with one sentence in the soft ink that sums it up. The heading is 24px, 48px above.",
+   "seenIn": [
+    "aww-revelatio-studio",
+    "aww-pp-neue-montreal",
+    "aww-lama-lama-2"
+   ]
+  },
+  {
+   "id": "how-it-works-one-verb-at-a-time",
+   "role": "how-it-works",
+   "name": "One verb at a time",
+   "shape": "full-bleed",
+   "tags": [
+    "photo-led",
+    "poster"
+   ],
+   "directions": [
+    "pinned-poster",
+    "loud-flat-poster",
+    "dark-room",
+    "hero-object",
+    "sentence-as-layout",
+    "place-carries-it"
+   ],
+   "needs": [],
+   "blueprint": "Three to five full-bleed panels, each 100svh tall, stacked with no gap; each is one stage and holds one photograph covering it. In every panel a single word, the verb for that stage ('Cut', 'Fold', 'Stitch', 'Press'), is set at clamp(96px, 17vw, 300px), heavy and centred, inside a wrapper that is position: sticky; top: 50% and shifted up by half its own height. Because each word is sticky only within its own panel, it holds the centre of the screen while its photograph passes behind it, and is then pushed out by the next panel's verb. Use mix-blend-mode: difference in white, or one solid colour tested on every image. One sentence at 18px sits in the bottom-left corner of each panel over a neutral scrim limited to that corner. There is no separate heading: the verbs, read in order, are both the heading and the sequence.",
+   "mobile": "Panels stay 100svh, each photograph cropped to a vertical slice. The verb is 24vw, still sticky at the centre. The sentence sits along the bottom over a scrim at 16px, full width with 16px margins.",
+   "seenIn": [
+    "opl-eagles-nest",
+    "aww-seasats",
+    "aww-vero-new-york"
+   ]
+  },
+  {
+   "id": "showcase-band-of-unequal-panels",
+   "role": "showcase",
+   "name": "Band of unequal panels",
+   "shape": "strip",
+   "tags": [
+    "photo-led"
+   ],
+   "directions": [
+    "place-carries-it",
+    "uneven-photographs",
+    "name-as-monument",
+    "editorial-report",
+    "dark-room"
+   ],
+   "needs": [],
+   "blueprint": "A modest heading, then one wide band of pictures. The heading, two to four words at 36–44px, starts at column 3, left of centre, with 64px beneath it. The band spans the full viewport width edge to edge and is 68svh tall: four photographs standing side by side with no gaps and deliberately unequal widths, a flex row with flex-grow values of 5, 2, 3 and 2. Each panel is cropped with object-fit: cover to a tall slice, so the band reads as one folded view. The first panel carries a two-line title at 28px in paper colour at its top-left, 24px in, over a neutral scrim that covers only that corner. Hovering a panel raises its flex-grow to 6 over 500ms while the others give way; without hover the widths simply stay. One caption line at 16px sits under the band at the left margin.",
+   "mobile": "The heading sits on the margin at 28px. The band becomes a two-by-two block with no gaps, 84svh tall in total: the first row split 64/36 and the second 36/64, so the slices stay unequal. The title stays on the first panel. No hover behaviour.",
+   "seenIn": [
+    "aww-white-desert",
+    "aww-tengile-malamala-collection"
+   ]
+  },
+  {
+   "id": "faq-large-questions-answers-beside",
+   "role": "faq",
+   "name": "Large questions, answers beside",
+   "shape": "table",
+   "tags": [
+    "type-led"
+   ],
+   "directions": [
+    "editorial-report",
+    "type-only-statement",
+    "sentence-as-layout",
+    "name-as-monument",
+    "dark-room"
+   ],
+   "needs": [],
+   "blueprint": "Every answer is open; nothing collapses. Each question-and-answer pair is a row on the 12-column grid: the question in columns 1–6 at clamp(26px, 2.6vw, 40px), medium weight, leading 1.1, no more than two lines; its answer in columns 8–12 at 17–18px with leading 1.55 and a measure near 40ch, its first baseline level with the question's first baseline. Rows are separated by 72–88px of empty space and nothing else. Five to seven rows. The section heading, two or three words, is set at the same size as the questions but in the softer ink and sits as the first row's left cell with an empty right cell, so it reads as the top of the same table rather than a title above it. Because questions are large and answers small, the left column works as a scannable index.",
+   "mobile": "Each pair stacks: question at 24px, answer 12px beneath at 17px, then 56px of space before the next. The heading leads at the same 24px in the softer ink. Answers stay open; there is no accordion on the phone either.",
+   "seenIn": []
+  },
+  {
+   "id": "cta-object-returns",
+   "role": "cta",
+   "name": "The object returns",
+   "shape": "split",
+   "tags": [
+    "object-led",
+    "photo-led"
+   ],
+   "directions": [
+    "hero-object",
+    "specimen-catalogue",
+    "dark-room",
+    "one-motif",
+    "borrowed-category"
+   ],
+   "needs": [],
+   "blueprint": "The thing shown in the hero comes back once, from another angle, to close the page. On one flat field 90svh tall, the object's photograph occupies columns 1–8, scaled to about 130% of that area and anchored so the section's bottom and left edges crop it (`overflow: hidden` on the section; on light fields `mix-blend-mode: multiply` removes a white studio background). The text sits small in columns 10–12, vertically centred: a closing line of three to five words at 32–40px, one sentence at 17px, the price or key fact on its own line at 22px, and one rectangular button. Nothing overlaps the object's focal area. Where the page's subject is a shape rather than a photograph, the page's motif takes the object's place at the same scale as a flat filled shape. The closing line is the only heading.",
+   "mobile": "The text block comes first: closing line at 28px, sentence, fact, full-width button. The object follows at 130% of the screen width, shifted so the right and bottom edges crop it, filling about 55svh on the same flat field.",
+   "seenIn": [
+    "opl-dabbit",
+    "opl-monte"
+   ]
+  }
+ ],
+ "references": [
+  {
+   "id": "aww-izanami",
+   "name": "IZANAMI",
+   "url": "https://izanami-official.com/",
+   "source": "Awwwards Site of the Day",
+   "kind": "architecture",
+   "score": 7,
+   "idea": "Silence as design: one small sentence in fog, then a slow descent from mist into a dark glass pavilion.",
+   "mood": [
+    "meditative",
+    "dark",
+    "misty",
+    "ceremonial",
+    "quiet"
+   ],
+   "archetype": "fullbleed-media-overlay",
+   "hero": "After a warm-black loader showing only one 18px serif sentence and a small counter, the hero is a full-bleed, desaturated grey-green image of pine forest dissolving into fog. The same sentence stays at 18px in white, left-aligned on a line about 17% from the left edge and exactly at vertical centre; it is the only text in the picture area. A small white seal-style logo sits top-left; a language switch and menu label in tiny tracked capitals sit top-right, each with a dot above. Along the bottom edge: copyright, two live city clocks, and a scroll cue at far right, all near 10px.",
+   "type": "Playfair Display regular for the few headings, only 18 to 45px (3.1vw at most); Shippori Mincho for body at 14px; Cinzel capitals with wide tracking for nav, clocks and footer. Nothing is large: hierarchy comes from isolation rather than size.",
+   "colour": "#0a0801 #6f7a70 #b7b5a6 #d9d2c3 #4b5b39 — Warm near-black panels and grey-green fog imagery with off-white text at reduced opacity. Moss green and sand from the small garden photos are the only colour; there is no accent.",
+   "imagery": "Fog-bound forest, a black-framed glass pavilion seen in one-point perspective, and small crops of incense smoke, a bamboo water spout and raked gravel. Small images are square-cornered, portrait or square, overlapping one another and the dark ceiling plane.",
+   "layout": "Wide margins, with text hung on an inner line about 17% across instead of the page edge. Most screens hold one image and one short text; small photos are placed asymmetrically near corners and overlap. A rotated section label runs down the left edge.",
+   "sections": [
+    {
+     "role": "intro",
+     "description": "Over the black ceiling of the pavilion image, a three-line serif heading at about 3vw sits left of centre, each line indented further than the one above. Faint body text follows below it. A small square photo sits top-left under the logo; at right, three portrait photos overlap in a cluster, two beige garden shots behind and a narrower green water-ripple image in front and raised higher, running off the bottom edge."
+    },
+    {
+     "role": "other",
+     "description": "Full-bleed one-point-perspective view down a glass corridor, its ceiling filling the upper half as near-black. A text link with a short leading rule sits top-left on the inner line; a landscape photo of raked gravel is tucked against the top edge right of centre; a three-line heading fades in low and left of centre over the glass. A section name rotated ninety degrees runs down the far left."
+    },
+    {
+     "role": "footer",
+     "description": "Near-black and almost empty. One section name in serif at about 24px, preceded by a long thin rule, sits at mid-height left of centre. Lower down, tiny tracked-capital columns: a nav list, two office addresses side by side, and social links pushed to the far right. The bottom edge repeats the copyright and the two city clocks."
+    }
+   ],
+   "steal": [
+    "Place a single 18px sentence at vertical centre on an offset left line over full-bleed fog, and let the absence of a headline be the statement.",
+    "Stair-step a three-line heading by indenting each line further than the one above it.",
+    "Run two live city clocks with time-zone labels along the bottom edge as quiet proof of where the firm operates."
+   ],
+   "media": "A misted forest photograph covers the whole first screen under drifting cloud layers, with text on about 0.2% of the area. Then a pinned full-screen architectural scene dollies forward while overlapping collages of two or three photographs at different widths pass over it, rows pair a text column at about 28vw with a portrait flush to the right margin, and the fog band returns as a bookend; about 11 photographs, one WebGL canvas, no video.",
+   "motion": "A warm near-black screen with the tagline already in place until about 2.5s, then a fog bank creeps in from the lower right and the chrome fades in by 4.5s; load took 7.2s. Lenis with three sticky sections scrubs the scene as the forest darkens and the camera sinks into the pavilion, photographs move at different rates, and headline lines fade in one by one; two cloud layers loop on 100s linear translates, and there is no reduced-motion rule."
+  },
+  {
+   "id": "opl-deeo-studio-2",
+   "name": "Deeo Studio",
+   "url": "https://deeo.studio",
+   "source": "One Page Love",
+   "kind": "studio-portfolio",
+   "score": 7,
+   "idea": "The studio's four letters as huge extruded iridescent 3D blocks tumbling across a black stage, with a quiet ultralight serif statement underneath.",
+   "mood": [
+    "glossy",
+    "dark",
+    "polished",
+    "tech-forward"
+   ],
+   "archetype": "giant-wordmark",
+   "hero": "Near-black viewport. Four extruded 3D letters, each roughly 45-60% of the viewport tall, are scattered at different depths and tilts across the top 80% of the screen: one cropped by the top-left corner, one lower and left of centre, a larger one upper-right, the last cropped by the right edge. Faces are dark glass; edges catch lilac, orange and holographic rainbow light. Over them runs a slim nav: bold caps wordmark top-left at a 60px margin, three small caps links (one with a tiny yellow tag) and an outlined rounded button top-right. Bottom-left, a light serif headline at about 72px begins and is cut by the fold after two lines.",
+   "type": "PP Editorial New Ultralight for the statement headline at about 5vw; PP Neue Montreal Book, Medium and Bold for nav, caps labels and project titles; Inter 14px body. A bold Neue Montreal line reaches 160px (11.1vw) lower on the page. Light serif against bold grotesk is the pairing.",
+   "colour": "#0d0d0d #ffffff #b79cf0 #ff5a1f #f5f5f5 #f0e68c — Near-black page with white type; colour comes from iridescent lilac, orange and rainbow reflections on the 3D letters and from each case-study thumbnail's own palette. The digest records one light grey section.",
+   "imagery": "Extruded glassy letterforms with holographic edge light on black; case studies as square-cornered wide video thumbnails in each client's colours on a two-column grid; one tilted old snapshot in the footer.",
+   "layout": "Side margins of 60px. After the hero come a small left-aligned paragraph and a caps label, then a work list that opens with one full-width thumbnail and continues as two columns with staggered vertical offsets. Every item repeats the same caption row. The footer is centred.",
+   "sections": [
+    {
+     "role": "intro",
+     "description": "The serif headline finishes just below the fold at top-left. Beneath it sits a four-line 17px grotesk paragraph in a column only about 190px wide (13% of the viewport), left-aligned at the margin, followed by roughly 120px of empty black and a tiny caps section label. The right three-quarters of the screen stay completely empty."
+    },
+    {
+     "role": "work",
+     "description": "The first project is a single thumbnail running margin to margin; the rest sit in two columns with a 14px gutter, the right column offset vertically so thumbnails never align in rows. Under each thumbnail: project name in 16px medium at left with a line of tiny grey caps disciplines beneath, and a small outlined rounded button right-aligned on the same row. Square image corners, no card containers."
+    },
+    {
+     "role": "footer",
+     "description": "A tilted, slightly warped 1990s snapshot with a year caption overlaps giant block letters of the studio name set in dark grey barely lighter than the background, each letter several hundred pixels tall. Below, a centred row of five small links and a single centred line of the light serif at about 28px with a tiny speaker icon."
+    }
+   ],
+   "steal": [
+    "Render the studio name as separate 3D letters at different depths and tilts, cropped by the viewport edges, instead of a flat wordmark.",
+    "Pair the loud hero object with an ultralight serif statement at bottom-left and a deliberately tiny, narrow paragraph, leaving most of the next screen empty.",
+    "Caption every work thumbnail with the same two-ended row: name and disciplines left, small outlined button right."
+   ]
+  },
+  {
+   "id": "aww-usavionix",
+   "name": "USAvionix",
+   "url": "https://www.usavionix.com/",
+   "source": "Awwwards Site of the Day",
+   "kind": "physical-product",
+   "score": 7.5,
+   "idea": "A maker of autonomous jet drones explains its product as a single mission played out on scroll: one pinned WebGL camera flies from a lone drone over forested mountains to a swarm, to detection overlays and then to a dark tactical map, while a console readout runs at the edges and three status colours (observed, threat, secured) carry the plot.",
+   "mood": [
+    "technical",
+    "cinematic",
+    "dark",
+    "precise",
+    "industrial"
+   ],
+   "archetype": "immersive-webgl",
+   "hero": "After a preloader that shows only the dimmed drone silhouette for over 4.5s, a full-bleed real-time scene: photoreal forested mountains seen from above with a matte black flying wing dead centre, wingspan about 560px (39% of the width). A three-line claim at 80px (5.6vw), Geist 600, -0.04em, leading 0.95, sits top-left at x=32, y 88-300; a three-line 29px lead is docked bottom-right (x 874-1384) over a translucent grey pill about 248x40 that prompts the scroll. A grey contact pill and a menu button are fixed top-right, and a one-word chapter code with sliding tick rails sits top-centre. The middle 60% belongs to the scene.",
+   "type": "Two faces from one superfamily. Geist (41% of characters) at 600 for heads: 80px in the hero (5.6vw, leading 0.95, -0.04em), 76px chapter titles, 50px post-story heads; 29px leads at 500 and 17-19px body. Geist Mono (59%) at 11-12px uppercase, +0.06em, for the telemetry. Sentence case except the mono. The house version keeps Geist alone and sets the readout in sentence case at 16px with tabular figures.",
+   "colour": "#000000 #0f0f0f #ffffff #7aebff #ff6666 #ffcb47 — A black page and near-black scene ground with white text, and three status accents with one job each: amber for observed and the detection boxes, coral for threat, cyan for secured, each under 5% of the text and never on chrome. The terrain brings olive and slate; the closing cards bring warm orange.",
+   "imagery": "Real-time photoreal terrain in a cool, desaturated olive and slate grade with volumetric haze; a matte black flying-wing drone; flat 1px overlay props (bounding boxes with confidence labels, ID tags joined by dotted lines, a sensor cone, curved flight trails, ripple rings); a satellite-style photograph of a village; then warm sunset and dusk renders of a wildfire, a desert ridge and a substation as the payoff.",
+   "layout": "One full-bleed sticky canvas carries 14 chapters over about 60,000px of runway (about 4500px each), with text docked in the corners at 32px margins: title top-left, lead bottom-left or bottom-right at most about 500px wide, telemetry bottom-right, chapter code top-centre. After the story the page returns to normal flow on black for an expanding three-card row and a split with a wireframe globe; margins drift from 32 to 40 to 48px. 72 screens for 435 words.",
+   "sections": [
+    {
+     "role": "features",
+     "description": "The camera pulls back to three drones in a loose triangle, each with a small white ID tag, the tags joined by dotted lines; a 76px two-line title top-left and, bottom-right from x=732, a 29px lead over a four-row spec table with a label column and lighter values."
+    },
+    {
+     "role": "how-it-works",
+     "description": "Detection: back over the terrain, about 25 small yellow bounding boxes (40-60px) with label chips naming an object class and a confidence percentage, the drone small at the centre, and a four-line readout bottom-right with coordinates, altitude, speed and counts."
+    },
+    {
+     "role": "other",
+     "description": "A tactical map: a #0f0f0f ground with a faint perspective grid, an irregular outline of a land area covering about 40% of the width, a tag on its edge and three hotspots with 6s ripple rings. Over three chapters the hotspots and tag change colour (amber for survey, coral for threat, cyan for services on site) as grey drone glyphs fly in on curved trails."
+    },
+    {
+     "role": "showcase",
+     "description": "After the dark story, three photographic renders in a row from x=48 to 1392 with 24px gaps: one open card 660px wide and two closed at 318px, all about 628px tall with about 10px corners, the open one carrying a 29px title and a three-line 15px description bottom-left."
+    }
+   ],
+   "steal": [
+    "Tell a product's capability as one pinned scene: about 4500px of scroll per chapter, the camera moving continuously and the text still, changing only by opacity (out over 250ms, in over 400ms after a 200ms delay).",
+    "Give colour a job: three status accents, each tied to one state of the story and used only on tags, hotspots and single status words, never on chrome, each under 5% of the text, on black with white type.",
+    "After a cold, dark story, pay off with warm photographs in normal flow: an expanding row of three, one open at about 660px and two closed at about 318px. The site speaks in monospace telemetry over hairline grids; the house version sets the readout in the text face with tabular figures and lets the scene carry the structure."
+   ],
+   "media": "One sticky full-bleed WebGL scene covers 100% of every story screen, with an SVG overlay drawing the boxes, tags, trails and ripple rings over it; after the story come three photographic mission cards and a wireframe globe bleeding off the right and bottom edges. Two canvases, four images, no video.",
+   "motion": "A preloader of 4.5s or more shows only the dimmed model, then Lenis drives one pinned canvas through about 60,000px: the drone turns from banked to top-down, the camera pulls back to the formation, rises into the mesh, dives to a sensor view and cuts to the map, where zone colours change by chapter. Text moves by opacity only through 346 WAAPI fades (250ms ease-out, 400ms ease-in-out after 200ms), HUD marks transform over 0.25s cubic-bezier(0.4,0,0.2,1), 64 ripple rings loop on 6s, and there is no reduced-motion rule.",
+   "panel": "2026-10"
+  }
+ ],
+ "scenes": []
+}
