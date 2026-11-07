@@ -1,21 +1,23 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getStartQuestion, getQuestion, submitQuiz } from '../../lib/api';
 import Navbar from '../components/Navbar';
 import SiteFooter from '../components/SiteFooter';
+import type { Answer, QuestionWithAnswers } from '../../lib/types';
+
+type HistoryStep = { question: QuestionWithAnswers | null; answerId: string };
 
 export default function QuizPage() {
   const router = useRouter();
 
-  const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [history, setHistory] = useState([]);
-  const [answers, setAnswers] = useState({});
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionWithAnswers | null>(null);
+  const [history, setHistory] = useState<HistoryStep[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
 
   // Flash + visual feedback state
-  const [flashingId, setFlashingId] = useState(null);
-  const [expandedDescriptionId, setExpandedDescriptionId] = useState(null);
+  const [flashingId, setFlashingId] = useState<string | null>(null);
+  const [expandedDescriptionId, setExpandedDescriptionId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [advancing, setAdvancing] = useState(false);
@@ -29,13 +31,13 @@ export default function QuizPage() {
   }, []);
 
   // Navigate to the next question or submit if terminal
-  async function advance(answer: any, newAnswers: any) {
+  async function advance(answer: Answer, newAnswers: Record<string, string>) {
     if (answer.result_contact) {
       // Build Q&A summary from all previous steps + this final answer
       const lines: string[] = [];
       for (const step of history) {
         const qText = step.question?.text || '';
-        const aText = step.question?.answers?.find((a: any) => a.id === step.answerId)?.text || '';
+        const aText = step.question?.answers?.find((a: Answer) => a.id === step.answerId)?.text || '';
         if (qText && aText) lines.push(`Q: ${qText}\nA: ${aText}`);
       }
       if (currentQuestion?.text && answer.text) {
@@ -54,8 +56,8 @@ export default function QuizPage() {
         setHistory(prev => [...prev, { question: currentQuestion, answerId: answer.id }]);
         setCurrentQuestion(nextQuestion);
         setFlashingId(null);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load next question.');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to load next question.');
       } finally {
         setAdvancing(false);
       }
@@ -65,8 +67,8 @@ export default function QuizPage() {
         const result = await submitQuiz(newAnswers);
         localStorage.setItem('quizResult', JSON.stringify(result));
         router.push('/results');
-      } catch (err: any) {
-        setError(err.message || 'Failed to get recommendation. Try again.');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to get recommendation. Try again.');
         setSubmitting(false);
       }
     } else {
@@ -75,7 +77,7 @@ export default function QuizPage() {
   }
 
   // Called when user clicks an answer button
-  function handleClick(answer: any) {
+  function handleClick(answer: Answer) {
     if (advancing || submitting) return;
 
     setError('');
@@ -84,6 +86,7 @@ export default function QuizPage() {
     setFlashingId(answer.id);
     setTimeout(() => setFlashingId(null), 400);
 
+    if (!currentQuestion) return;
     const newAnswers = { ...answers, [currentQuestion.id]: answer.id };
     setAnswers(newAnswers);
     advance(answer, newAnswers);
@@ -96,7 +99,7 @@ export default function QuizPage() {
     setCurrentQuestion(prev.question);
     setAnswers(prev2 => {
       const updated = { ...prev2 };
-      delete updated[currentQuestion.id];
+      if (currentQuestion) delete updated[currentQuestion.id];
       return updated;
     });
     setError('');
@@ -166,7 +169,7 @@ export default function QuizPage() {
 
         <div className="flex flex-col gap-3">
           {(currentQuestion?.answers || []).map(answer => {
-            const isSelected = answers[currentQuestion.id] === answer.id;
+            const isSelected = currentQuestion ? answers[currentQuestion.id] === answer.id : false;
             const isFlashing = flashingId === answer.id;
 
             return (

@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -13,7 +12,7 @@ import {
 } from '../../lib/api';
 
 function RecommendationWeightsPanel() {
-  const [weights, setWeights] = useState({});
+  const [weights, setWeights] = useState<Record<string, Record<string, number>>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -23,7 +22,7 @@ function RecommendationWeightsPanel() {
       try {
         const data = await adminGetRecommendationWeights();
         setWeights(data || {});
-      } catch (err) {
+      } catch {
         setError('Unable to load recommendation weights.');
       } finally {
         setLoading(false);
@@ -33,7 +32,7 @@ function RecommendationWeightsPanel() {
     loadWeights();
   }, []);
 
-  function updateWeight(questionKey, optionLabel, value) {
+  function updateWeight(questionKey: string, optionLabel: string, value: string | number) {
     setWeights((current) => ({
       ...current,
       [questionKey]: {
@@ -49,7 +48,7 @@ function RecommendationWeightsPanel() {
 
     try {
       await adminUpdateRecommendationWeights(weights);
-    } catch (err) {
+    } catch {
       setError('Unable to save weights.');
     } finally {
       setSaving(false);
@@ -114,7 +113,7 @@ export default function AdminPage() {
     setLoggedIn(!!getAdminToken());
   }, []);
 
-  async function handleLogin(e) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');

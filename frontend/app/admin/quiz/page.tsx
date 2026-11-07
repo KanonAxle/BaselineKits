@@ -1,8 +1,8 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import type { Answer, GroupAction, Kit, QuestionWithAnswers, QuizPath } from '../../../lib/types';
 import {
   getAdminToken, getKits,
   adminGetQuiz,
@@ -13,13 +13,13 @@ import {
 
 export default function AdminQuizPage({ embedded = false }) {
   const router = useRouter();
-  const [questions, setQuestions] = useState<any[]>([]);
-  const [kits, setKits] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<QuestionWithAnswers[]>([]);
+  const [kits, setKits] = useState<Kit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   // Expanded question IDs
-  const [expanded, setExpanded] = useState({});
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   // Drag-to-reorder state (visual only — not persisted)
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -31,7 +31,7 @@ export default function AdminQuizPage({ embedded = false }) {
   const [answerDragOverId, setAnswerDragOverId] = useState<string | null>(null);
 
   // Path state
-  const [paths, setPaths] = useState<any[]>([]);
+  const [paths, setPaths] = useState<QuizPath[]>([]);
   const [activePath, setActivePath] = useState<string | null>(null);
   const [hiddenPaths, setHiddenPaths] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem('hiddenQuizPaths') || '[]'); } catch { return []; }
@@ -42,15 +42,26 @@ export default function AdminQuizPage({ embedded = false }) {
   const [renameValue, setRenameValue] = useState('');
 
   // Question editing state
-  const [editingQuestion, setEditingQuestion] = useState(null); // null=none, 'new', or id
-  const [questionForm, setQuestionForm] = useState({ text: '', code: '', path_id: null });
+  const [editingQuestion, setEditingQuestion] = useState<'new' | string | null>(null); // null=none, 'new', or id
+  const [questionForm, setQuestionForm] = useState<{ text: string; code: string; path_id: string | null }>({ text: '', code: '', path_id: null });
   const [questionSaving, setQuestionSaving] = useState(false);
   const [questionError, setQuestionError] = useState('');
 
   // Answer editing state
-  const [editingAnswer, setEditingAnswer] = useState(null); // { questionId, answerId }
+  const [editingAnswer, setEditingAnswer] = useState<{ questionId: string; answerId: string } | null>(null); // { questionId, answerId }
   // answerMode: 'next' = routes to another question, 'terminal' = ends quiz with kit
-  const [answerForm, setAnswerForm] = useState({ text: '', description: '', answerMode: 'next', next_question_id: '', result_kit_id: '', ga_adults: '', ga_children: '', ga_gender: '', result_contact: false });
+  type AnswerForm = {
+    text: string;
+    description: string;
+    answerMode: 'next' | 'terminal' | 'contact';
+    next_question_id: string;
+    result_kit_id: string;
+    ga_adults: string;
+    ga_children: string;
+    ga_gender: string;
+    result_contact: boolean;
+  };
+  const [answerForm, setAnswerForm] = useState<AnswerForm>({ text: '', description: '', answerMode: 'next', next_question_id: '', result_kit_id: '', ga_adults: '', ga_children: '', ga_gender: '', result_contact: false });
   const [answerSaving, setAnswerSaving] = useState(false);
   const [answerError, setAnswerError] = useState('');
 
@@ -111,24 +122,24 @@ export default function AdminQuizPage({ embedded = false }) {
     }
   }
 
-  function toggleExpand(id) {
+  function toggleExpand(id: string) {
     setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
   }
 
   // ---- Drag to reorder ----
 
-  function handleDragStart(e, id) {
+  function handleDragStart(e: React.DragEvent, id: string) {
     setDraggingId(id);
     e.dataTransfer.effectAllowed = 'move';
   }
 
-  function handleDragOver(e, id) {
+  function handleDragOver(e: React.DragEvent, id: string) {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     if (id !== draggingId) setDragOverId(id);
   }
 
-  function handleDrop(e, targetId) {
+  function handleDrop(e: React.DragEvent, targetId: string) {
     e.preventDefault();
     if (!draggingId || draggingId === targetId) { setDraggingId(null); setDragOverId(null); return; }
     setQuestions(prev => {
@@ -151,20 +162,20 @@ export default function AdminQuizPage({ embedded = false }) {
 
   // ---- Answer drag to reorder ----
 
-  function handleAnswerDragStart(e, qId, answerId) {
+  function handleAnswerDragStart(e: React.DragEvent, qId: string, answerId: string) {
     setAnswerDraggingId(answerId);
     setAnswerDraggingQId(qId);
     e.dataTransfer.effectAllowed = 'move';
   }
 
-  function handleAnswerDragOver(e, qId, answerId) {
+  function handleAnswerDragOver(e: React.DragEvent, qId: string, answerId: string) {
     e.preventDefault();
     e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
     if (qId === answerDraggingQId && answerId !== answerDraggingId) setAnswerDragOverId(answerId);
   }
 
-  function handleAnswerDrop(e, qId, targetAnswerId) {
+  function handleAnswerDrop(e: React.DragEvent, qId: string, targetAnswerId: string) {
     e.preventDefault();
     e.stopPropagation();
     if (!answerDraggingId || answerDraggingId === targetAnswerId || qId !== answerDraggingQId) {
@@ -207,7 +218,7 @@ export default function AdminQuizPage({ embedded = false }) {
     setQuestionError('');
   }
 
-  function startEditQuestion(q) {
+  function startEditQuestion(q: QuestionWithAnswers) {
     setQuestionForm({ text: q.text, code: q.code || '', path_id: q.path_id || null });
     setEditingQuestion(q.id);
     setQuestionError('');
@@ -219,7 +230,7 @@ export default function AdminQuizPage({ embedded = false }) {
     setQuestionError('');
   }
 
-  async function saveQuestion(e) {
+  async function saveQuestion(e: React.FormEvent) {
     e.preventDefault();
     if (!questionForm.text.trim()) { setQuestionError('Question text is required.'); return; }
     setQuestionSaving(true);
@@ -229,21 +240,21 @@ export default function AdminQuizPage({ embedded = false }) {
       if (editingQuestion === 'new') {
         const created = await adminCreateQuestion(payload);
         setQuestions(prev => [...prev, { ...created, answers: [] }]);
-      } else {
+      } else if (editingQuestion) {
         const updated = await adminUpdateQuestion(editingQuestion, payload);
         setQuestions(prev => prev.map(q => q.id === editingQuestion ? { ...q, ...updated } : q));
       }
       cancelQuestion();
     } catch (err) {
-      setQuestionError(err.message || 'Failed to save question.');
+      setQuestionError(err instanceof Error ? err.message : 'Failed to save question.');
     } finally {
       setQuestionSaving(false);
     }
   }
 
-  async function setStartQuestion(questionId) {
+  async function setStartQuestion(questionId: string) {
     try {
-      const updated = await adminUpdateQuestion(questionId, { is_start: true });
+      await adminUpdateQuestion(questionId, { is_start: true });
       // Clear is_start on all others locally, set it on this one
       setQuestions(prev => prev.map(q =>
         q.id === questionId
@@ -251,23 +262,23 @@ export default function AdminQuizPage({ embedded = false }) {
           : { ...q, is_start: false }
       ));
     } catch (err) {
-      setError(err.message || 'Failed to set start question.');
+      setError(err instanceof Error ? err.message : 'Failed to set start question.');
     }
   }
 
-  async function deleteQuestion(q) {
+  async function deleteQuestion(q: QuestionWithAnswers) {
     if (!confirm(`Delete question "${q.text}"? All its answers will also be deleted.`)) return;
     try {
       await adminDeleteQuestion(q.id);
       setQuestions(prev => prev.filter(x => x.id !== q.id));
     } catch (err) {
-      setError(err.message || 'Failed to delete question.');
+      setError(err instanceof Error ? err.message : 'Failed to delete question.');
     }
   }
 
   // ---- Answer form helpers ----
 
-  function buildAnswerFormFromAnswer(answer) {
+  function buildAnswerFormFromAnswer(answer: Answer): AnswerForm {
     const ga = answer.group_action || {};
     const base = {
       text: answer.text,
@@ -286,14 +297,14 @@ export default function AdminQuizPage({ embedded = false }) {
     }
   }
 
-  function startNewAnswer(questionId) {
+  function startNewAnswer(questionId: string) {
     setAnswerForm({ text: '', description: '', answerMode: 'next', next_question_id: '', result_kit_id: '', ga_adults: '', ga_children: '', ga_gender: '', result_contact: false });
     setEditingAnswer({ questionId, answerId: 'new' });
     setAnswerError('');
     setExpanded(prev => ({ ...prev, [questionId]: true }));
   }
 
-  function startEditAnswer(questionId, answer) {
+  function startEditAnswer(questionId: string, answer: Answer) {
     setAnswerForm(buildAnswerFormFromAnswer(answer));
     setEditingAnswer({ questionId, answerId: answer.id });
     setAnswerError('');
@@ -305,7 +316,7 @@ export default function AdminQuizPage({ embedded = false }) {
     setAnswerError('');
   }
 
-  async function saveAnswer(e) {
+  async function saveAnswer(e: React.FormEvent) {
     e.preventDefault();
     if (!answerForm.text.trim()) { setAnswerError('Answer text is required.'); return; }
     if (answerForm.answerMode === 'next' && !answerForm.next_question_id) {
@@ -318,7 +329,7 @@ export default function AdminQuizPage({ embedded = false }) {
     setAnswerSaving(true);
     setAnswerError('');
     try {
-      const ga = {};
+      const ga: GroupAction = {};
       if (answerForm.ga_adults !== '') ga.adults = parseInt(answerForm.ga_adults) || 0;
       if (answerForm.ga_children !== '') ga.children = parseInt(answerForm.ga_children) || 0;
       if (answerForm.ga_gender) ga.adult_gender = answerForm.ga_gender;
@@ -331,6 +342,7 @@ export default function AdminQuizPage({ embedded = false }) {
         result_contact: answerForm.answerMode === 'contact',
         group_action: Object.keys(ga).length > 0 ? ga : null,
       };
+      if (!editingAnswer) return;
       const { questionId, answerId } = editingAnswer;
 
       if (answerId === 'new') {
@@ -348,13 +360,13 @@ export default function AdminQuizPage({ embedded = false }) {
       }
       cancelAnswer();
     } catch (err) {
-      setAnswerError(err.message || 'Failed to save answer.');
+      setAnswerError(err instanceof Error ? err.message : 'Failed to save answer.');
     } finally {
       setAnswerSaving(false);
     }
   }
 
-  async function deleteAnswer(questionId, answer) {
+  async function deleteAnswer(questionId: string, answer: Answer) {
     if (!confirm(`Delete answer "${answer.text}"?`)) return;
     try {
       await adminDeleteAnswer(answer.id);
@@ -362,13 +374,13 @@ export default function AdminQuizPage({ embedded = false }) {
         q.id === questionId ? { ...q, answers: q.answers.filter(a => a.id !== answer.id) } : q
       ));
     } catch (err) {
-      setError(err.message || 'Failed to delete answer.');
+      setError(err instanceof Error ? err.message : 'Failed to delete answer.');
     }
   }
 
   // ---- Path actions ----
 
-  async function handleCreatePath(e) {
+  async function handleCreatePath(e: React.FormEvent) {
     e.preventDefault();
     if (!newPathName.trim()) return;
     try {
@@ -377,11 +389,11 @@ export default function AdminQuizPage({ embedded = false }) {
       setNewPathName('');
       setCreatingPath(false);
     } catch (err) {
-      setError(err.message || 'Failed to create path.');
+      setError(err instanceof Error ? err.message : 'Failed to create path.');
     }
   }
 
-  async function handleRenameSubmit(e) {
+  async function handleRenameSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!renameValue.trim() || !renamingPath) return;
     try {
@@ -390,11 +402,11 @@ export default function AdminQuizPage({ embedded = false }) {
       setRenamingPath(null);
       setRenameValue('');
     } catch (err) {
-      setError(err.message || 'Failed to rename path.');
+      setError(err instanceof Error ? err.message : 'Failed to rename path.');
     }
   }
 
-  async function handleDeletePath(pathId) {
+  async function handleDeletePath(pathId: string) {
     if (!confirm('Delete this path? Questions in this path will be unassigned but not deleted.')) return;
     try {
       await adminDeletePath(pathId);
@@ -402,7 +414,7 @@ export default function AdminQuizPage({ embedded = false }) {
       setQuestions(prev => prev.map(q => q.path_id === pathId ? { ...q, path_id: null } : q));
       if (activePath === pathId) setActivePath(null);
     } catch (err) {
-      setError(err.message || 'Failed to delete path.');
+      setError(err instanceof Error ? err.message : 'Failed to delete path.');
     }
   }
 
@@ -581,7 +593,7 @@ export default function AdminQuizPage({ embedded = false }) {
       )}
 
       <div className="flex flex-col gap-3">
-        {(activePath === null ? questions.filter(q => !hiddenPaths.includes(q.path_id)) : questions.filter(q => q.path_id === activePath)).map((q) => (
+        {(activePath === null ? questions.filter(q => q.path_id === null || !hiddenPaths.includes(q.path_id)) : questions.filter(q => q.path_id === activePath)).map((q) => (
           <div
             key={q.id}
             draggable={!editingQuestion}
@@ -603,7 +615,7 @@ export default function AdminQuizPage({ embedded = false }) {
                   <span className="label-tactical text-orange-500 border border-orange-500/40 bg-orange-500/10 px-2 py-0.5 rounded shrink-0 text-xs">START</span>
                 )}
                 {q.path_id && paths.find(p => p.id === q.path_id) && (
-                  <span className="label-tactical text-teal-400/80 border border-teal-500/20 bg-teal-500/10 px-2 py-0.5 rounded shrink-0 text-xs">{paths.find(p => p.id === q.path_id).name}</span>
+                  <span className="label-tactical text-teal-400/80 border border-teal-500/20 bg-teal-500/10 px-2 py-0.5 rounded shrink-0 text-xs">{paths.find(p => p.id === q.path_id)?.name}</span>
                 )}
                 <button
                   onClick={() => toggleExpand(q.id)}
@@ -938,7 +950,7 @@ export default function AdminQuizPage({ embedded = false }) {
           </div>
         ))}
 
-        {(activePath === null ? questions.filter(q => !hiddenPaths.includes(q.path_id)) : questions.filter(q => q.path_id === activePath)).length === 0 && !editingQuestion && (
+        {(activePath === null ? questions.filter(q => q.path_id === null || !hiddenPaths.includes(q.path_id)) : questions.filter(q => q.path_id === activePath)).length === 0 && !editingQuestion && (
           <div className="text-center py-16">
             <p className="label-tactical text-stone-500">
               {activePath ? 'No questions in this path yet. Add a question and assign it to this path.' : 'No questions yet. Add one above.'}

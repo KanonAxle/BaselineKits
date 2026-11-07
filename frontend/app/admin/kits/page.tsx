@@ -1,6 +1,6 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import type { Kit, KitCollection, Product, ProductColor, ProductSize, VariantGroup, VariantOption } from '../../../lib/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -17,7 +17,7 @@ import {
   adminUploadImage,
 } from '../../../lib/api';
 
-type KitItem = {
+type AdminKitItem = {
   type: 'product' | 'kit';
   product_id?: string;
   sub_kit_id?: string;
@@ -25,12 +25,12 @@ type KitItem = {
   price_cents: number;
   quantity: number;
   item_count?: number;
-  selected_variants?: Record<string, string>;
+  selected_variants?: Record<string, string> | null;
   is_person_slot?: boolean;
   qty_rule?: string | null;
 };
 
-function itemKey(item: KitItem) {
+function itemKey(item: AdminKitItem) {
   if (item.type === 'kit') return `kit__${item.sub_kit_id || ''}`;
   const v = item.selected_variants || {};
   const vKey = Object.entries(v).sort().map(([k, val]) => `${k}=${val}`).join(',');
@@ -45,13 +45,13 @@ const emptyForm = {
   collection_id: null as string | null,
   person_pack_gender: null as string | null,
   person_pack_age: null as string | null,
-  items: [] as KitItem[],
+  items: [] as AdminKitItem[],
 };
 
 export default function AdminKitsPage() {
   const router = useRouter();
-  const [kits, setKits] = useState<any[]>([]);
-  const [products, setProducts] = useState<any[]>([]);
+  const [kits, setKits] = useState<Kit[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [form, setForm] = useState(emptyForm);
@@ -79,7 +79,7 @@ export default function AdminKitsPage() {
   const [itemDragOverKey, setItemDragOverKey] = useState<string | null>(null);
 
   // Collections
-  const [collections, setCollections] = useState<any[]>([]);
+  const [collections, setCollections] = useState<KitCollection[]>([]);
   const [activeCollection, setActiveCollection] = useState<string | null>(null);
   const [kitSearch, setKitSearch] = useState('');
   const [hiddenCollections, setHiddenCollections] = useState<string[]>(() => {
@@ -143,7 +143,7 @@ export default function AdminKitsPage() {
     setShowForm(true);
   }
 
-  function openEditForm(kit: any) {
+  function openEditForm(kit: Kit) {
     setForm({
       name: kit.name || '',
       description: kit.description || '',
@@ -152,7 +152,7 @@ export default function AdminKitsPage() {
       collection_id: kit.collection_id || null,
       person_pack_gender: kit.person_pack_gender || null,
       person_pack_age: kit.person_pack_age || null,
-      items: (kit.items || []).map((item: any) => ({
+      items: (kit.items || []).map((item: AdminKitItem) => ({
         type: item.type || 'product',
         product_id: item.product_id,
         sub_kit_id: item.sub_kit_id,
@@ -206,22 +206,22 @@ export default function AdminKitsPage() {
 
     let priceCents = product.price_cents;
     if (pendingSize && Array.isArray(product.sizes)) {
-      const sizeObj = product.sizes.find(s => (typeof s === 'string' ? s : s.label) === pendingSize);
-      if (sizeObj?.price_cents) priceCents = sizeObj.price_cents;
+      const sizeObj = product.sizes.find((s: ProductSize) => (typeof s === 'string' ? s : s.label) === pendingSize);
+      if (typeof sizeObj === 'object' && sizeObj.price_cents) priceCents = sizeObj.price_cents;
     }
     if (pendingColor) {
-      const colorsToCheck = (() => {
+      const colorsToCheck: ProductColor[] = (() => {
         if (pendingSize && Array.isArray(product.sizes)) {
-          const sizeObj = product.sizes.find(s => (typeof s === 'string' ? s : s.label) === pendingSize);
-          if (sizeObj?.colors?.length) return sizeObj.colors;
+          const sizeObj = product.sizes.find((s: ProductSize) => (typeof s === 'string' ? s : s.label) === pendingSize);
+          if (typeof sizeObj === 'object' && sizeObj.colors?.length) return sizeObj.colors;
         }
         return product.colors || [];
       })();
-      const colorObj = colorsToCheck.find(c => c.name === pendingColor);
+      const colorObj = colorsToCheck.find((c: ProductColor) => c.name === pendingColor);
       if (colorObj?.price_cents) priceCents = colorObj.price_cents;
     }
 
-    const newItem: KitItem = {
+    const newItem: AdminKitItem = {
       type: 'product',
       product_id: product.id,
       name: product.name,
@@ -266,7 +266,7 @@ export default function AdminKitsPage() {
     }));
   }
 
-  function updateItemField(key: string, field: string, value: any) {
+  function updateItemField(key: string, field: string, value: string | number | boolean | null) {
     setForm(f => ({
       ...f,
       items: f.items.map(i => itemKey(i) === key ? { ...i, [field]: value } : i),
@@ -341,13 +341,13 @@ export default function AdminKitsPage() {
       }
       cancelForm();
     } catch (err) {
-      setFormError(err.message || 'Failed to save kit.');
+      setFormError(err instanceof Error ? err.message : 'Failed to save kit.');
     } finally {
       setSaving(false);
     }
   }
 
-  async function handleDuplicate(kit: any) {
+  async function handleDuplicate(kit: Kit) {
     try {
       const payload = {
         name: `Copy of ${kit.name}`,
@@ -357,7 +357,7 @@ export default function AdminKitsPage() {
         collection_id: kit.collection_id || null,
         person_pack_gender: kit.person_pack_gender || null,
         person_pack_age: kit.person_pack_age || null,
-        items: (kit.items || []).map((i: any) => ({
+        items: (kit.items || []).map((i: AdminKitItem) => ({
           product_id: i.product_id || null,
           sub_kit_id: i.sub_kit_id || null,
           quantity: i.quantity,
@@ -433,10 +433,10 @@ export default function AdminKitsPage() {
   const kitTotal = form.items.reduce((sum, i) => sum + i.price_cents * i.quantity, 0);
 
   const addedSubKitIds = new Set(form.items.filter(i => i.type === 'kit').map(i => i.sub_kit_id));
-  const availableSubKits = (kits as any[]).filter(k => k.id !== editingId && !addedSubKitIds.has(k.id));
+  const availableSubKits = kits.filter(k => k.id !== editingId && !addedSubKitIds.has(k.id));
 
   const collectionKits = activeCollection === null
-    ? kits.filter(k => !hiddenCollections.includes(k.collection_id))
+    ? kits.filter(k => k.collection_id === null || !hiddenCollections.includes(k.collection_id))
     : kits.filter(k => k.collection_id === activeCollection);
   const searchQuery = kitSearch.trim().toLowerCase();
   const filteredKits = collectionKits.filter(kit => {
@@ -447,7 +447,7 @@ export default function AdminKitsPage() {
       kit.description,
       kit.tag,
       collectionName,
-      ...(kit.items || []).map(item => item.name),
+      ...(kit.items || []).map((item: AdminKitItem) => item.name),
     ].some(value => value?.toLowerCase().includes(searchQuery));
   });
 
@@ -469,13 +469,12 @@ export default function AdminKitsPage() {
   const colorsToShow = (() => {
     if (!selectedProduct) return [];
     if (pendingSize && hasSizes) {
-      const sizeObj = selectedProduct.sizes.find(s => (typeof s === 'string' ? s : s.label) === pendingSize);
-      if (sizeObj?.colors?.length) return sizeObj.colors;
+      const sizeObj = (selectedProduct.sizes || []).find((s: ProductSize) => (typeof s === 'string' ? s : s.label) === pendingSize);
+      if (typeof sizeObj === 'object' && sizeObj.colors?.length) return sizeObj.colors;
     }
     return selectedProduct?.colors || [];
   })();
 
-  const hasVariants = hasSizes || colorsToShow.length > 0 || hasVariantGroups;
 
   if (loading) {
     return (
@@ -820,7 +819,7 @@ export default function AdminKitsPage() {
                           <div>
                             <p className="label-tactical text-stone-600 mb-2" style={{ fontSize: '0.6rem' }}>SIZE</p>
                             <div className="flex flex-wrap gap-1.5">
-                              {selectedProduct.sizes.map((s) => {
+                              {(selectedProduct.sizes || []).map((s: ProductSize) => {
                                 const label = typeof s === 'string' ? s : s.label;
                                 return (
                                   <button
@@ -846,7 +845,7 @@ export default function AdminKitsPage() {
                           <div>
                             <p className="label-tactical text-stone-600 mb-2" style={{ fontSize: '0.6rem' }}>COLOR</p>
                             <div className="flex flex-wrap gap-2 items-center">
-                              {colorsToShow.map((c, ci) => (
+                              {colorsToShow.map((c: ProductColor, ci: number) => (
                                 <button
                                   key={`${c.name}-${ci}`}
                                   type="button"
@@ -866,12 +865,12 @@ export default function AdminKitsPage() {
                         )}
 
                         {/* Custom variant groups */}
-                        {hasVariantGroups && selectedProduct.variant_groups.map((group) => (
+                        {hasVariantGroups && (selectedProduct.variant_groups || []).map((group: VariantGroup) => (
                           <div key={group.name}>
                             <p className="label-tactical text-stone-600 mb-2 uppercase" style={{ fontSize: '0.6rem' }}>{group.name}</p>
                             <div className="flex flex-wrap gap-1.5">
-                              {(group.options || []).map((opt) => {
-                                const label = typeof opt === 'string' ? opt : opt.label;
+                              {(group.options || []).map((opt: VariantOption) => {
+                                const label = opt.label;
                                 const isSelected = pendingVG[group.name] === label;
                                 return (
                                   <button
@@ -1114,7 +1113,7 @@ export default function AdminKitsPage() {
                   </div>
                   {kit.items?.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-3">
-                      {kit.items.map((item, i) => (
+                      {kit.items.map((item: AdminKitItem, i: number) => (
                         <span
                           key={`${item.product_id || item.sub_kit_id || 'item'}-${i}`}
                           className={`text-xs px-2 py-0.5 rounded border ${

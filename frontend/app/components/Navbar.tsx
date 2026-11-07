@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
@@ -14,26 +14,33 @@ const LEARN_LINKS = [
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [learnOpen, setLearnOpen] = useState(false);
+  // Client-only auth read (localStorage) — no-op subscribe, false on server.
+  const loggedIn = useSyncExternalStore(
+    () => () => {},
+    () => Boolean(getToken()),
+    () => false
+  );
+  // Menu state is stored per-path so navigation (pathname change) naturally
+  // closes the menus without a setState-in-effect.
+  const [menuState, setMenuState] = useState({ path: pathname, open: false });
+  const [learnState, setLearnState] = useState({ path: pathname, open: false });
+  const menuOpen = menuState.path === pathname && menuState.open;
+  const learnOpen = learnState.path === pathname && learnState.open;
+  const toggleMenu = useCallback(() => {
+    setMenuState(s => ({ path: pathname, open: !(s.path === pathname && s.open) }));
+  }, [pathname]);
+  const setLearnOpen = useCallback((open: boolean) => {
+    setLearnState(s => ({ path: pathname, open }));
+  }, [pathname]);
+  const toggleLearn = useCallback(() => {
+    setLearnState(prev => ({ path: pathname, open: !(prev.path === pathname && prev.open) }));
+  }, [pathname]);
   const learnRef = useRef<HTMLDivElement>(null);
   const { totalCount } = useCart();
   const learnActive = LEARN_LINKS.some(link => pathname.startsWith(link.href));
 
-  useEffect(() => {
-    setLoggedIn(!!getToken());
-  }, []);
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setMenuOpen(false);
-    setLearnOpen(false);
-  }, [pathname]);
-
   function handleLogout() {
     removeToken();
-    setLoggedIn(false);
     router.push('/');
   }
 
@@ -76,7 +83,7 @@ export default function Navbar() {
             >
               <button
                 type="button"
-                onClick={() => setLearnOpen(v => !v)}
+                onClick={toggleLearn}
                 aria-expanded={learnOpen}
                 aria-haspopup="true"
                 className={`flex items-center gap-1 transition-colors text-xs uppercase tracking-widest font-semibold ${
@@ -147,7 +154,7 @@ export default function Navbar() {
 
           {/* Hamburger button — mobile only */}
           <button
-            onClick={() => setMenuOpen(v => !v)}
+            onClick={toggleMenu}
             className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded border border-stone-700 lg:hidden"
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
