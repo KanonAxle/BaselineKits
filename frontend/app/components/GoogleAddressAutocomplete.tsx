@@ -14,8 +14,8 @@ type AddressDetails = {
 };
 
 type Suggestion = {
-  place_id: string;
-  description: string;
+  place_id?: string;
+  description?: string;
 };
 
 type Props = {
@@ -80,6 +80,7 @@ export default function GoogleAddressAutocomplete({
     setSelecting(true);
     setError('');
     try {
+      if (!suggestion.place_id) return;
       const result = await getGoogleAddressDetails(suggestion.place_id, token);
       const address = result.address as AddressDetails;
       if (address.country !== 'US') {

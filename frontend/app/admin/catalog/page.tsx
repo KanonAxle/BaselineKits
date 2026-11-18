@@ -1,18 +1,19 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 import { adminGetProducts, getAdminToken } from '../../../lib/api';
 import { useCart } from '../../../lib/cartContext';
+import type { Product, ProductColor, ProductSize } from '../../../lib/types';
 
-const categoryLabels = {
+const categoryLabels: Record<string, string> = {
   bag: 'Bags', water: 'Water', food: 'Food', medical: 'Medical',
   tools: 'Tools', shelter: 'Shelter', clothing: 'Clothing'
 };
 
-const categoryIcons = {
+const categoryIcons: Record<string, string> = {
   bag: '🎒', water: '💧', food: '🥫', medical: '🩺',
   tools: '🔧', shelter: '⛺', clothing: '🧤'
 };
@@ -29,10 +30,10 @@ function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-function getFromPrice(product: any): { cents: number; from: boolean } {
+function getFromPrice(product: Product): { cents: number; from: boolean } {
   const sizePrices = (product.sizes || [])
-    .filter((s: any) => s && typeof s === 'object' && s.price_cents)
-    .map((s: any) => s.price_cents as number);
+    .filter((s: ProductSize) => s && typeof s === 'object' && s.price_cents)
+    .map((s: ProductSize) => (s as { price_cents?: number }).price_cents as number);
 
   if (sizePrices.length === 0) return { cents: product.price_cents, from: false };
 
@@ -56,7 +57,7 @@ function displayWeight(grams: number): string {
 
 export default function ProductsPage() {
   const router = useRouter();
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -121,7 +122,7 @@ export default function ProductsPage() {
 
   const hasActiveFilters = search || activeCategory !== 'all' || activeBrand !== 'all' || inStockOnly || sortBy !== 'featured';
 
-  function handleQuickAdd(product: any) {
+  function handleQuickAdd(product: Product) {
     addItem({
       id: product.id,
       type: 'product',
@@ -174,8 +175,8 @@ export default function ProductsPage() {
                   }`}
                 >
                   <option value="all">All Brands</option>
-                  {brands.filter(b => b !== 'all').map(b => (
-                    <option key={b} value={b}>{b}</option>
+                  {brands.filter(b => b && b !== 'all').map(b => (
+                    <option key={b || ''} value={b || ''}>{b}</option>
                   ))}
                 </select>
               )}
@@ -279,7 +280,7 @@ export default function ProductsPage() {
                   <div className="overflow-hidden rounded border border-orange-500/30 bg-stone-950/95 p-2 shadow-2xl shadow-black/40 backdrop-blur-sm">
                     <div className="relative w-full aspect-video overflow-hidden rounded mb-2 bg-stone-900">
                       {product.images?.[0] ? (
-                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                        <Image src={product.images[0]} alt={product.name} fill sizes="300px" className="object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-stone-700 text-2xl">{categoryIcons[product.category] || '📦'}</div>
                       )}
@@ -293,10 +294,12 @@ export default function ProductsPage() {
                 {/* Cover image */}
                 <div className={`w-full aspect-video overflow-hidden rounded-t border-b border-stone-800 relative ${product.image_fit === 'contain' ? 'bg-white' : 'bg-stone-900'}`}>
                   {product.images?.[0] ? (
-                    <img
+                    <Image
                       src={product.images[0]}
                       alt={product.name}
-                      className={`w-full h-full ${product.image_fit === 'contain' ? 'object-contain' : 'object-cover group-hover:scale-105 transition-transform duration-300'}`}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
+                      className={product.image_fit === 'contain' ? 'object-contain' : 'object-cover group-hover:scale-105 transition-transform duration-300'}
                       onError={e => { (e.target as HTMLImageElement).parentElement!.classList.add('no-img'); (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
                   ) : (
@@ -306,9 +309,9 @@ export default function ProductsPage() {
                   )}
                   {/* Badges */}
                   <div className="absolute bottom-2 left-2 flex items-center gap-1.5">
-                    {isUSA(product.country_of_origin) && (
+                    {isUSA(product.country_of_origin || '') && (
                       <div className="bg-stone-950/80 backdrop-blur-sm rounded px-1.5 py-0.5 flex items-center gap-1 border border-stone-700">
-                        <img src="https://flagcdn.com/w20/us.png" alt="US flag" className="w-4 h-auto" />
+                        <Image src="https://flagcdn.com/w20/us.png" alt="US flag" width={20} height={13} unoptimized className="w-4 h-auto" />
                         <span className="label-tactical text-stone-300 tracking-widest" style={{ fontSize: '0.55rem' }}>USA</span>
                       </div>
                     )}
@@ -370,11 +373,11 @@ export default function ProductsPage() {
                   )}
 
                   {/* Sizes */}
-                  {product.sizes?.length > 0 && (
+                  {(product.sizes?.length ?? 0) > 0 && (
                     <div className="border-t border-stone-800/60 pt-3">
                       <p className="label-tactical text-stone-600 mb-1.5" style={{ fontSize: '0.7rem' }}>AVAILABLE SIZES</p>
                       <div className="flex flex-wrap gap-1">
-                        {product.sizes.map((s, i) => (
+                        {(product.sizes || []).map((s: string | { label: string }, i: number) => (
                           <span
                             key={i}
                             className="text-xs border border-stone-700 text-stone-400 px-2 py-0.5 rounded uppercase tracking-wide font-semibold"
@@ -387,22 +390,22 @@ export default function ProductsPage() {
                   )}
 
                   {/* Colors */}
-                  {product.colors?.length > 0 && (
+                  {(product.colors?.length ?? 0) > 0 && (
                     <div className="border-t border-stone-800/60 pt-3">
                       <p className="label-tactical text-stone-600 mb-1.5" style={{ fontSize: '0.7rem' }}>
-                        {product.colors.length} {product.colors.length === 1 ? 'COLOR' : 'COLORS'}
+                        {(product.colors || []).length} {(product.colors || []).length === 1 ? 'COLOR' : 'COLORS'}
                       </p>
                       <div className="flex flex-wrap gap-1.5 items-center">
-                        {product.colors.slice(0, 10).map((c, i) => (
+                        {(product.colors || []).slice(0, 10).map((c: ProductColor, i: number) => (
                           <span
                             key={i}
                             className="w-5 h-5 rounded-full border border-stone-600 shrink-0"
-                            style={{ backgroundColor: c.hex }}
+                            style={{ backgroundColor: c.hex || '#888888' }}
                             title={c.name}
                           />
                         ))}
-                        {product.colors.length > 10 && (
-                          <span className="label-tactical text-stone-600 text-xs">+{product.colors.length - 10} more</span>
+                        {(product.colors || []).length > 10 && (
+                          <span className="label-tactical text-stone-600 text-xs">+{(product.colors || []).length - 10} more</span>
                         )}
                       </div>
                     </div>

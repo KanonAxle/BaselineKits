@@ -47,19 +47,19 @@ export const metadata: Metadata = {
     url: "/",
     images: [
       {
-        url: "/baselinekits-logo.png",
-        width: 768,
-        height: 768,
-        alt: "BaselineKits — custom survival kits",
+        url: "/og-banner.jpg",
+        width: 1200,
+        height: 630,
+        alt: "BaselineKits — custom survival kits, hand-packed and shipped to your door",
       },
     ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "BaselineKits — Custom Survival Kits, Built for You",
     description:
       "Answer a few questions and get a custom survival kit packed and shipped to your door.",
-    images: ["/baselinekits-logo.png"],
+    images: ["/og-banner.jpg"],
   },
   robots: {
     index: true,

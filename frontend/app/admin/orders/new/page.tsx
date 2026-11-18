@@ -1,10 +1,10 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getAdminToken, getKits, adminCreatePhoneOrder } from '../../../../lib/api';
 import GoogleAddressAutocomplete from '../../../components/GoogleAddressAutocomplete';
+import type { Kit } from '../../../../lib/types';
 
 const emptyForm = {
   customer_name: '',
@@ -17,11 +17,11 @@ const emptyForm = {
 
 export default function NewPhoneOrderPage() {
   const router = useRouter();
-  const [kits, setKits] = useState([]);
+  const [kits, setKits] = useState<Kit[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState('');
-  const [result, setResult] = useState(null); // { order_id, payment_url, total_cents, expires_at }
+  const [result, setResult] = useState<{ order_id: string; payment_url: string; total_cents: number; expires_at: string } | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -29,11 +29,11 @@ export default function NewPhoneOrderPage() {
     getKits().then(setKits).catch(() => {});
   }, [router]);
 
-  function set(field, value) {
+  function set(field: string, value: string | null) {
     setForm(f => ({ ...f, [field]: value }));
   }
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.customer_name.trim()) { setFormError('Customer name is required.'); return; }
     if (!form.customer_email.trim()) { setFormError('Customer email is required.'); return; }
@@ -53,13 +53,14 @@ export default function NewPhoneOrderPage() {
       });
       setResult(data);
     } catch (err) {
-      setFormError(err.message || 'Failed to create order. Check that Stripe is configured.');
+      setFormError(err instanceof Error ? err.message : 'Failed to create order. Check that Stripe is configured.');
     } finally {
       setSaving(false);
     }
   }
 
   function copyLink() {
+    if (!result) return;
     navigator.clipboard.writeText(result.payment_url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);

@@ -9,7 +9,7 @@ type Kit = {
   id: string;
   name: string;
   total_price_cents: number;
-  image_url?: string;
+  image_url?: string | null;
 };
 
 const SORT_OPTIONS = [

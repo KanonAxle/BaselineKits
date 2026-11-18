@@ -1,11 +1,17 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getAdminToken, adminGetOrders, adminUpdateOrderStatus } from '../../../lib/api';
+import type { Json, Order } from '../../../lib/types';
 
-const STATUS_COLORS = {
+// customizations is a freeform JSONB blob on orders; read known keys through this helper.
+const cust = (order: Order): Record<string, Json> =>
+  (order.customizations && typeof order.customizations === 'object' && !Array.isArray(order.customizations)
+    ? order.customizations
+    : {}) as Record<string, Json>;
+
+const STATUS_COLORS: Record<string, string> = {
   pending_payment: 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10',
   placed:          'text-blue-400 border-blue-500/30 bg-blue-500/10',
   paid:            'text-green-400 border-green-500/30 bg-green-500/10',
@@ -15,7 +21,7 @@ const STATUS_COLORS = {
   cancelled:       'text-red-400 border-red-500/30 bg-red-500/10',
 };
 
-const STATUS_LABELS = {
+const STATUS_LABELS: Record<string, string> = {
   pending_payment: 'Pending Payment',
   placed:          'Placed',
   paid:            'Paid',
@@ -27,30 +33,30 @@ const STATUS_LABELS = {
 
 const ALL_STATUSES = Object.keys(STATUS_LABELS);
 
-function formatDate(iso) {
+function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
-function fmt(cents) {
+function fmt(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-function customerName(order) {
-  return order.customizations?.guest_name || 'Account Customer';
+function customerName(order: Order) {
+  return String(cust(order).guest_name || 'Account Customer');
 }
 
-function customerEmail(order) {
-  return order.customizations?.customer_email || order.customizations?.guest_email || '—';
+function customerEmail(order: Order) {
+  return String(cust(order).customer_email || cust(order).guest_email || '—');
 }
 
 export default function AdminOrdersPage() {
   const router = useRouter();
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
-  const [copied, setCopied] = useState(null);
-  const [updatingStatus, setUpdatingStatus] = useState(null);
+  const [copied, setCopied] = useState<string | null>(null);
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (!getAdminToken()) { router.push('/admin'); return; }
@@ -62,22 +68,22 @@ export default function AdminOrdersPage() {
 
   const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
 
-  const counts = { all: orders.length };
+  const counts: Record<string, number> = { all: orders.length };
   ALL_STATUSES.forEach(s => { counts[s] = orders.filter(o => o.status === s).length; });
 
-  async function handleStatusChange(orderId, newStatus) {
+  async function handleStatusChange(orderId: string, newStatus: string) {
     setUpdatingStatus(orderId);
     try {
       const updated = await adminUpdateOrderStatus(orderId, newStatus);
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, ...updated } : o));
     } catch (err) {
-      setError(err.message || 'Failed to update status.');
+      setError(err instanceof Error ? err.message : 'Failed to update status.');
     } finally {
       setUpdatingStatus(null);
     }
   }
 
-  function copyLink(url, orderId) {
+  function copyLink(url: string, orderId: string) {
     navigator.clipboard.writeText(url).then(() => {
       setCopied(orderId);
       setTimeout(() => setCopied(null), 2000);
@@ -146,8 +152,9 @@ export default function AdminOrdersPage() {
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map(order => {
-              const isPhoneOrder = order.customizations?.phone_order;
-              const paymentUrl = order.customizations?.payment_url;
+              const custData = cust(order);
+              const isPhoneOrder = custData.phone_order;
+              const paymentUrl = custData.payment_url;
               const isCopied = copied === order.id;
               const isUpdating = updatingStatus === order.id;
 
@@ -166,12 +173,12 @@ export default function AdminOrdersPage() {
                         </span>
                       </div>
                       <span className="text-stone-400 text-xs">{customerEmail(order)}</span>
-                      {(order.customizations?.phone_number || order.customizations?.guest_phone) && (
-                        <span className="text-stone-500 text-xs">{order.customizations.phone_number || order.customizations.guest_phone}</span>
+                      {(custData.phone_number || custData.guest_phone) && (
+                        <span className="text-stone-500 text-xs">{String(custData.phone_number || custData.guest_phone)}</span>
                       )}
-                      {order.customizations?.terms_accepted_at && (
+                      {custData.terms_accepted_at && (
                         <span className="text-stone-500 text-xs">
-                          Terms {order.customizations.terms_version || 'accepted'} · {formatDate(order.customizations.terms_accepted_at)} · Marketing {order.customizations.marketing_opt_in ? 'opted in' : 'not opted in'}
+                          Terms {String(custData.terms_version || 'accepted')} · {formatDate(String(custData.terms_accepted_at))} · Marketing {custData.marketing_opt_in ? 'opted in' : 'not opted in'}
                         </span>
                       )}
                       <div className="flex items-center gap-3 mt-1 flex-wrap">
@@ -181,9 +188,9 @@ export default function AdminOrdersPage() {
                         <span className="label-tactical text-stone-600" style={{ fontSize: '0.6rem' }}>
                           {formatDate(order.created_at)}
                         </span>
-                        {order.customizations?.notes && (
+                        {custData.notes && (
                           <span className="label-tactical text-stone-600 italic" style={{ fontSize: '0.6rem' }}>
-                            Note: {order.customizations.notes}
+                            Note: {String(custData.notes)}
                           </span>
                         )}
                       </div>
@@ -193,9 +200,9 @@ export default function AdminOrdersPage() {
                     <div className="flex items-center gap-3 shrink-0 flex-wrap">
                       <div className="text-right">
                         <span className="text-white font-bold text-sm">{fmt(order.total_cents)}</span>
-                        {typeof order.customizations?.stripe_tax_cents === 'number' && (
+                        {typeof custData.stripe_tax_cents === 'number' && (
                           <span className="block text-stone-500 text-xs">
-                            Includes {fmt(order.customizations.stripe_tax_cents)} tax
+                            Includes {fmt(custData.stripe_tax_cents)} tax
                           </span>
                         )}
                       </div>
@@ -203,7 +210,7 @@ export default function AdminOrdersPage() {
                       {/* Copy payment link for pending orders */}
                       {order.status === 'pending_payment' && paymentUrl && (
                         <button
-                          onClick={() => copyLink(paymentUrl, order.id)}
+                          onClick={() => copyLink(String(paymentUrl), order.id)}
                           className={`label-tactical text-xs px-3 py-1.5 rounded border transition-all ${isCopied ? 'border-green-500/40 text-green-400 bg-green-500/10' : 'border-orange-500/30 text-orange-400 hover:bg-orange-500/10'}`}
                         >
                           {isCopied ? '✓ Copied' : 'Copy Payment Link'}

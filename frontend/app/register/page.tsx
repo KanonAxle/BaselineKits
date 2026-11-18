@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -25,12 +24,12 @@ export default function RegisterPage() {
   const [sameAsBilling, setSameAsBilling] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  function updateAddressField(addressKey, field, value) {
+  function updateAddressField(addressKey: 'billing' | 'mailing', field: string, value: string) {
     const setter = addressKey === 'billing' ? setBillingAddress : setMailingAddress;
     setter((current) => ({ ...current, [field]: value }));
   }
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -54,7 +53,7 @@ export default function RegisterPage() {
       );
       router.push(`/verify-email?email=${encodeURIComponent(email.trim())}&next=${encodeURIComponent(getNextPath())}&email_sent=${data.email_sent ? 'true' : 'false'}`);
     } catch (err) {
-      setError(err.message || 'Registration failed. Please try again.');
+      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
       setLoading(false);
     }
   }

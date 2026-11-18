@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -28,8 +27,8 @@ export default function LoginPage() {
       const data = await login(email, password, rememberMe, getNextPath());
       saveToken(data.token);
       router.push(getNextPath());
-    } catch (err: any) {
-      setError(err.message || 'Login failed. Check your email and password.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login failed. Check your email and password.');
       setLoading(false);
     }
   }
@@ -40,8 +39,8 @@ export default function LoginPage() {
     try {
       const result = await resendVerificationEmail(email, getNextPath());
       setVerificationMessage(result.message);
-    } catch (err: any) {
-      setVerificationMessage(err.message || 'Unable to send a verification email. Please try again.');
+    } catch (err: unknown) {
+      setVerificationMessage(err instanceof Error ? err.message : 'Unable to send a verification email. Please try again.');
     } finally {
       setLoading(false);
     }

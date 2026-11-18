@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getProduct } from '../../../lib/api';
+import type { ProductColor, ProductSize } from '../../../lib/types';
 import Navbar from '../../components/Navbar';
 import { useCart } from '../../../lib/cartContext';
 
@@ -20,18 +21,18 @@ function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-interface Color { name: string; hex: string; in_stock?: boolean; price_cents?: number; }
-interface SizeVariant { label: string; weight_grams?: number; dimensions?: string; notes?: string; price_cents?: number; in_stock?: boolean; colors?: Color[]; }
-interface VariantOption { label: string; price_modifier_cents: number; }
-interface VariantGroup { name: string; options: VariantOption[]; }
+interface Color { name: string; hex?: string | null; in_stock?: boolean | null; price_cents?: number | null; }
+interface SizeVariant { label: string; weight_grams?: number | null; dimensions?: string | null; notes?: string | null; price_cents?: number | null; in_stock?: boolean | null; colors?: Color[]; }
+interface VariantOption { label: string; price_modifier_cents?: number | null; }
+interface VariantGroup { name: string; options?: VariantOption[] | null; }
 interface Product {
-  id: string; name: string; description?: string; brand?: string;
-  category: string; price_cents: number; weight_grams?: number;
-  size?: string; sizes?: (SizeVariant | string)[]; in_stock: boolean; country_of_origin?: string;
-  images?: string[];
-  colors?: Color[];
-  variant_groups?: VariantGroup[];
-  image_fit?: string;
+  id: string; name: string; description?: string | null; brand?: string | null;
+  category: string; price_cents: number; weight_grams?: number | null;
+  size?: string | null; sizes?: ProductSize[] | null; in_stock: boolean | number | null; country_of_origin?: string | null; image_url?: string | null;
+  images?: string[] | null;
+  colors?: ProductColor[] | null;
+  variant_groups?: VariantGroup[] | null;
+  image_fit?: string | null;
 }
 
 function isUSA(origin?: string) {
@@ -141,7 +142,7 @@ function ColorPicker({ colors, selected, onChange }: {
                     ? 'border-orange-500 scale-110 shadow-lg shadow-orange-500/20'
                     : 'border-stone-700 hover:border-stone-400'
                 }`}
-                style={{ backgroundColor: color.hex }}
+                style={{ backgroundColor: color.hex || '#888888' }}
               >
                 {outOfStock && (
                   <span className="absolute inset-0 flex items-center justify-center">
@@ -244,15 +245,15 @@ function VariantGroupPicker({ group, selected, onChange }: {
     <div>
       <div className="flex items-center gap-2 mb-3">
         <span className="label-tactical text-stone-500">{group.name}:</span>
-        <span className="text-stone-300 text-sm font-semibold">{group.options[selected]?.label || ''}</span>
-        {group.options[selected]?.price_modifier_cents !== 0 && (
+        <span className="text-stone-300 text-sm font-semibold">{(group.options || [])[selected]?.label || ''}</span>
+        {(() => { const mod = (group.options || [])[selected]?.price_modifier_cents ?? 0; return mod !== 0 ? (
           <span className="text-orange-400 text-xs">
-            {group.options[selected]?.price_modifier_cents > 0 ? '+' : ''}{formatPrice(group.options[selected]?.price_modifier_cents)}
+            {mod > 0 ? '+' : ''}{formatPrice(mod)}
           </span>
-        )}
+        ) : null; })()}
       </div>
       <div className="flex flex-wrap gap-2">
-        {group.options.map((opt, i) => (
+        {(group.options || []).map((opt, i) => (
           <button
             key={i}
             onClick={() => onChange(i)}
@@ -263,9 +264,9 @@ function VariantGroupPicker({ group, selected, onChange }: {
             }`}
           >
             <span>{opt.label}</span>
-            {opt.price_modifier_cents !== 0 && (
+            {(opt.price_modifier_cents ?? 0) !== 0 && (
               <span className="text-xs font-normal opacity-70 mt-0.5">
-                {opt.price_modifier_cents > 0 ? '+' : ''}{formatPrice(opt.price_modifier_cents)}
+                {(opt.price_modifier_cents ?? 0) > 0 ? '+' : ''}{formatPrice(opt.price_modifier_cents ?? 0)}
               </span>
             )}
           </button>
@@ -281,8 +282,13 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
+  // Selected color per size — resets automatically when the size changes
+  // because each size derives from its own slot (no setState-in-effect).
+  const [colorBySize, setColorBySize] = useState<Record<number, number>>({});
+  const selectedColor = colorBySize[selectedSize] ?? 0;
+  const setSelectedColor = (idx: number) =>
+    setColorBySize(prev => ({ ...prev, [selectedSize]: idx }));
   const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
@@ -290,7 +296,7 @@ export default function ProductDetailPage() {
   useEffect(() => {
     if (!params?.id) return;
     getProduct(params.id as string)
-      .then((data: Product) => {
+      .then((data) => {
         setProduct(data);
         setSelectedVariants((data.variant_groups || []).map(() => 0));
 
@@ -299,8 +305,6 @@ export default function ProductDetailPage() {
       .catch(() => { setError('Product not found.'); setLoading(false); });
   }, [params?.id]);
 
-  // Reset selected color when size changes (each size has its own color list)
-  useEffect(() => { setSelectedColor(0); }, [selectedSize]);
 
   if (loading) {
     return (
@@ -331,7 +335,7 @@ export default function ProductDetailPage() {
   const currentColors: Color[] = (selectedSizeVariant?.colors?.length ? selectedSizeVariant.colors : product.colors) ?? [];
   const basePrice = selectedSizeVariant?.price_cents ?? product.price_cents;
   const variantModifiers = (product.variant_groups || []).reduce((sum, grp, gi) => {
-    const opt = grp.options[selectedVariants[gi] ?? 0];
+    const opt = (grp.options || [])[selectedVariants[gi] ?? 0];
     return sum + (opt?.price_modifier_cents ?? 0);
   }, 0);
   const colorAbsolutePrice = currentColors[selectedColor]?.price_cents ?? null;
@@ -370,7 +374,7 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
 
           {/* Left: Image gallery */}
-          <ImageGallery images={product.images || []} name={product.name} showFlag={isUSA(product.country_of_origin)} imageFit={product.image_fit} />
+          <ImageGallery images={product.images || []} name={product.name} showFlag={isUSA(product.country_of_origin || '')} imageFit={product.image_fit || undefined} />
 
           {/* Right: Info */}
           <div className="flex flex-col gap-6">
@@ -397,7 +401,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Made in USA banner */}
-            {isUSA(product.country_of_origin) && (
+            {isUSA(product.country_of_origin || '') && (
               <div className="flex items-center gap-3 border-l-2 border-red-500 pl-3 py-1">
                 <img src="https://flagcdn.com/w20/us.png" alt="US flag" className="w-7 h-auto" />
                 <div>
@@ -427,7 +431,7 @@ export default function ProductDetailPage() {
 
             {/* Variant group pickers */}
             {(product.variant_groups || []).map((grp, gi) => (
-              grp.options.length > 0 && (
+              (grp.options || []).length > 0 && (
                 <VariantGroupPicker
                   key={gi}
                   group={grp}
@@ -520,7 +524,7 @@ export default function ProductDetailPage() {
                   <span className="label-tactical text-stone-600">Colors</span>
                   <div className="flex items-center gap-1.5">
                     {currentColors.map((c, i) => (
-                      <span key={i} className="w-4 h-4 rounded-full border border-stone-600" style={{ backgroundColor: c.hex }} title={c.name} />
+                      <span key={i} className="w-4 h-4 rounded-full border border-stone-600" style={{ backgroundColor: c.hex || '#888888' }} title={c.name} />
                     ))}
                   </div>
                 </div>

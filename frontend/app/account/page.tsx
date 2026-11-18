@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { getMe, getOrders, getToken, removeToken, updateProfile } from '../../lib/api';
 import Navbar from '../components/Navbar';
 import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
+import type { AccountOrder, Json, User } from '../../lib/types';
 
 function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -38,20 +39,20 @@ type OrderHistoryItem = {
   product_id?: string;
   name: string;
   quantity: number;
-  price_cents: number;
+  price_cents: number | null;
   selected_options?: {
     size?: string;
     color?: string;
     variants?: Array<{ option?: string }>;
-  } | null;
+  } | Json | null | undefined;
 };
 
 const emptyAddress = (): AddressFields => ({ street: '', street2: '', city: '', state: '', zip: '' });
 
 export default function AccountPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any | null>(null);
-  const [orders, setOrders] = useState<any[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [orders, setOrders] = useState<AccountOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -306,10 +307,14 @@ export default function AccountPage() {
           <div className="flex flex-col gap-4">
             {orders.map(order => {
               const expanded = expandedOrders.has(order.id);
-              const customizations = order.customizations || {};
+              const customizations: Record<string, Json> =
+                (order.customizations && typeof order.customizations === 'object' && !Array.isArray(order.customizations)
+                  ? order.customizations
+                  : {}) as Record<string, Json>;
               const taxCents = customizations.stripe_tax_cents;
-              const orderTotal = customizations.stripe_paid_total_cents ?? order.total_cents;
-              const items: OrderHistoryItem[] = order.items || [];
+              const paidTotal = customizations.stripe_paid_total_cents;
+              const orderTotal = typeof paidTotal === 'number' ? paidTotal : order.total_cents;
+              const items = (order.items || []) as OrderHistoryItem[];
               return (
                 <section key={order.id} className="bg-stone-900 border border-stone-800 rounded-xl overflow-hidden">
                   <button
@@ -347,7 +352,11 @@ export default function AccountPage() {
                       {items.length > 0 ? (
                         <ul className="divide-y divide-stone-800">
                           {items.map((item, index) => {
-                            const options = item.selected_options || {};
+                            const rawOptions = item.selected_options;
+                            const options =
+                              rawOptions && typeof rawOptions === 'object' && !Array.isArray(rawOptions)
+                                ? (rawOptions as { size?: string; color?: string; variants?: Array<{ option?: string }> })
+                                : {};
                             const optionLabels = [
                               options.size,
                               options.color,
@@ -363,11 +372,11 @@ export default function AccountPage() {
                                     <p className="text-xs text-stone-500 mt-1">{optionLabels.join(' · ')}</p>
                                   )}
                                   <p className="text-xs text-stone-500 mt-1">
-                                    {item.quantity} × {formatPrice(item.price_cents)}
+                                    {item.quantity} × {formatPrice(item.price_cents ?? 0)}
                                   </p>
                                 </div>
                                 <span className="text-sm text-stone-300 whitespace-nowrap">
-                                  {formatPrice(item.price_cents * item.quantity)}
+                                  {formatPrice((item.price_cents ?? 0) * item.quantity)}
                                 </span>
                               </li>
                             );

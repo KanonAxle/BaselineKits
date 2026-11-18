@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 import { Suspense, useState, useEffect, useCallback } from 'react';
 import SiteFooter from '../components/SiteFooter';
@@ -15,7 +14,24 @@ type Person = {
 };
 
 // ── Helpers ───────────────────────────────────────────────────────
-function matchesPersonAudience(item: any, person?: { kind: string; gender: string }): boolean {
+// Kit/cart items as stored for sizing; looser than the strict domain types.
+type SizingItem = {
+  type?: string;
+  name?: string;
+  brand?: string | null;
+  image_url?: string | null;
+  product_id?: string;
+  price_cents?: number;
+  requires_sizing?: boolean;
+  items?: SizingItem[];
+  person_pack_gender?: string | null;
+  person_pack_age?: string | null;
+  is_person_slot?: boolean;
+  sizes?: Array<string | { label: string }>;
+  colors?: Array<string | { name: string; hex?: string }> | null;
+};
+
+function matchesPersonAudience(item: SizingItem, person?: { kind: string; gender: string }): boolean {
   const name = (item.name || '').toLowerCase();
   const isForAdultWomen = /\b(?:women|womens|woman|female|ladies)\b/.test(name);
   const isForAdultMen = /\b(?:men|mens|man|male)\b/.test(name);
@@ -33,8 +49,8 @@ function matchesPersonAudience(item: any, person?: { kind: string; gender: strin
 }
 
 // Collect sizable items for a specific person, respecting person-slot filtering.
-function collectSizableForPerson(items: any[], person?: { kind: string; gender: string }): any[] {
-  const result: any[] = [];
+function collectSizableForPerson(items: SizingItem[], person?: { kind: string; gender: string }): SizingItem[] {
+  const result: SizingItem[] = [];
   for (const item of items) {
     if (item.type === 'product' && item.requires_sizing) {
       if (matchesPersonAudience(item, person)) result.push(item);
@@ -54,15 +70,17 @@ function collectSizableForPerson(items: any[], person?: { kind: string; gender: 
 }
 
 // Collect all unique sizable items across all packs (for the overview list).
-function collectAllSizable(items: any[]): any[] {
+function collectAllSizable(items: SizingItem[]): SizingItem[] {
   const seen = new Set<string>();
-  const result: any[] = [];
+  const result: SizingItem[] = [];
   for (const item of items) {
     if (item.type === 'product' && item.requires_sizing) {
-      if (!seen.has(item.product_id)) { seen.add(item.product_id); result.push(item); }
+      const pid = typeof item.product_id === 'string' ? item.product_id : '';
+      if (pid && !seen.has(pid)) { seen.add(pid); result.push(item); }
     } else if (item.type === 'kit' && Array.isArray(item.items)) {
       for (const child of collectAllSizable(item.items)) {
-        if (!seen.has(child.product_id)) { seen.add(child.product_id); result.push(child); }
+        const cpid = typeof child.product_id === 'string' ? child.product_id : '';
+        if (cpid && !seen.has(cpid)) { seen.add(cpid); result.push(child); }
       }
     }
   }
@@ -88,7 +106,7 @@ function SizingPageContent() {
   const kitIndex = parseInt(searchParams.get('kitIndex') || '0', 10);
   const { items, updateKitSizing } = useCart();
 
-  const [kitRawItems, setKitRawItems] = useState<any[]>([]);
+  const [kitRawItems, setKitRawItems] = useState<SizingItem[]>([]);
   const [loadingKit, setLoadingKit] = useState(true);
   const [kitError, setKitError] = useState('');
 
@@ -129,9 +147,9 @@ function SizingPageContent() {
         const parsed = JSON.parse(stored);
         const gc = parsed.group_composition || [];
         if (gc.length > 0) {
-          const adultCount = gc.filter(p => p.kind === 'adult').length;
+          const adultCount = gc.filter((p: { kind: string }) => p.kind === 'adult').length;
           let adultIndex = 0;
-          const list = gc.map((p, i) => ({
+          const list = gc.map((p: { kind: string; gender?: string }, i: number) => ({
             kind: p.kind,
             gender: p.kind === 'adult'
               ? (p.gender || (adultCount === 2 ? (adultIndex++ === 0 ? 'male' : 'female') : 'male'))
@@ -361,7 +379,7 @@ function SizingPageContent() {
 
             <div className="flex flex-col gap-5">
               {collectSizableForPerson(kitRawItems, personList[step]).map((item, itemIdx) => {
-                const sizing = sizings[step]?.[item.product_id] || {};
+                const sizing = sizings[step]?.[item.product_id || ''] || {};
                 const hasSizes = Array.isArray(item.sizes) && item.sizes.length > 0;
                 const hasColors = Array.isArray(item.colors) && item.colors.length > 0;
 
@@ -390,7 +408,7 @@ function SizingPageContent() {
                             {item.name}
                           </Link>
                         </p>
-                        <p className="text-stone-500 text-xs">{formatPrice(item.price_cents)}</p>
+                        <p className="text-stone-500 text-xs">{formatPrice(item.price_cents ?? 0)}</p>
                         {sizing.size || sizing.color ? (
                           <p className="text-orange-400 text-xs mt-1">
                             {[sizing.size, sizing.color].filter(Boolean).join(' / ')}
@@ -405,13 +423,13 @@ function SizingPageContent() {
                         <div>
                           <p className="label-tactical text-stone-600 mb-2" style={{ fontSize: '0.6rem' }}>SIZE</p>
                           <div className="flex flex-wrap gap-1.5">
-                            {item.sizes.map((s, si) => {
+                            {(item.sizes || []).map((s: string | { label: string }, si: number) => {
                               const label = typeof s === 'string' ? s : s.label;
                               return (
                                 <button
                                   key={`${label}-${si}`}
                                   type="button"
-                                  onClick={() => setSize(step, item.product_id, sizing.size === label ? '' : label)}
+                                  onClick={() => setSize(step, item.product_id || '', sizing.size === label ? '' : label)}
                                   className={`text-xs px-3 py-1.5 rounded border font-semibold uppercase tracking-wide transition-colors ${
                                     sizing.size === label
                                       ? 'border-orange-500 text-orange-400 bg-orange-500/10'
@@ -431,20 +449,24 @@ function SizingPageContent() {
                         <div>
                           <p className="label-tactical text-stone-600 mb-2" style={{ fontSize: '0.6rem' }}>COLOR</p>
                           <div className="flex flex-wrap gap-2 items-center">
-                            {item.colors.map((c, ci) => (
-                              <button
-                                key={`${c.name}-${ci}`}
-                                type="button"
-                                title={c.name}
-                                onClick={() => setColor(step, item.product_id, sizing.color === c.name ? '' : c.name)}
-                                className={`w-7 h-7 rounded-full border-2 transition-all ${
-                                  sizing.color === c.name
-                                    ? 'border-orange-500 scale-110 shadow-lg shadow-orange-500/20'
-                                    : 'border-stone-600 hover:border-stone-400'
-                                }`}
-                                style={{ backgroundColor: c.hex || '#888' }}
-                              />
-                            ))}
+                            {(item.colors || []).map((c, ci: number) => {
+                              const cName = typeof c === 'string' ? c : c.name;
+                              const cHex = typeof c === 'string' ? undefined : c.hex;
+                              return (
+                                <button
+                                  key={`${cName}-${ci}`}
+                                  type="button"
+                                  title={cName}
+                                  onClick={() => setColor(step, item.product_id || '', sizing.color === cName ? '' : cName)}
+                                  className={`w-7 h-7 rounded-full border-2 transition-all ${
+                                    sizing.color === cName
+                                      ? 'border-orange-500 scale-110 shadow-lg shadow-orange-500/20'
+                                      : 'border-stone-600 hover:border-stone-400'
+                                  }`}
+                                  style={{ backgroundColor: cHex || '#888' }}
+                                />
+                              );
+                            })}
                             {sizing.color && <span className="text-stone-400 text-xs ml-1">{sizing.color}</span>}
                           </div>
                         </div>
@@ -496,7 +518,7 @@ function SizingPageContent() {
                   </div>
                   <div className="flex flex-col gap-1.5">
                     {collectSizableForPerson(kitRawItems, person).map((item, itemIdx) => {
-                      const sizing = sizings[pIdx]?.[item.product_id] || {};
+                      const sizing = sizings[pIdx]?.[item.product_id || ''] || {};
                       const summary = [sizing.size, sizing.color].filter(Boolean).join(' / ');
                       return (
                         <div key={`${item.product_id}-${itemIdx}`} className="flex items-center justify-between text-xs">

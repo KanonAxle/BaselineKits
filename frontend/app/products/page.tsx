@@ -9,13 +9,13 @@ import { getProducts } from '../../lib/api';
 type Product = {
   id: string;
   name: string;
-  description?: string;
-  brand?: string;
+  description?: string | null;
+  brand?: string | null;
   category: string;
   price_cents: number;
-  image_url?: string;
-  images?: string[];
-  in_stock?: boolean | number;
+  image_url?: string | null;
+  images?: string[] | null;
+  in_stock?: boolean | number | null;
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -129,7 +129,7 @@ export default function ProductsPage() {
                 <div className="w-full aspect-video overflow-hidden rounded-t border-b border-stone-800 relative bg-stone-900">
                   {(product.images?.[0] || product.image_url) ? (
                     <img
-                      src={product.images?.[0] || product.image_url}
+                      src={product.images?.[0] || product.image_url || undefined}
                       alt={product.name}
                       className="w-full h-full object-contain bg-white group-hover:scale-105 transition-transform duration-300"
                     />

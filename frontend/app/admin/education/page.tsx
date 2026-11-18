@@ -1,8 +1,13 @@
-// @ts-nocheck
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import type {
+  AdminEducationArticle,
+  AdminEducationCategory,
+  EducationCategoryInput,
+  EducationSection,
+} from '../../../lib/types';
 import {
   getAdminToken,
   adminGetEducation,
@@ -19,9 +24,14 @@ const labelClass = 'block text-xs uppercase tracking-widest text-stone-400 mb-1'
 const smallButton = 'text-xs uppercase tracking-widest px-3 py-2 rounded border border-stone-700 text-stone-300 hover:border-orange-500 hover:text-orange-400 transition-colors disabled:opacity-40';
 const dangerButton = 'text-xs uppercase tracking-widest px-3 py-2 rounded border border-red-900 text-red-400 hover:border-red-500 transition-colors';
 
-const blankSection = () => ({ heading: '', paragraphs: [''], bullets: [] });
+const blankSection = (): EducationSection => ({ heading: '', paragraphs: [''], bullets: [] });
 
-const blankArticle = (category) => ({
+type ArticleDraft = Omit<AdminEducationArticle, 'slug' | 'readMinutes'> & {
+  slug: string | null;
+  readMinutes: number | string;
+};
+
+const blankArticle = (category: string): ArticleDraft => ({
   slug: null,
   title: '',
   category,
@@ -33,7 +43,17 @@ const blankArticle = (category) => ({
   published: true,
 });
 
-function CategoryRow({ category, count, onSave, onDelete }) {
+function CategoryRow({
+  category,
+  count,
+  onSave,
+  onDelete,
+}: {
+  category: AdminEducationCategory;
+  count: number;
+  onSave: (id: string, data: EducationCategoryInput) => void;
+  onDelete: (category: AdminEducationCategory) => void;
+}) {
   const [label, setLabel] = useState(category.label);
   const [blurb, setBlurb] = useState(category.blurb);
   const dirty = label !== category.label || blurb !== category.blurb;
@@ -57,12 +77,28 @@ function CategoryRow({ category, count, onSave, onDelete }) {
   );
 }
 
-function ArticleEditor({ draft, categories, articles, saving, onChange, onSave, onCancel }) {
+function ArticleEditor({
+  draft,
+  categories,
+  articles,
+  saving,
+  onChange,
+  onSave,
+  onCancel,
+}: {
+  draft: ArticleDraft;
+  categories: AdminEducationCategory[];
+  articles: AdminEducationArticle[];
+  saving: boolean;
+  onChange: (draft: ArticleDraft) => void;
+  onSave: () => void;
+  onCancel: () => void;
+}) {
   const isNew = !draft.slug;
-  const update = (patch) => onChange({ ...draft, ...patch });
-  const updateSection = (index, patch) =>
+  const update = (patch: Partial<ArticleDraft>) => onChange({ ...draft, ...patch });
+  const updateSection = (index: number, patch: Partial<EducationSection>) =>
     update({ sections: draft.sections.map((section, i) => (i === index ? { ...section, ...patch } : section)) });
-  const moveSection = (index, delta) => {
+  const moveSection = (index: number, delta: number) => {
     const target = index + delta;
     if (target < 0 || target >= draft.sections.length) return;
     const sections = [...draft.sections];
@@ -70,7 +106,7 @@ function ArticleEditor({ draft, categories, articles, saving, onChange, onSave, 
     update({ sections });
   };
   const others = articles.filter(a => a.slug !== draft.slug);
-  const toggleRelated = (slug) =>
+  const toggleRelated = (slug: string) =>
     update({ related: draft.related.includes(slug) ? draft.related.filter(s => s !== slug) : [...draft.related, slug] });
 
   return (
@@ -177,12 +213,12 @@ function ArticleEditor({ draft, categories, articles, saving, onChange, onSave, 
 
 export default function AdminEducationPage() {
   const router = useRouter();
-  const [categories, setCategories] = useState([]);
-  const [articles, setArticles] = useState([]);
+  const [categories, setCategories] = useState<AdminEducationCategory[]>([]);
+  const [articles, setArticles] = useState<AdminEducationArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
-  const [draft, setDraft] = useState(null);
+  const [draft, setDraft] = useState<ArticleDraft | null>(null);
   const [saving, setSaving] = useState(false);
   const [newCategory, setNewCategory] = useState({ label: '', blurb: '' });
 
@@ -192,7 +228,7 @@ export default function AdminEducationPage() {
       setCategories(data.categories);
       setArticles(data.articles);
     } catch (err) {
-      setError(err.message || 'Could not load education content.');
+      setError(err instanceof Error ? err.message : 'Could not load education content.');
     } finally {
       setLoading(false);
     }
@@ -206,7 +242,7 @@ export default function AdminEducationPage() {
     load();
   }, []);
 
-  async function run(action, success) {
+  async function run(action: () => Promise<unknown>, success?: string) {
     setError('');
     setNotice('');
     try {
@@ -215,12 +251,13 @@ export default function AdminEducationPage() {
       await load();
       return true;
     } catch (err) {
-      setError(err.message || 'Something went wrong.');
+      setError(err instanceof Error ? err.message : 'Something went wrong.');
       return false;
     }
   }
 
   async function saveArticle() {
+    if (!draft) return;
     setSaving(true);
     const ok = await run(
       () => (draft.slug ? adminUpdateEducationArticle(draft.slug, draft) : adminCreateEducationArticle(draft)),
@@ -230,12 +267,12 @@ export default function AdminEducationPage() {
     if (ok) setDraft(null);
   }
 
-  async function removeArticle(article) {
+  async function removeArticle(article: AdminEducationArticle) {
     if (!window.confirm(`Delete "${article.title}"? This cannot be undone.`)) return;
     await run(() => adminDeleteEducationArticle(article.slug), 'Card deleted.');
   }
 
-  async function removeCategory(category) {
+  async function removeCategory(category: AdminEducationCategory) {
     if (!window.confirm(`Delete the "${category.label}" category?`)) return;
     await run(() => adminDeleteEducationCategory(category.id), 'Category deleted.');
   }
@@ -245,7 +282,7 @@ export default function AdminEducationPage() {
     if (ok) setNewCategory({ label: '', blurb: '' });
   }
 
-  const categoryLabel = (id) => categories.find(c => c.id === id)?.label || id;
+  const categoryLabel = (id: string) => categories.find(c => c.id === id)?.label || id;
 
   return (
     <main className="min-h-screen bg-stone-950 text-white px-6 py-12">

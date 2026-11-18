@@ -1,8 +1,9 @@
-// @ts-nocheck
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
+import type { Product, ProductColor, ProductSize } from '../../../lib/types';
 import {
   adminGetProducts, getAdminToken,
   adminCreateProduct, adminUpdateProduct, adminDeleteProduct,
@@ -11,12 +12,12 @@ import {
 
 const CATEGORIES = ['bag', 'water', 'food', 'medical', 'tools', 'shelter', 'clothing'];
 
-const categoryLabels = {
+const categoryLabels: Record<string, string> = {
   bag: 'Bags', water: 'Water', food: 'Food', medical: 'Medical',
   tools: 'Tools', shelter: 'Shelter', clothing: 'Clothing'
 };
 
-function formatPrice(cents) {
+function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
@@ -24,6 +25,8 @@ type SizeColorVariant = { name: string; hex: string; in_stock: boolean; price: s
 type SizeVariant = { label: string; price: string; weight_lbs: string; dimensions: string; notes: string; in_stock: boolean; colors: SizeColorVariant[] };
 type VariantOption = { label: string; price_modifier: string };
 type VariantGroup = { name: string; options: VariantOption[] };
+type ProductVariantGroup = NonNullable<Product['variant_groups']>[number];
+type ProductVariantOption = NonNullable<NonNullable<Product['variant_groups']>[number]['options']>[number];
 
 const emptyForm = {
   name: '', description: '', brand: '', category: 'tools',
@@ -38,12 +41,12 @@ const emptyForm = {
 
 export default function AdminProductsPage() {
   const router = useRouter();
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [visibilityUpdatingId, setVisibilityUpdatingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [form, setForm] = useState(emptyForm);
-  const [editingId, setEditingId] = useState(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState('');
@@ -78,7 +81,7 @@ export default function AdminProductsPage() {
     }
   }
 
-  async function toggleProductVisibility(product) {
+  async function toggleProductVisibility(product: Product) {
     const nextVisibility = product.is_visible === false;
     setVisibilityUpdatingId(product.id);
     setError('');
@@ -86,7 +89,7 @@ export default function AdminProductsPage() {
       const updated = await adminUpdateProduct(product.id, { is_visible: nextVisibility });
       setProducts(prev => prev.map(item => item.id === product.id ? updated : item));
     } catch (err) {
-      setError(err.message || `Failed to ${nextVisibility ? 'show' : 'hide'} ${product.name}.`);
+      setError(err instanceof Error ? err.message : `Failed to ${nextVisibility ? 'show' : 'hide'} ${product.name}.`);
     } finally {
       setVisibilityUpdatingId(null);
     }
@@ -101,7 +104,7 @@ export default function AdminProductsPage() {
     setShowForm(true);
   }
 
-  function openEditForm(product) {
+  function openEditForm(product: Product) {
     setForm({
       name: product.name || '',
       description: product.description || '',
@@ -117,21 +120,21 @@ export default function AdminProductsPage() {
       is_visible: product.is_visible !== false,
       link: product.link || '',
       image_fit: (product.image_fit === 'cover' ? 'cover' : 'contain') as 'cover' | 'contain',
-      images: Array.isArray(product.images) ? product.images.map(u => u ?? '') : [],
-      colors: Array.isArray(product.colors) ? product.colors.map(c => ({ name: c?.name ?? '', hex: c?.hex ?? '#888888', in_stock: c?.in_stock !== false, price: c?.price_cents != null ? (c.price_cents / 100).toFixed(2) : '' })) : [],
+      images: Array.isArray(product.images) ? product.images.map((u: string) => u ?? '') : [],
+      colors: Array.isArray(product.colors) ? product.colors.map((c: ProductColor) => ({ name: c?.name ?? '', hex: c?.hex ?? '#888888', in_stock: c?.in_stock !== false, price: c?.price_cents != null ? (c.price_cents / 100).toFixed(2) : '' })) : [],
       sizes: Array.isArray(product.sizes)
-        ? product.sizes.map(s =>
+        ? product.sizes.map((s: ProductSize) =>
             typeof s === 'string'
               ? { label: s, price: '', weight_lbs: '', dimensions: '', notes: '', in_stock: true, colors: [] }
-              : { label: s.label || '', price: s.price_cents ? (s.price_cents / 100).toFixed(2) : '', weight_lbs: s.weight_grams ? (s.weight_grams / 453.592).toFixed(2) : '', dimensions: s.dimensions || '', notes: s.notes || '', in_stock: s.in_stock !== false, colors: Array.isArray(s.colors) ? s.colors.map(c => ({ name: c?.name ?? '', hex: c?.hex ?? '#888888', in_stock: c?.in_stock !== false, price: c?.price_cents != null ? (c.price_cents / 100).toFixed(2) : '' })) : [] }
+              : { label: s.label || '', price: s.price_cents ? (s.price_cents / 100).toFixed(2) : '', weight_lbs: s.weight_grams ? (s.weight_grams / 453.592).toFixed(2) : '', dimensions: s.dimensions || '', notes: s.notes || '', in_stock: s.in_stock !== false, colors: Array.isArray(s.colors) ? s.colors.map((c: ProductColor) => ({ name: c?.name ?? '', hex: c?.hex ?? '#888888', in_stock: c?.in_stock !== false, price: c?.price_cents != null ? (c.price_cents / 100).toFixed(2) : '' })) : [] }
           )
         : [],
       variant_groups: Array.isArray(product.variant_groups)
-        ? product.variant_groups.map(g => ({
+        ? product.variant_groups.map((g: ProductVariantGroup) => ({
             name: g.name || '',
-            options: (g.options || []).map(o => ({
-              label: o.label || '',
-              price_modifier: o.price_modifier_cents != null ? (o.price_modifier_cents / 100).toFixed(2) : '0',
+            options: (g.options || []).map((o: ProductVariantOption | undefined) => ({
+              label: o?.label || '',
+              price_modifier: o?.price_modifier_cents != null ? (o.price_modifier_cents / 100).toFixed(2) : '0',
             })),
           }))
         : [],
@@ -144,7 +147,7 @@ export default function AdminProductsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function openDuplicateForm(product) {
+  function openDuplicateForm(product: Product) {
     setForm({
       name: `Copy of ${product.name || ''}`,
       description: product.description || '',
@@ -160,21 +163,21 @@ export default function AdminProductsPage() {
       is_visible: product.is_visible !== false,
       link: product.link || '',
       image_fit: (product.image_fit === 'cover' ? 'cover' : 'contain') as 'cover' | 'contain',
-      images: Array.isArray(product.images) ? product.images.map(u => u ?? '') : [],
-      colors: Array.isArray(product.colors) ? product.colors.map(c => ({ name: c?.name ?? '', hex: c?.hex ?? '#888888', in_stock: c?.in_stock !== false, price: c?.price_cents != null ? (c.price_cents / 100).toFixed(2) : '' })) : [],
+      images: Array.isArray(product.images) ? product.images.map((u: string) => u ?? '') : [],
+      colors: Array.isArray(product.colors) ? product.colors.map((c: ProductColor) => ({ name: c?.name ?? '', hex: c?.hex ?? '#888888', in_stock: c?.in_stock !== false, price: c?.price_cents != null ? (c.price_cents / 100).toFixed(2) : '' })) : [],
       sizes: Array.isArray(product.sizes)
-        ? product.sizes.map(s =>
+        ? product.sizes.map((s: ProductSize) =>
             typeof s === 'string'
               ? { label: s, price: '', weight_lbs: '', dimensions: '', notes: '', in_stock: true, colors: [] }
-              : { label: s.label || '', price: s.price_cents ? (s.price_cents / 100).toFixed(2) : '', weight_lbs: s.weight_grams ? (s.weight_grams / 453.592).toFixed(2) : '', dimensions: s.dimensions || '', notes: s.notes || '', in_stock: s.in_stock !== false, colors: Array.isArray(s.colors) ? s.colors.map(c => ({ name: c?.name ?? '', hex: c?.hex ?? '#888888', in_stock: c?.in_stock !== false, price: c?.price_cents != null ? (c.price_cents / 100).toFixed(2) : '' })) : [] }
+              : { label: s.label || '', price: s.price_cents ? (s.price_cents / 100).toFixed(2) : '', weight_lbs: s.weight_grams ? (s.weight_grams / 453.592).toFixed(2) : '', dimensions: s.dimensions || '', notes: s.notes || '', in_stock: s.in_stock !== false, colors: Array.isArray(s.colors) ? s.colors.map((c: ProductColor) => ({ name: c?.name ?? '', hex: c?.hex ?? '#888888', in_stock: c?.in_stock !== false, price: c?.price_cents != null ? (c.price_cents / 100).toFixed(2) : '' })) : [] }
           )
         : [],
       variant_groups: Array.isArray(product.variant_groups)
-        ? product.variant_groups.map(g => ({
+        ? product.variant_groups.map((g: ProductVariantGroup) => ({
             name: g.name || '',
-            options: (g.options || []).map(o => ({
-              label: o.label || '',
-              price_modifier: o.price_modifier_cents != null ? (o.price_modifier_cents / 100).toFixed(2) : '0',
+            options: (g.options || []).map((o: ProductVariantOption | undefined) => ({
+              label: o?.label || '',
+              price_modifier: o?.price_modifier_cents != null ? (o.price_modifier_cents / 100).toFixed(2) : '0',
             })),
           }))
         : [],
@@ -339,7 +342,7 @@ export default function AdminProductsPage() {
     }
   }
 
-  async function handleSave(e) {
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!form.name || !form.category || !form.price) {
       setFormError('Name, category, and price are required.');
@@ -401,19 +404,19 @@ export default function AdminProductsPage() {
       }
       cancelForm();
     } catch (err) {
-      setFormError(err.message || 'Failed to save product.');
+      setFormError(err instanceof Error ? err.message : 'Failed to save product.');
     } finally {
       setSaving(false);
     }
   }
 
-  async function handleDelete(product) {
+  async function handleDelete(product: Product) {
     if (!confirm(`Delete "${product.name}"? This cannot be undone.`)) return;
     try {
       await adminDeleteProduct(product.id);
       setProducts(prev => prev.filter(p => p.id !== product.id));
     } catch (err) {
-      setError(err.message || 'Failed to delete product.');
+      setError(err instanceof Error ? err.message : 'Failed to delete product.');
     }
   }
 
@@ -893,7 +896,7 @@ export default function AdminProductsPage() {
                         >⠿</span>
                         <div className="w-10 h-10 rounded border border-stone-700 overflow-hidden shrink-0 bg-stone-800 flex items-center justify-center">
                           {url ? (
-                            <img src={url} alt="" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                            <Image src={url} alt="" width={40} height={40} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           ) : (
                             <span className="text-stone-700 text-xs">?</span>
                           )}
@@ -1316,13 +1319,13 @@ export default function AdminProductsPage() {
 
         {/* Products Table */}
         {(() => {
-          const uniqueBrands = [...new Set((products as any[]).map(p => p.brand).filter(Boolean))].sort() as string[];
-          const filtered = (products as any[]).filter(p => {
+          const uniqueBrands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort() as string[];
+          const filtered = products.filter(p => {
             if (filterCategory && p.category !== filterCategory) return false;
             if (filterBrand && p.brand !== filterBrand) return false;
             if (filterSearch) {
               const query = filterSearch.toLowerCase();
-              const searchable = [p.name, p.brand, p.category, p.description].filter(Boolean);
+              const searchable = [p.name, p.brand, p.category, p.description].filter((v): v is string => Boolean(v));
               if (!searchable.some(value => value.toLowerCase().includes(query))) return false;
             }
             return true;
@@ -1369,7 +1372,7 @@ export default function AdminProductsPage() {
                   </button>
                 )}
                 <span className="label-tactical text-stone-600 ml-auto">
-                  {isFiltered ? `${filtered.length} of ${(products as any[]).length}` : `${(products as any[]).length}`} products
+                  {isFiltered ? `${filtered.length} of ${products.length}` : `${products.length}`} products
                 </span>
               </div>
 
@@ -1385,7 +1388,7 @@ export default function AdminProductsPage() {
                 {/* Cover image thumbnail */}
                 {product.images?.[0] && (
                   <div className="w-12 h-12 rounded border border-stone-700 overflow-hidden shrink-0 bg-stone-800">
-                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                    <Image src={product.images[0]} alt={product.name} width={48} height={48} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                   </div>
                 )}
                 <div className="flex flex-col min-w-0">
@@ -1394,16 +1397,16 @@ export default function AdminProductsPage() {
                     <span className="label-tactical text-stone-600">{categoryLabels[product.category] || product.category}</span>
                     {product.brand && <span className="label-tactical text-orange-500/60">{product.brand}</span>}
                     <span className="label-tactical text-stone-600">{formatPrice(product.price_cents)}</span>
-                    {product.cost_cents > 0 && (
+                    {(product.cost_cents ?? 0) > 0 && (
                       <span className="label-tactical text-stone-600">
-                        cost {formatPrice(product.cost_cents)} · margin {Math.round((product.price_cents - product.cost_cents) / product.price_cents * 100)}%
+                        cost {formatPrice(product.cost_cents ?? 0)} · margin {Math.round((product.price_cents - (product.cost_cents ?? 0)) / product.price_cents * 100)}%
                       </span>
                     )}
                     {product.weight_grams && <span className="label-tactical text-stone-600">{product.weight_grams}g</span>}
-                    {product.colors?.length > 0 && (
+                    {((product.colors?.length ?? 0) > 0) && (
                       <div className="flex items-center gap-1">
-                        {product.colors.map((c, i) => (
-                          <span key={i} className="w-3 h-3 rounded-full border border-stone-600 shrink-0" style={{ backgroundColor: c.hex }} title={c.name} />
+                        {(product.colors || []).map((c: ProductColor, i: number) => (
+                          <span key={i} className="w-3 h-3 rounded-full border border-stone-600 shrink-0" style={{ backgroundColor: c.hex || '#888888' }} title={c.name} />
                         ))}
                       </div>
                     )}
@@ -1467,7 +1470,7 @@ export default function AdminProductsPage() {
           {filtered.length === 0 && (
                   <div className="text-center py-16">
                     <p className="label-tactical text-stone-500">
-                      {(products as any[]).length === 0 ? 'No products yet. Add the first one above.' : 'No products match the current filters.'}
+                      {products.length === 0 ? 'No products yet. Add the first one above.' : 'No products match the current filters.'}
                     </p>
                   </div>
                 )}
