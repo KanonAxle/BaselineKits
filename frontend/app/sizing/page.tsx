@@ -4,7 +4,7 @@ import SiteFooter from '../components/SiteFooter';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '../../lib/cartContext';
-import { getKit } from '../../lib/api';
+import { getKit, quoteKit } from '../../lib/api';
 
 // ── Types ─────────────────────────────────────────────────────────
 type Person = {
@@ -218,13 +218,25 @@ function SizingPageContent() {
     else setStep('group');
   }
 
-  function confirmSizing() {
+  async function confirmSizing() {
     const personSizes = personList.map((person, idx) => ({
       label: buildLabel(person, idx, personList),
       gender: person.gender,
       sizes: sizings[idx] || {},
     }));
-    updateKitSizing(kitIndex, personSizes);
+
+    // Re-price for the actual household (e.g. two boys instead of one boy and one girl).
+    let priceCents: number | undefined;
+    try {
+      const quote = await quoteKit(cartItem.id, personSizes, cartItem.removedItems || []);
+      if (Number.isInteger(quote.merchandise_subtotal_cents) && quote.merchandise_subtotal_cents > 0) {
+        priceCents = quote.merchandise_subtotal_cents;
+      }
+    } catch {
+      // Keep the listed price; the server prices the order from these sizes at checkout.
+    }
+
+    updateKitSizing(kitIndex, personSizes, priceCents);
     router.push('/cart');
   }
 

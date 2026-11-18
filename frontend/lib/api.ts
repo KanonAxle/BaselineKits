@@ -267,6 +267,17 @@ export const getGoogleAddressDetails = (placeId: string, sessionToken: string | 
 export const createCheckout = (order_id: string, success_url: string, cancel_url: string): Promise<CheckoutResponse> =>
   apiFetch<CheckoutResponse>('/checkout', { method: 'POST', body: JSON.stringify({ order_id, success_url, cancel_url }) });
 
+// Price a kit for a specific household after sizing
+export const quoteKit = (
+  kit_id: string,
+  person_sizes: { label: string; gender?: string }[],
+  removed_items: string[] = []
+): Promise<{ merchandise_subtotal_cents: number }> =>
+  apiFetch<{ merchandise_subtotal_cents: number }>('/orders/quote-kit', {
+    method: 'POST',
+    body: JSON.stringify({ kit_id, person_sizes, removed_items }),
+  });
+
 // Cart order — creates an order from an array of CartItem objects (products and/or kits)
 export type CartOrderResult = {
   order_id: string;

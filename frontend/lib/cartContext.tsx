@@ -30,7 +30,7 @@ type CartContextType = {
   addItem: (item: CartItem) => void;
   removeItem: (index: number) => void;
   updateQuantity: (index: number, qty: number) => void;
-  updateKitSizing: (index: number, personSizes: PersonSizing[]) => void;
+  updateKitSizing: (index: number, personSizes: PersonSizing[], priceCents?: number) => void;
   clearCart: () => void;
   totalCount: number;
   totalCents: number;
@@ -123,9 +123,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     updateCart(prev => prev.map((item, i) => i === index ? { ...item, quantity: qty } : item));
   }, [removeItem]);
 
-  const updateKitSizing = useCallback((index: number, personSizes: PersonSizing[]) => {
+  const updateKitSizing = useCallback((index: number, personSizes: PersonSizing[], priceCents?: number) => {
     updateCart(prev => prev.map((item, i) =>
-      i === index ? { ...item, personSizes, sizingComplete: true } : item
+      i === index
+        ? { ...item, personSizes, sizingComplete: true, ...(priceCents !== undefined ? { price_cents: priceCents } : {}) }
+        : item
     ));
   }, []);
 

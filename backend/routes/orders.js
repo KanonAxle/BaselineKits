@@ -386,6 +386,37 @@ router.get('/orders/:id', async (req, res) => {
 });
 
 // -------------------------------------------------------
+// Quote a kit for a specific household (used by the cart after sizing)
+// POST /api/orders/quote-kit
+// Accepts: { kit_id, person_sizes: [{ label, gender }], removed_items: [productId] }
+// -------------------------------------------------------
+router.post('/orders/quote-kit', async (req, res) => {
+  try {
+    const { kit_id, person_sizes, removed_items } = req.body || {};
+    if (typeof kit_id !== 'string' || !kit_id) {
+      return res.status(400).json({ error: 'kit_id is required' });
+    }
+    if (!Array.isArray(person_sizes) || person_sizes.length > 20) {
+      return res.status(400).json({ error: 'person_sizes must be a list of at most 20 people' });
+    }
+    const people = person_sizes.map(p => ({
+      label: typeof p?.label === 'string' ? p.label : '',
+      gender: typeof p?.gender === 'string' ? p.gender : '',
+    }));
+    const removed = Array.isArray(removed_items) ? removed_items.filter(id => typeof id === 'string') : [];
+
+    const items = await resolveKitItemsForOrder(kit_id, { remove_items: removed, add_items: [] }, people);
+    if (!items.length) return res.status(404).json({ error: 'Kit not found or has no items' });
+
+    const merchandise_subtotal_cents = items.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
+    res.json({ merchandise_subtotal_cents });
+  } catch (error) {
+    console.error('Quote kit error:', error);
+    res.status(500).json({ error: 'Server error quoting kit' });
+  }
+});
+
+// -------------------------------------------------------
 // ENDPOINT 5: Create Order from Cart (products + kits; logged-in customers only)
 // POST /api/orders/from-cart
 // Accepts: { items: CartItem[], shipping_address, terms_accepted, marketing_opt_in }
