@@ -226,10 +226,47 @@ router.delete('/kits/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
-    await supabase.from('kit_items').delete().eq('kit_id', id);
+    // Other kits and quiz answers that point at this kit must be changed by the admin first.
+    const [{ data: parents, error: parentsError }, { data: answers, error: answersError }] = await Promise.all([
+      supabase.from('kit_items').select('kit_id').eq('sub_kit_id', id),
+      supabase.from('qa_answers').select('text').eq('result_kit_id', id),
+    ]);
+    if (parentsError || answersError) {
+      console.error('Delete kit reference check failed:', parentsError || answersError);
+      return res.status(500).json({ error: 'Could not check where this kit is used' });
+    }
+
+    let parentNames = [];
+    if (parents?.length) {
+      const { data: parentKits } = await supabase.from('kits').select('name').in('id', [...new Set(parents.map(row => row.kit_id))]);
+      parentNames = (parentKits || []).map(kit => kit.name);
+    }
+
+    const blockers = [];
+    if (parents?.length) blockers.push(`it is included as a sub-kit in: ${parentNames.join(', ') || 'another kit'}`);
+    if (answers?.length) blockers.push(`it is the result of ${answers.length} quiz answer(s): ${answers.map(a => `"${a.text}"`).join(', ')}`);
+    if (blockers.length) {
+      return res.status(409).json({ error: `This kit can't be deleted because ${blockers.join(' and ')}. Remove those references first.` });
+    }
+
+    // Past orders keep their line items; they just lose the link to the deleted kit.
+    const { error: ordersError } = await supabase.from('orders').update({ kit_id: null }).eq('kit_id', id);
+    if (ordersError) {
+      console.error('Delete kit order detach failed:', ordersError);
+      return res.status(500).json({ error: 'Failed to detach past orders from this kit' });
+    }
+
+    const { error: itemsError } = await supabase.from('kit_items').delete().eq('kit_id', id);
+    if (itemsError) {
+      console.error('Delete kit items failed:', itemsError);
+      return res.status(500).json({ error: 'Failed to remove this kit\'s items' });
+    }
 
     const { error } = await supabase.from('kits').delete().eq('id', id);
-    if (error) return res.status(500).json({ error: 'Failed to delete kit' });
+    if (error) {
+      console.error('Delete kit failed:', error);
+      return res.status(500).json({ error: `Failed to delete kit: ${error.message}` });
+    }
 
     res.status(200).json({ success: true });
 

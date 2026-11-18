@@ -378,8 +378,8 @@ export default function AdminKitsPage() {
     try {
       await adminDeleteKit(id);
       setKits(prev => prev.filter(k => k.id !== id));
-    } catch {
-      alert('Failed to delete kit.');
+    } catch (err: any) {
+      alert(err?.message || 'Failed to delete kit.');
     }
   }
 
