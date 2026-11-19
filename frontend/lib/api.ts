@@ -423,6 +423,10 @@ export const adminUpdateOrderStatus = (id: string, status: string): Promise<Orde
   adminFetch(`/admin/orders/${id}/status`, { method: 'PATCH', ...eduBody({ status }) });
 
 // Admin — Kits
+export const adminGetKits = (): Promise<Kit[]> => adminFetch('/admin/kits');
+export const adminSetKitVisibility = (id: string, is_visible: boolean): Promise<{ id: string; is_visible: boolean }> =>
+  adminFetch(`/admin/kits/${id}/visibility`, { method: 'PATCH', ...eduBody({ is_visible }) });
+
 export const adminCreateKit = (data: KitInput): Promise<Kit> =>
   adminFetch('/kits', { method: 'POST', ...eduBody(data) });
 

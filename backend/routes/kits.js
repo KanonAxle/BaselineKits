@@ -86,20 +86,24 @@ async function getKitWithItems(kitId) {
 // ENDPOINT 1: Get All Kits
 // GET /api/kits
 // -------------------------------------------------------
-router.get('/kits', async (req, res) => {
+async function listKits(req, res, includeHidden) {
   try {
     const [kits, kitItems] = await Promise.all([
       fetchAllRows('kits', '*', ['created_at', 'id']),
       fetchAllRows('kit_items', KIT_ITEM_COLUMNS, ['kit_id', 'id']),
     ]);
 
-    res.status(200).json(buildKitResponses(kits, kitItems));
+    const responses = buildKitResponses(kits, kitItems);
+    res.status(200).json(includeHidden ? responses : responses.filter(kit => kit.is_visible === true));
 
   } catch (error) {
     console.error('Get kits error:', error);
     res.status(500).json({ error: 'Server error fetching kits' });
   }
-});
+}
+
+router.get('/kits', (req, res) => listKits(req, res, false));
+router.get('/admin/kits', requireAdmin, (req, res) => listKits(req, res, true));
 
 // -------------------------------------------------------
 // ENDPOINT 2: Get One Kit with All Items
@@ -109,7 +113,7 @@ router.get('/kits/:id', async (req, res) => {
   try {
     const kit = await getKitWithItems(req.params.id);
 
-    if (!kit) {
+    if (!kit || kit.is_visible !== true) {
       return res.status(404).json({ error: 'Kit not found' });
     }
 
@@ -128,15 +132,18 @@ router.get('/kits/:id', async (req, res) => {
 // -------------------------------------------------------
 router.post('/kits', requireAdmin, async (req, res) => {
   try {
-    const { name, description, base_bag_id, image_url, items, person_pack_gender, person_pack_age, collection_id, tag } = req.body;
+    const { name, description, base_bag_id, image_url, items, person_pack_gender, person_pack_age, collection_id, tag, is_visible } = req.body;
 
     if (!name || !items || !items.length) {
       return res.status(400).json({ error: 'Name and items are required' });
     }
+    if (is_visible !== undefined && typeof is_visible !== 'boolean') {
+      return res.status(400).json({ error: 'is_visible must be a boolean' });
+    }
 
     const { data: newKit, error: kitError } = await supabase
       .from('kits')
-      .insert([{ name, description, base_bag_id, image_url, person_pack_gender: person_pack_gender || null, person_pack_age: person_pack_age || null, collection_id: collection_id || null, tag: tag || null }])
+      .insert([{ name, description, base_bag_id, image_url, person_pack_gender: person_pack_gender || null, person_pack_age: person_pack_age || null, collection_id: collection_id || null, tag: tag || null, is_visible: is_visible === undefined ? true : is_visible }])
       .select();
 
     if (kitError) {
@@ -177,13 +184,16 @@ router.post('/kits', requireAdmin, async (req, res) => {
 router.put('/kits/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, image_url, items, person_pack_gender, person_pack_age, collection_id, tag } = req.body;
+    const { name, description, image_url, items, person_pack_gender, person_pack_age, collection_id, tag, is_visible } = req.body;
 
     if (!name) return res.status(400).json({ error: 'Name is required' });
+    if (is_visible !== undefined && typeof is_visible !== 'boolean') {
+      return res.status(400).json({ error: 'is_visible must be a boolean' });
+    }
 
     const { error: kitError } = await supabase
       .from('kits')
-      .update({ name, description, image_url, person_pack_gender: person_pack_gender || null, person_pack_age: person_pack_age || null, collection_id: collection_id || null, tag: tag || null })
+      .update({ name, description, image_url, person_pack_gender: person_pack_gender || null, person_pack_age: person_pack_age || null, collection_id: collection_id || null, tag: tag || null, ...(is_visible === undefined ? {} : { is_visible }) })
       .eq('id', id);
 
     if (kitError) return res.status(500).json({ error: 'Failed to update kit' });
@@ -215,6 +225,25 @@ router.put('/kits/:id', requireAdmin, async (req, res) => {
   } catch (error) {
     console.error('Update kit error:', error);
     res.status(500).json({ error: 'Server error updating kit' });
+  }
+});
+
+router.patch('/admin/kits/:id/visibility', requireAdmin, async (req, res) => {
+  try {
+    if (typeof req.body?.is_visible !== 'boolean') {
+      return res.status(400).json({ error: 'is_visible must be a boolean' });
+    }
+    const { data, error } = await supabase.from('kits')
+      .update({ is_visible: req.body.is_visible })
+      .eq('id', req.params.id)
+      .select('id, is_visible')
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return res.status(404).json({ error: 'Kit not found' });
+    res.json(data);
+  } catch (error) {
+    console.error('Update kit visibility error:', error);
+    res.status(500).json({ error: 'Failed to update kit visibility' });
   }
 });
 

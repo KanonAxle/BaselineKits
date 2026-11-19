@@ -8,6 +8,13 @@ const { calculateShippingCents } = require('../utils/shippingPricing');
 const { isUsShippingCountry } = require('../utils/shippingCountry');
 const TERMS_VERSION = '2026-10-19';
 
+async function isPublicKit(id) {
+  const { data, error } = await supabase.from('kits')
+    .select('id').eq('id', id).eq('is_visible', true).maybeSingle();
+  if (error) throw error;
+  return Boolean(data);
+}
+
 async function getCheckoutCustomer(req) {
   const userId = verifyToken(req);
   if (!userId) return { error: 'You must be logged in to place an order', status: 401 };
@@ -192,6 +199,7 @@ router.post('/orders', async (req, res) => {
       return res.status(400).json({ error: 'We currently ship only within the United States.' });
     }
 
+    if (!await isPublicKit(kit_id)) return res.status(404).json({ error: 'Kit is no longer available' });
     const orderItems = await resolveKitItemsForOrder(kit_id, customizations, person_sizes || []);
     if (!orderItems.length) return res.status(404).json({ error: 'Kit not found or has no items' });
 
@@ -405,6 +413,7 @@ router.post('/orders/quote-kit', async (req, res) => {
     }));
     const removed = Array.isArray(removed_items) ? removed_items.filter(id => typeof id === 'string') : [];
 
+    if (!await isPublicKit(kit_id)) return res.status(404).json({ error: 'Kit is no longer available' });
     const items = await resolveKitItemsForOrder(kit_id, { remove_items: removed, add_items: [] }, people);
     if (!items.length) return res.status(404).json({ error: 'Kit not found or has no items' });
 
@@ -474,6 +483,9 @@ router.post('/orders/from-cart', async (req, res) => {
           throw error;
         }
       } else if (cartItem.type === 'kit') {
+        if (!await isPublicKit(cartItem.id)) {
+          return res.status(400).json({ error: 'A kit in your cart is no longer available' });
+        }
         const customizations = {
           bag_size: cartItem.bagSize || 'M',
           remove_items: cartItem.removedItems || [],

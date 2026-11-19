@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { Answer, GroupAction, Kit, QuestionWithAnswers, QuizPath } from '../../../lib/types';
 import {
-  getAdminToken, getKits,
+  getAdminToken, adminGetKits,
   adminGetQuiz,
   adminCreateQuestion, adminUpdateQuestion, adminDeleteQuestion,
   adminCreateAnswer, adminUpdateAnswer, adminDeleteAnswer,
@@ -75,7 +75,7 @@ export default function AdminQuizPage({ embedded = false }) {
 
   async function loadData() {
     try {
-      const [quizData, kitsData] = await Promise.all([adminGetQuiz(), getKits()]);
+      const [quizData, kitsData] = await Promise.all([adminGetQuiz(), adminGetKits()]);
       // Restore saved visual order from localStorage
       try {
         const savedOrder = JSON.parse(localStorage.getItem('quizQuestionOrder') || 'null');

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getAdminToken, getKits, adminCreatePhoneOrder } from '../../../../lib/api';
+import { getAdminToken, adminGetKits, adminCreatePhoneOrder } from '../../../../lib/api';
 import GoogleAddressAutocomplete from '../../../components/GoogleAddressAutocomplete';
 import type { Kit } from '../../../../lib/types';
 
@@ -26,7 +26,7 @@ export default function NewPhoneOrderPage() {
 
   useEffect(() => {
     if (!getAdminToken()) { router.push('/admin'); return; }
-    getKits().then(setKits).catch(() => {});
+    adminGetKits().then(setKits).catch(() => {});
   }, [router]);
 
   function set(field: string, value: string | null) {

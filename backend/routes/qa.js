@@ -349,7 +349,8 @@ router.post('/qa/submit', async (req, res) => {
     if (!recommendedKitId) {
       const { data: kits, error: kitsError } = await supabase
         .from('kits')
-        .select('id, name, description, tag, category, primary_use, audience, scenario, tags, keywords');
+        .select('id, name, description, tag, category, primary_use, audience, scenario, tags, keywords')
+        .eq('is_visible', true);
 
       if (kitsError || !kits || !kits.length) {
         return res.status(400).json({ error: 'Could not determine a kit recommendation from these answers' });
@@ -417,10 +418,11 @@ router.post('/qa/submit', async (req, res) => {
       .from('kits')
       .select('*')
       .eq('id', recommendedKitId)
+      .eq('is_visible', true)
       .single();
 
     if (kitError || !kit) {
-      return res.status(404).json({ error: 'Recommended kit not found' });
+      return res.status(404).json({ error: 'The recommended kit is currently unavailable. Please contact us for help.' });
     }
 
     const items = await flattenKitItems(recommendedKitId, group_composition);

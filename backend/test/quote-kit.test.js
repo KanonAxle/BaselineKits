@@ -18,6 +18,7 @@ const kitItems = {
   [GIRLS]: [{ quantity: 1, product_id: 'girls-shirt', sub_kit_id: null, is_person_slot: false, qty_rule: null, products: { id: 'girls-shirt', name: 'Girls shirt', price_cents: 2500 } }],
 };
 const kits = {
+  [KIT]: { id: KIT, is_visible: true },
   [BOYS]: { person_pack_gender: 'male', person_pack_age: 'child' },
   [GIRLS]: { person_pack_gender: 'female', person_pack_age: 'child' },
 };
@@ -30,6 +31,10 @@ function fakeSupabase() {
         select: () => builder,
         eq: (column, value) => { query.filters[column] = value; return builder; },
         single: async () => ({ data: kits[query.filters.id] || null, error: null }),
+        maybeSingle: async () => {
+          const kit = kits[query.filters.id];
+          return { data: kit && kit.is_visible === query.filters.is_visible ? kit : null, error: null };
+        },
         then: (resolve) => resolve({ data: table === 'kit_items' ? kitItems[query.filters.kit_id] || [] : [], error: null }),
       };
       return builder;

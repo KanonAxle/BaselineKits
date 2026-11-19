@@ -50,6 +50,7 @@ CREATE TABLE kits (
   image_url TEXT,
   collection_id UUID REFERENCES kit_collections(id) ON DELETE SET NULL,
   tag TEXT,
+  is_visible BOOLEAN NOT NULL DEFAULT true,
   person_pack_gender TEXT,  -- 'male', 'female', or null — marks this kit as a gender-specific person pack
   person_pack_age TEXT,     -- 'adult', 'child', or null — marks this kit as an age-specific person pack
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

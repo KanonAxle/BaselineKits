@@ -141,6 +141,7 @@ export type Kit = {
   image_url: string | null;
   collection_id: string | null;
   tag: string | null;
+  is_visible: boolean;
   person_pack_gender: string | null;
   person_pack_age: string | null;
   created_at: string;

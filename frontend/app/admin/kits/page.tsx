@@ -6,7 +6,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   getAdminToken,
-  getKits,
+  adminGetKits,
+  adminSetKitVisibility,
   adminGetProducts,
   adminCreateKit,
   adminUpdateKit,
@@ -43,6 +44,7 @@ const emptyForm = {
   description: '',
   image_url: '',
   tag: '',
+  is_visible: true,
   collection_id: null as string | null,
   person_pack_gender: null as string | null,
   person_pack_age: null as string | null,
@@ -59,6 +61,7 @@ export default function AdminKitsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [visibilityUpdatingId, setVisibilityUpdatingId] = useState<string | null>(null);
   const [formError, setFormError] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -98,7 +101,7 @@ export default function AdminKitsPage() {
 
   async function loadData() {
     try {
-      const [kitsData, productsData] = await Promise.all([getKits(), adminGetProducts()]);
+      const [kitsData, productsData] = await Promise.all([adminGetKits(), adminGetProducts()]);
       setKits(kitsData);
       setProducts(productsData);
     } catch {
@@ -150,6 +153,7 @@ export default function AdminKitsPage() {
       description: kit.description || '',
       image_url: kit.image_url || '',
       tag: kit.tag || '',
+      is_visible: kit.is_visible,
       collection_id: kit.collection_id || null,
       person_pack_gender: kit.person_pack_gender || null,
       person_pack_age: kit.person_pack_age || null,
@@ -321,6 +325,7 @@ export default function AdminKitsPage() {
         description: form.description.trim() || null,
         image_url: form.image_url.trim() || null,
         tag: form.tag.trim().toUpperCase() || null,
+        is_visible: form.is_visible,
         collection_id: form.collection_id || null,
         person_pack_gender: form.person_pack_gender || null,
         person_pack_age: form.person_pack_age || null,
@@ -355,6 +360,7 @@ export default function AdminKitsPage() {
         description: kit.description || null,
         image_url: kit.image_url || null,
         tag: kit.tag || null,
+        is_visible: kit.is_visible,
         collection_id: kit.collection_id || null,
         person_pack_gender: kit.person_pack_gender || null,
         person_pack_age: kit.person_pack_age || null,
@@ -381,6 +387,18 @@ export default function AdminKitsPage() {
       setKits(prev => prev.filter(k => k.id !== id));
     } catch (err: any) {
       alert(err?.message || 'Failed to delete kit.');
+    }
+  }
+
+  async function handleVisibility(kit: Kit) {
+    setVisibilityUpdatingId(kit.id);
+    try {
+      const updated = await adminSetKitVisibility(kit.id, !kit.is_visible);
+      setKits(prev => prev.map(k => k.id === kit.id ? { ...k, is_visible: updated.is_visible } : k));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to update kit visibility.');
+    } finally {
+      setVisibilityUpdatingId(null);
     }
   }
 
@@ -600,6 +618,11 @@ export default function AdminKitsPage() {
                   </div>
                 )}
               </div>
+
+              <label className="flex items-center gap-3 text-sm text-stone-300 mb-6">
+                <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} />
+                <span>Visible to the public <span className="text-stone-500">— hidden kits cannot be ordered or recommended directly, but can appear inside visible kits.</span></span>
+              </label>
 
               {/* ── Person Pack ── */}
               <div className="border-t border-stone-800 pt-4 mb-6">
@@ -1136,6 +1159,18 @@ export default function AdminKitsPage() {
                   )}
                 </div>
                 <div className="flex flex-col gap-2 flex-shrink-0">
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={kit.is_visible}
+                    aria-label={`${kit.is_visible ? 'Hide' : 'Show'} ${kit.name} on the public Kits page`}
+                    title="Hidden kits cannot be ordered or recommended directly. They can still appear inside visible kits."
+                    onClick={() => handleVisibility(kit)}
+                    disabled={visibilityUpdatingId === kit.id}
+                    className={`border text-xs font-bold uppercase tracking-widest px-4 py-2 rounded transition-colors disabled:opacity-50 ${kit.is_visible ? 'border-green-500/40 text-green-400' : 'border-stone-700 text-stone-500'}`}
+                  >
+                    {visibilityUpdatingId === kit.id ? 'Saving...' : kit.is_visible ? 'Visible' : 'Hidden'}
+                  </button>
                   <button onClick={() => openEditForm(kit)} className="border border-stone-700 hover:border-orange-500 text-stone-400 hover:text-orange-400 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded transition-colors">Edit</button>
                   <button onClick={() => handleDuplicate(kit)} className="border border-stone-700 hover:border-stone-500 text-stone-500 hover:text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded transition-colors">Dupe</button>
                   <button onClick={() => handleDelete(kit.id)} className="border border-stone-700 hover:border-red-500/60 text-stone-600 hover:text-red-400 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded transition-colors">Delete</button>
