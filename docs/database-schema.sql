@@ -51,6 +51,7 @@ CREATE TABLE kits (
   collection_id UUID REFERENCES kit_collections(id) ON DELETE SET NULL,
   tag TEXT,
   is_visible BOOLEAN NOT NULL DEFAULT true,
+  is_child_clothing_choice BOOLEAN NOT NULL DEFAULT false,
   person_pack_gender TEXT,  -- 'male', 'female', or null — marks this kit as a gender-specific person pack
   person_pack_age TEXT,     -- 'adult', 'child', or null — marks this kit as an age-specific person pack
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

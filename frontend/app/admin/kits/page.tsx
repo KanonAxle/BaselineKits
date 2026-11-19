@@ -45,6 +45,7 @@ const emptyForm = {
   image_url: '',
   tag: '',
   is_visible: true,
+  is_child_clothing_choice: false,
   collection_id: null as string | null,
   person_pack_gender: null as string | null,
   person_pack_age: null as string | null,
@@ -154,6 +155,7 @@ export default function AdminKitsPage() {
       image_url: kit.image_url || '',
       tag: kit.tag || '',
       is_visible: kit.is_visible,
+      is_child_clothing_choice: kit.is_child_clothing_choice || false,
       collection_id: kit.collection_id || null,
       person_pack_gender: kit.person_pack_gender || null,
       person_pack_age: kit.person_pack_age || null,
@@ -326,6 +328,7 @@ export default function AdminKitsPage() {
         image_url: form.image_url.trim() || null,
         tag: form.tag.trim().toUpperCase() || null,
         is_visible: form.is_visible,
+        is_child_clothing_choice: form.is_child_clothing_choice,
         collection_id: form.collection_id || null,
         person_pack_gender: form.person_pack_gender || null,
         person_pack_age: form.person_pack_age || null,
@@ -346,6 +349,11 @@ export default function AdminKitsPage() {
         setKits(prev => [created, ...prev]);
       }
       cancelForm();
+      try {
+        setKits(await adminGetKits());
+      } catch {
+        setError('Kit saved, but prices could not be refreshed. Reload the page.');
+      }
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Failed to save kit.');
     } finally {
@@ -361,6 +369,7 @@ export default function AdminKitsPage() {
         image_url: kit.image_url || null,
         tag: kit.tag || null,
         is_visible: kit.is_visible,
+        is_child_clothing_choice: kit.is_child_clothing_choice || false,
         collection_id: kit.collection_id || null,
         person_pack_gender: kit.person_pack_gender || null,
         person_pack_age: kit.person_pack_age || null,
@@ -449,7 +458,9 @@ export default function AdminKitsPage() {
     return Object.values(v).join(' / ');
   }
 
-  const kitTotal = form.items.reduce((sum, i) => sum + i.price_cents * i.quantity, 0);
+  const kitTotal = form.is_child_clothing_choice && form.items.length
+    ? Math.min(...form.items.map(i => i.price_cents))
+    : form.items.reduce((sum, i) => sum + i.price_cents * i.quantity, 0);
 
   const addedSubKitIds = new Set(form.items.filter(i => i.type === 'kit').map(i => i.sub_kit_id));
   const availableSubKits = kits.filter(k => k.id !== editingId && !addedSubKitIds.has(k.id));
@@ -624,11 +635,18 @@ export default function AdminKitsPage() {
                 <span>Visible to the public <span className="text-stone-500">— hidden kits cannot be ordered or recommended directly, but can appear inside visible kits.</span></span>
               </label>
 
+              <label className="flex items-start gap-3 text-sm text-stone-300 mb-6">
+                <input type="checkbox" checked={form.is_child_clothing_choice}
+                  onChange={e => setForm(f => ({ ...f, is_child_clothing_choice: e.target.checked, ...(e.target.checked ? { person_pack_gender: null, person_pack_age: null } : {}) }))} />
+                <span>Child clothing choice pack <span className="text-stone-500">— add one male and one female child person pack below. Each copy in a parent kit represents one child.</span></span>
+              </label>
+
               {/* ── Person Pack ── */}
               <div className="border-t border-stone-800 pt-4 mb-6">
                 <label className="flex items-center gap-3 cursor-pointer group mb-3">
                   <input
                     type="checkbox"
+                    disabled={form.is_child_clothing_choice}
                     checked={!!(form.person_pack_gender || form.person_pack_age)}
                     onChange={e => {
                       if (!e.target.checked) {
@@ -682,7 +700,7 @@ export default function AdminKitsPage() {
                 <div className="flex items-center justify-between mb-4">
                   <label className="label-tactical text-stone-500 tracking-[0.15em]">Kit Contents</label>
                   {kitTotal > 0 && (
-                    <span className="label-tactical text-orange-400 tracking-widest">Total: {formatPrice(kitTotal)}</span>
+                    <span className="label-tactical text-orange-400 tracking-widest">{form.is_child_clothing_choice ? 'Starting price' : 'Total'}: {formatPrice(kitTotal)}</span>
                   )}
                 </div>
 
@@ -1133,7 +1151,7 @@ export default function AdminKitsPage() {
                       {kit.description && <p className="text-stone-500 text-xs mt-0.5 line-clamp-1">{kit.description}</p>}
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="text-orange-400 font-bold text-sm">{formatPrice(kit.total_price_cents)}</p>
+                      <p className="text-orange-400 font-bold text-sm">{kit.has_choice_price ? 'From ' : ''}{formatPrice(kit.total_price_cents)}</p>
                       <p className="text-stone-600 text-xs">{kit.items?.length || 0} item{kit.items?.length !== 1 ? 's' : ''}</p>
                     </div>
                   </div>

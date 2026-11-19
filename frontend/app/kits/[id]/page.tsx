@@ -13,6 +13,7 @@ type KitItem = {
   quantity: number;
   image_url?: string | null;
   items?: KitItem[];
+  is_child_clothing_choice?: boolean;
 };
 
 type Kit = {
@@ -22,6 +23,7 @@ type Kit = {
   image_url?: string | null;
   tag?: string | null;
   total_price_cents: number;
+  has_choice_price: boolean;
   items: KitItem[];
 };
 
@@ -48,9 +50,10 @@ function KitContents({ items, multiplier = 1 }: { items: KitItem[]; multiplier?:
                 {item.type === 'kit' && item.description && (
                   <p className="text-stone-400 text-sm leading-relaxed mt-1 whitespace-pre-wrap">{item.description}</p>
                 )}
+                {item.is_child_clothing_choice && <p className="text-orange-400 text-xs mt-1">Choose one clothing option per child during sizing.</p>}
                 {item.type === 'kit' && item.items && item.items.length > 0 && (
                   <div className="mt-4 pl-4 border-l border-stone-700">
-                    <KitContents items={item.items} multiplier={quantity} />
+                    <KitContents items={item.items} multiplier={item.is_child_clothing_choice ? 1 : quantity} />
                   </div>
                 )}
               </div>
@@ -130,7 +133,7 @@ export default function KitDetailPage() {
                 {kit.tag && <p className="label-tactical text-orange-500 tracking-widest">{kit.tag}</p>}
                 <div>
                   <h1 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-wide mb-4">{kit.name}</h1>
-                  <p className="text-3xl font-extrabold text-orange-500">{formatPrice(kit.total_price_cents)}</p>
+                  <p className="text-3xl font-extrabold text-orange-500">{kit.has_choice_price ? 'From ' : ''}{formatPrice(kit.total_price_cents)}</p>
                 </div>
                 {kit.description && (
                   <p className="text-stone-300 leading-relaxed text-sm whitespace-pre-wrap">{kit.description}</p>

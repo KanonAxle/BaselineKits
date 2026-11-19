@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const { ProductSelectionError, resolveProductCartItem } = require('../utils/productPricing');
 const { calculateShippingCents } = require('../utils/shippingPricing');
 const { isUsShippingCountry } = require('../utils/shippingCountry');
+const { getKitWithItems } = require('../utils/loadKit');
+const { ChildClothingError, resolveChildClothingKit } = require('../utils/childClothing');
 const TERMS_VERSION = '2026-10-19';
 
 async function isPublicKit(id) {
@@ -87,8 +89,22 @@ function computeQtyRule(rule, personSizes) {
 }
 
 // HELPER: Recursively resolve all order items for a kit, applying person slots and qty_rules
-async function resolveKitItemsForOrder(kit_id, customizations, personSizes, depth = 0) {
+async function resolveKitItemsForOrder(kit_id, customizations, personSizes, depth = 0, cachedKit = null) {
   if (depth > 3) return [];
+  if (depth === 0) {
+    const kit = cachedKit || await getKitWithItems(kit_id);
+    if (!kit) return [];
+    if (kit.child_clothing_count > 0) {
+      const result = resolveChildClothingKit(kit, personSizes, customizations);
+      for (const productId of customizations?.add_items || []) {
+        const { data: product, error } = await supabase.from('products')
+          .select('id, name, price_cents').eq('id', productId).single();
+        if (error || !product) throw new ChildClothingError('A selected additional product is unavailable.');
+        result.push({ product_id: product.id, name: product.name, quantity: 1, price_cents: product.price_cents });
+      }
+      return result;
+    }
+  }
 
   const { data: kitItems, error } = await supabase
     .from('kit_items')
@@ -260,6 +276,7 @@ router.post('/orders', async (req, res) => {
     });
 
   } catch (error) {
+    if (error instanceof ChildClothingError) return res.status(error.status).json({ error: error.message });
     console.error('Create order error:', error);
     res.status(500).json({ error: 'Server error creating order' });
   }
@@ -410,6 +427,7 @@ router.post('/orders/quote-kit', async (req, res) => {
     const people = person_sizes.map(p => ({
       label: typeof p?.label === 'string' ? p.label : '',
       gender: typeof p?.gender === 'string' ? p.gender : '',
+      sizes: p?.sizes && typeof p.sizes === 'object' && !Array.isArray(p.sizes) ? p.sizes : {},
     }));
     const removed = Array.isArray(removed_items) ? removed_items.filter(id => typeof id === 'string') : [];
 
@@ -420,6 +438,7 @@ router.post('/orders/quote-kit', async (req, res) => {
     const merchandise_subtotal_cents = items.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
     res.json({ merchandise_subtotal_cents });
   } catch (error) {
+    if (error instanceof ChildClothingError) return res.status(error.status).json({ error: error.message });
     console.error('Quote kit error:', error);
     res.status(500).json({ error: 'Server error quoting kit' });
   }
@@ -491,7 +510,14 @@ router.post('/orders/from-cart', async (req, res) => {
           remove_items: cartItem.removedItems || [],
           add_items: [],
         };
-        const resolved = await resolveKitItemsForOrder(cartItem.id, customizations, cartItem.personSizes || []);
+        const kit = await getKitWithItems(cartItem.id);
+        const resolved = await resolveKitItemsForOrder(cartItem.id, customizations, cartItem.personSizes || [], 0, kit);
+        if (kit?.child_clothing_count) {
+          const currentPrice = resolved.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
+          if (!Number.isSafeInteger(cartItem.price_cents) || cartItem.price_cents !== currentPrice) {
+            return res.status(409).json({ error: 'Your kit price has changed. Please edit sizing to update the price before checkout.' });
+          }
+        }
         const multiplier = cartItem.quantity || 1;
         resolved.forEach(item => {
           allOrderItems.push({ ...item, quantity: item.quantity * multiplier });
@@ -560,6 +586,7 @@ router.post('/orders/from-cart', async (req, res) => {
     });
 
   } catch (error) {
+    if (error instanceof ChildClothingError) return res.status(error.status).json({ error: error.message });
     console.error('Create cart order error:', error);
     res.status(500).json({ error: 'Server error creating order' });
   }

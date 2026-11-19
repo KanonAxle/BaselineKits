@@ -76,7 +76,7 @@ export default function ResultsPage() {
     `${productCount} selected essentials`,
     'Customizable before checkout',
   ];
-  const featuredItems = kitItems.filter((item: ResultKitItem) => item.type !== 'subkit_header').slice(0, 3);
+  const featuredItems = kitItems.filter((item: ResultKitItem) => item.type !== 'subkit_header' && item.type !== 'child_clothing_choice').slice(0, 3);
 
   function toggleItem(id: string) {
     // Check if this is a bag being removed
@@ -219,6 +219,14 @@ export default function ResultsPage() {
                   </div>
                 );
               }
+              if (item.type === 'child_clothing_choice') {
+                return (
+                  <div key={`choice-${item.sub_kit_id}-${index}`} className="flex items-center justify-between px-4 py-3 rounded-lg border border-stone-700">
+                    <span>{item.name} {item.quantity > 1 ? `×${item.quantity}` : ''}<span className="block text-xs text-stone-400">Choose clothing for each child during sizing</span></span>
+                    <span className="text-stone-400 text-sm">From {formatPrice(item.price_cents * item.quantity)}</span>
+                  </div>
+                );
+              }
               const id = itemId(item);
               const removed = removedItems.includes(id);
               return (
@@ -245,7 +253,7 @@ export default function ResultsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-stone-900 border border-stone-800 rounded-xl px-6 py-5">
           <div>
             <div className="flex justify-between gap-6 text-sm text-stone-400">
-              <span>Kit subtotal</span><span>{formatPrice(calculateTotal())}</span>
+              <span>{kit.has_choice_price ? 'Starting kit subtotal' : 'Kit subtotal'}</span><span>{formatPrice(calculateTotal())}</span>
             </div>
             <div className="flex justify-between gap-6 text-sm text-stone-400 mt-1">
               <span>Shipping</span>

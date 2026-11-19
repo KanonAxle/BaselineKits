@@ -42,6 +42,7 @@ Keep staging and production credentials separate. The frontend uses the same-ori
 - `docs/migrations/20261015_recommendation_config.sql` and `docs/migrations/20261016_launch_schema_compat.sql` have been applied to the current Supabase project.
 - Apply `docs/migrations/20261022_education_content.sql` to Supabase before deploying the admin Education manager (`/admin/education`); it creates and seeds the Education tables.
 - Apply `docs/migrations/20261119_kit_visibility.sql` before deploying kit visibility controls. Existing kits remain visible by default; hidden kits can still appear as components of visible kits.
+- Apply `docs/migrations/20261120_child_clothing_choice.sql` before deploying child-clothing choice packs. Mark a kit as a child-clothing choice and add exactly one child male person pack and one child female person pack; add that kit to a parent once per child. Keep the choice kit hidden if it should not be sold separately.
 - Confirm required tables, policies, quiz content, products, kits, and recommendation data are present and correct.
 - Create the `product-images` Storage bucket and verify its access settings support public product images and authorized admin uploads.
 - Confirm the backend uses the correct production project and a server-only key.

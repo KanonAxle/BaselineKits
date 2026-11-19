@@ -232,6 +232,17 @@ export default function AdminOrdersPage() {
                   </div>
 
                   {/* Order ID */}
+                  {order.order_items && order.order_items.length > 0 && (
+                    <div className="border-t border-stone-800 mt-3 pt-3 space-y-1">
+                      {order.order_items.map((item, index) => {
+                        const options = item.selected_options;
+                        const details = options && typeof options === 'object' && !Array.isArray(options)
+                          ? [options.person, options.clothing_choice, options.size, options.color].filter(value => typeof value === 'string').join(' · ')
+                          : '';
+                        return <p key={index} className="text-stone-400 text-xs">{item.quantity} × {item.product_name}{details ? ` — ${details}` : ''}</p>;
+                      })}
+                    </div>
+                  )}
                   <p className="label-tactical text-stone-700 mt-2" style={{ fontSize: '0.55rem' }}>ID: {order.id}</p>
                 </div>
               );

@@ -54,6 +54,7 @@ export default function CartPage() {
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [error, setError] = useState('');
   const [kitSizingChecks, setKitSizingChecks] = useState<Record<string, KitSizingCheck>>({});
+  const [kitChoicePrices, setKitChoicePrices] = useState<Record<string, boolean>>({});
   const [kitSizingRefresh, setKitSizingRefresh] = useState(0);
 
   function variantSummary(item: CartItem) {
@@ -116,8 +117,9 @@ export default function CartPage() {
         if (active) {
           setKitSizingChecks(current => ({
             ...current,
-            [item.id]: collectSizable(kitData.items || []).length > 0 ? 'required' : 'not-required',
+            [item.id]: kitData.child_clothing_count > 0 || collectSizable(kitData.items || []).length > 0 ? 'required' : 'not-required',
           }));
+          setKitChoicePrices(current => ({ ...current, [item.id]: kitData.has_choice_price }));
         }
       } catch {
         if (active) {
@@ -263,7 +265,7 @@ export default function CartPage() {
                     </span>
                   )}
                 </div>
-                <div className="text-stone-500 text-xs mt-1">{formatPrice(item.price_cents)} each</div>
+                <div className="text-stone-500 text-xs mt-1">{item.type === 'kit' && kitChoicePrices[item.id] && !item.sizingComplete ? 'From ' : ''}{formatPrice(item.price_cents)} each</div>
               </div>
 
               {/* Quantity stepper */}

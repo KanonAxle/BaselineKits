@@ -270,7 +270,7 @@ export const createCheckout = (order_id: string, success_url: string, cancel_url
 // Price a kit for a specific household after sizing
 export const quoteKit = (
   kit_id: string,
-  person_sizes: { label: string; gender?: string }[],
+  person_sizes: { label: string; gender?: string; sizes?: Record<string, Record<string, string>> }[],
   removed_items: string[] = []
 ): Promise<{ merchandise_subtotal_cents: number }> =>
   apiFetch<{ merchandise_subtotal_cents: number }>('/orders/quote-kit', {

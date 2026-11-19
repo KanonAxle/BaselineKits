@@ -6,6 +6,7 @@ const requireAdmin = require('../middleware/requireAdmin');
 const { buildHybridRecommendation } = require('./hybridRecommendation');
 const { createRecommendationConfigStore } = require('./recommendationConfig');
 const { getRecommendationWeights } = createRecommendationConfigStore(supabase);
+const { getKitWithItems } = require('../utils/loadKit');
 
 // Count persons in groupComposition matching a pack's gender/age.
 function countMatchingPersons(groupComposition, packGender, packAge) {
@@ -129,6 +130,15 @@ function buildHybridKitRecommendation({ kits = [], answers = {}, manualWeights =
 async function flattenKitItems(kitId, groupComposition = [], depth = 0) {
   if (depth > 3) return [];
 
+  const { data: currentKit, error: currentError } = await supabase.from('kits')
+    .select('is_child_clothing_choice').eq('id', kitId).single();
+  if (currentError) throw currentError;
+  if (currentKit?.is_child_clothing_choice) {
+    const kit = await getKitWithItems(kitId);
+    if (!kit) throw new Error('Child clothing choice kit not found');
+    return [{ type: 'child_clothing_choice', sub_kit_id: kit.id, name: kit.name, quantity: 1, price_cents: kit.total_price_cents }];
+  }
+
   const { data: rows, error } = await supabase
     .from('kit_items')
     .select('quantity, product_id, sub_kit_id, selected_variants, is_person_slot, products(id, name, price_cents)')
@@ -150,13 +160,13 @@ async function flattenKitItems(kitId, groupComposition = [], depth = 0) {
     } else if (row.sub_kit_id) {
       const { data: subKit } = await supabase
         .from('kits')
-        .select('name, person_pack_gender, person_pack_age')
+        .select('name, person_pack_gender, person_pack_age, is_child_clothing_choice')
         .eq('id', row.sub_kit_id)
         .single();
 
       // For person-slot sub-kits, count matching persons; skip if none match
       let copies = row.quantity;
-      if ((row.is_person_slot || (subKit && (subKit.person_pack_gender || subKit.person_pack_age))) && subKit) {
+      if (!subKit?.is_child_clothing_choice && (row.is_person_slot || (subKit && (subKit.person_pack_gender || subKit.person_pack_age))) && subKit) {
         copies = countMatchingPersons(groupComposition, subKit.person_pack_gender, subKit.person_pack_age) * row.quantity;
       }
       if (copies <= 0) continue;
@@ -443,7 +453,8 @@ router.post('/qa/submit', async (req, res) => {
         name: kit.name,
         description: kit.description,
         items,
-        total_price_cents
+        total_price_cents,
+        has_choice_price: items.some(item => item.type === 'child_clothing_choice'),
       },
       can_customize: true,
       group_composition,

@@ -27,6 +27,7 @@ type SizingItem = {
   person_pack_gender?: string | null;
   person_pack_age?: string | null;
   is_person_slot?: boolean;
+  is_child_clothing_choice?: boolean;
   sizes?: Array<string | { label: string }>;
   colors?: Array<string | { name: string; hex?: string }> | null;
 };
@@ -55,6 +56,7 @@ function collectSizableForPerson(items: SizingItem[], person?: { kind: string; g
     if (item.type === 'product' && item.requires_sizing) {
       if (matchesPersonAudience(item, person)) result.push(item);
     } else if (item.type === 'kit' && Array.isArray(item.items)) {
+      if (item.is_child_clothing_choice && person?.kind !== 'child') continue;
       const packGender = item.person_pack_gender?.trim().toLowerCase();
       const packAge = item.person_pack_age?.trim().toLowerCase();
       const isPersonSlot = item.is_person_slot || packGender || packAge;
@@ -109,6 +111,9 @@ function SizingPageContent() {
   const [kitRawItems, setKitRawItems] = useState<SizingItem[]>([]);
   const [loadingKit, setLoadingKit] = useState(true);
   const [kitError, setKitError] = useState('');
+  const [choiceCount, setChoiceCount] = useState(0);
+  const [quoteError, setQuoteError] = useState('');
+  const [quoting, setQuoting] = useState(false);
 
   // Group list
   const [personList, setPersonList] = useState<Person[]>([]);
@@ -131,8 +136,50 @@ function SizingPageContent() {
       try {
         const kitData = await getKit(cartItem.id);
         setKitRawItems(kitData.items || []);
-      } catch {
-        setKitError('Failed to load kit details.');
+        const fixedChildren = kitData.child_clothing_count || 0;
+        if (fixedChildren > 20) throw new Error('This kit has too many child clothing choices. Please contact us.');
+        setChoiceCount(fixedChildren);
+        let list: Person[] = [];
+        let savedSizes: Array<Record<string, Record<string, string>>> = [];
+        if (cartItem.personSizes?.length) {
+          list = cartItem.personSizes.map(p => ({
+            kind: p.label.startsWith('Child') ? 'child' : 'adult',
+            gender: p.gender || '',
+            label: '',
+          }));
+          savedSizes = cartItem.personSizes.map(p => p.sizes || {});
+        } else {
+          try {
+            const stored = localStorage.getItem('quizResult');
+            const parsed = stored ? JSON.parse(stored) : null;
+            if (parsed?.recommended_kit?.id === cartItem.id && Array.isArray(parsed.group_composition)) {
+              let adultIndex = 0;
+              const adultCount = parsed.group_composition.filter((p: { kind: string }) => p.kind === 'adult').length;
+              list = parsed.group_composition.map((p: { kind: 'adult' | 'child'; gender?: string }) => ({
+                kind: p.kind, gender: p.gender || (p.kind === 'adult' ? (adultCount === 2 && adultIndex++ === 1 ? 'female' : 'male') : ''), label: '',
+              }));
+            }
+          } catch {
+            // A stale local quiz result does not affect a kit selected directly.
+          }
+        }
+        if (!list.some(p => p.kind === 'adult')) {
+          list.unshift({ kind: 'adult', gender: 'male', label: '' });
+          if (savedSizes.length) savedSizes.unshift({});
+        }
+        if (fixedChildren > 0) {
+          const previousList = list;
+          const previousSizes = savedSizes;
+          const adults = list.filter(p => p.kind === 'adult');
+          const previousChildren = list.filter(p => p.kind === 'child');
+          list = [...adults, ...Array.from({ length: fixedChildren }, (_, i) =>
+            previousChildren[i] || { kind: 'child' as const, gender: '', label: '' })];
+          savedSizes = list.map(person => previousSizes[previousList.indexOf(person)] || {});
+        }
+        setPersonList(list);
+        setSizings(savedSizes.length === list.length ? savedSizes : initPersonSizings(list.length));
+      } catch (error) {
+        setKitError(error instanceof Error ? error.message : 'Failed to load kit details.');
       } finally {
         setLoadingKit(false);
       }
@@ -140,33 +187,6 @@ function SizingPageContent() {
 
     load();
 
-    // Pre-populate group from quiz result
-    try {
-      const stored = localStorage.getItem('quizResult');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const gc = parsed.group_composition || [];
-        if (gc.length > 0) {
-          const adultCount = gc.filter((p: { kind: string }) => p.kind === 'adult').length;
-          let adultIndex = 0;
-          const list = gc.map((p: { kind: string; gender?: string }, i: number) => ({
-            kind: p.kind,
-            gender: p.kind === 'adult'
-              ? (p.gender || (adultCount === 2 ? (adultIndex++ === 0 ? 'male' : 'female') : 'male'))
-              : (p.gender || ''),
-            label: '',
-          }));
-          // Labels computed dynamically
-          setPersonList(list);
-          setSizings(initPersonSizings(list.length));
-          return;
-        }
-      }
-    } catch {}
-
-    // Default: 1 adult
-    setPersonList([{ kind: 'adult', gender: 'male', label: '' }]);
-    setSizings([{}]);
   }, [cartItem, router]);
 
   // ── Group management ──────────────────────────────────────────
@@ -201,7 +221,6 @@ function SizingPageContent() {
   function startSizing() {
     if (personList.length === 0) return;
     if (personList.some(p => p.kind === 'child' && !p.gender)) return;
-    setSizings(initPersonSizings(personList.length));
     setStep(0);
   }
 
@@ -225,19 +244,20 @@ function SizingPageContent() {
       sizes: sizings[idx] || {},
     }));
 
-    // Re-price for the actual household (e.g. two boys instead of one boy and one girl).
-    let priceCents: number | undefined;
+    setQuoting(true);
+    setQuoteError('');
     try {
       const quote = await quoteKit(cartItem.id, personSizes, cartItem.removedItems || []);
-      if (Number.isInteger(quote.merchandise_subtotal_cents) && quote.merchandise_subtotal_cents > 0) {
-        priceCents = quote.merchandise_subtotal_cents;
+      if (!Number.isInteger(quote.merchandise_subtotal_cents) || quote.merchandise_subtotal_cents < 0) {
+        throw new Error('The kit price could not be calculated.');
       }
-    } catch {
-      // Keep the listed price; the server prices the order from these sizes at checkout.
+      updateKitSizing(kitIndex, personSizes, quote.merchandise_subtotal_cents);
+      router.push('/cart');
+    } catch (error) {
+      setQuoteError(error instanceof Error ? error.message : 'Unable to calculate the kit price. Please try again.');
+    } finally {
+      setQuoting(false);
     }
-
-    updateKitSizing(kitIndex, personSizes, priceCents);
-    router.push('/cart');
   }
 
   function formatPrice(cents: number) {
@@ -247,11 +267,11 @@ function SizingPageContent() {
   // If kit loaded and no items require sizing at all, auto-complete and return to cart
   const allSizableItems = collectAllSizable(kitRawItems);
   useEffect(() => {
-    if (!loadingKit && allSizableItems.length === 0) {
+    if (!loadingKit && !kitError && choiceCount === 0 && allSizableItems.length === 0) {
       updateKitSizing(kitIndex, []);
       router.push('/cart');
     }
-  }, [loadingKit, allSizableItems.length]);
+  }, [loadingKit, kitError, choiceCount, allSizableItems.length, kitIndex, updateKitSizing, router]);
 
   // ── Progress bar ─────────────────────────────────────────────
   const totalSteps = personList.length + 2; // group + N persons + review
@@ -277,7 +297,7 @@ function SizingPageContent() {
     );
   }
 
-  if (!loadingKit && allSizableItems.length === 0) {
+  if (!loadingKit && choiceCount === 0 && allSizableItems.length === 0) {
     return null; // useEffect above handles redirect
   }
 
@@ -307,7 +327,7 @@ function SizingPageContent() {
             <p className="label-tactical text-orange-500 mb-2 tracking-[0.2em]">{"// Before You Check Out"}</p>
             <h1 className="text-3xl font-extrabold uppercase tracking-wide mb-2">Who Are We Sizing For?</h1>
             <p className="text-stone-500 text-sm mb-8">
-              Your kit includes items that require per-person sizing. Confirm child genders, then we&apos;ll collect sizes for each person.
+              {choiceCount > 0 ? `This kit includes clothing for ${choiceCount} ${choiceCount === 1 ? 'child' : 'children'}. Choose boys' or girls' clothing for each child, then select sizes.` : 'Your kit includes items that require per-person sizing. Confirm child genders, then we will collect sizes for each person.'}
             </p>
 
             <div className="flex flex-col gap-3 mb-6">
@@ -324,7 +344,7 @@ function SizingPageContent() {
                           type="button"
                           onClick={() => setGender(idx, g)}
                           className={`text-xs px-3 py-1.5 rounded border font-semibold uppercase tracking-wide transition-colors ${
-                            person.gender === g
+                            person.gender.toLowerCase() === g.toLowerCase()
                               ? 'border-orange-500 text-orange-400 bg-orange-500/10'
                               : 'border-stone-700 text-stone-500 hover:border-stone-500'
                           }`}
@@ -341,7 +361,7 @@ function SizingPageContent() {
                       {person.gender}
                     </span>
                   )}
-                  {personList.length > 1 && (
+                  {personList.length > 1 && !(choiceCount > 0 && person.kind === 'child') && (
                     <button
                       type="button"
                       onClick={() => removePerson(idx)}
@@ -552,7 +572,7 @@ function SizingPageContent() {
             {/* Cart total */}
             {cartItem && (
               <div className="flex items-center justify-between py-3 border-t border-stone-800 mb-6">
-                <span className="label-tactical text-stone-500 tracking-widest">Kit Total</span>
+                <span className="label-tactical text-stone-500 tracking-widest">Current estimate — final price calculated on confirmation</span>
                 <span className="font-bold text-orange-400">{formatPrice(cartItem.price_cents)}</span>
               </div>
             )}
@@ -566,11 +586,13 @@ function SizingPageContent() {
               </button>
               <button
                 onClick={confirmSizing}
-                className="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold uppercase tracking-widest py-3 rounded transition-colors"
+                disabled={quoting}
+                className="flex-1 bg-orange-600 hover:bg-orange-500 disabled:opacity-40 text-white font-bold uppercase tracking-widest py-3 rounded transition-colors"
               >
-                Confirm & Continue →
+                {quoting ? 'Calculating price...' : 'Confirm & Continue →'}
               </button>
             </div>
+            {quoteError && <p role="alert" className="text-red-400 text-sm mt-4">{quoteError}</p>}
           </div>
         )}
       </div>

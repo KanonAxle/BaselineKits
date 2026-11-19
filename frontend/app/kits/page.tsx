@@ -9,6 +9,7 @@ type Kit = {
   id: string;
   name: string;
   total_price_cents: number;
+  has_choice_price: boolean;
   image_url?: string | null;
 };
 
@@ -144,7 +145,7 @@ export default function KitsPage() {
                     <span aria-hidden="true" className="text-orange-500 text-lg shrink-0">→</span>
                   </div>
                   <div className="px-4 py-3.5 border-t border-stone-800 flex items-center justify-between">
-                    <span className="text-xl font-extrabold tracking-wide">{formatPrice(kit.total_price_cents)}</span>
+                    <span className="text-xl font-extrabold tracking-wide">{kit.has_choice_price ? 'From ' : ''}{formatPrice(kit.total_price_cents)}</span>
                     <span className="label-tactical text-stone-600 group-hover:text-orange-500 transition-colors tracking-widest">
                       View Details →
                     </span>

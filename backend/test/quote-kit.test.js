@@ -19,8 +19,8 @@ const kitItems = {
 };
 const kits = {
   [KIT]: { id: KIT, is_visible: true },
-  [BOYS]: { person_pack_gender: 'male', person_pack_age: 'child' },
-  [GIRLS]: { person_pack_gender: 'female', person_pack_age: 'child' },
+  [BOYS]: { id: BOYS, person_pack_gender: 'male', person_pack_age: 'child' },
+  [GIRLS]: { id: GIRLS, person_pack_gender: 'female', person_pack_age: 'child' },
 };
 
 function fakeSupabase() {
@@ -30,12 +30,18 @@ function fakeSupabase() {
       const builder = {
         select: () => builder,
         eq: (column, value) => { query.filters[column] = value; return builder; },
+        in: (column, value) => { query.filters[column] = value; return builder; },
+        order: () => builder,
         single: async () => ({ data: kits[query.filters.id] || null, error: null }),
         maybeSingle: async () => {
           const kit = kits[query.filters.id];
-          return { data: kit && kit.is_visible === query.filters.is_visible ? kit : null, error: null };
+          return { data: kit && (query.filters.is_visible === undefined || kit.is_visible === query.filters.is_visible) ? kit : null, error: null };
         },
-        then: (resolve) => resolve({ data: table === 'kit_items' ? kitItems[query.filters.kit_id] || [] : [], error: null }),
+        then: (resolve) => {
+          if (table === 'kits') return resolve({ data: (query.filters.id || []).map(id => kits[id]).filter(Boolean), error: null });
+          const ids = Array.isArray(query.filters.kit_id) ? query.filters.kit_id : [query.filters.kit_id];
+          return resolve({ data: ids.flatMap(id => (kitItems[id] || []).map(item => ({ ...item, kit_id: id }))), error: null });
+        },
       };
       return builder;
     },

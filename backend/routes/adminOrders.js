@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const Stripe = require('stripe');
 const { calculateShippingCents } = require('../utils/shippingPricing');
 const { isStripeTaxEnabled, buildStripeTaxSessionParams } = require('../utils/stripeTax');
+const { getKitWithItems } = require('../utils/loadKit');
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -25,7 +26,7 @@ router.get('/admin/orders', requireAdmin, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('orders')
-      .select('*, kits(name)')
+      .select('*, kits(name), order_items(quantity, product_name, unit_price_cents, selected_options)')
       .order('created_at', { ascending: false });
     if (error) return res.status(500).json({ error: 'Failed to fetch orders' });
     res.json(data);
@@ -62,6 +63,10 @@ router.post('/admin/orders', requireAdmin, async (req, res) => {
     const { data: kit, error: kitError } = await supabase
       .from('kits').select('id, name').eq('id', kit_id).single();
     if (kitError || !kit) return res.status(404).json({ error: 'Kit not found' });
+    const fullKit = await getKitWithItems(kit_id);
+    if (fullKit?.child_clothing_count) {
+      return res.status(400).json({ error: 'This kit requires child clothing selections. Please order it through the storefront sizing process.' });
+    }
 
     // Fetch kit items with products
     const { data: kitItems, error: kitItemsError } = await supabase

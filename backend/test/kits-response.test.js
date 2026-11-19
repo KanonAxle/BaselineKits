@@ -83,3 +83,26 @@ test('buildKitResponses preserves the depth limit for cyclic kit references', ()
 
   assert.deepEqual(root.items[0].items[0].items[0].items, []);
 });
+
+test('child clothing choices use the cheaper option and count nested copies', () => {
+  const kits = [
+    { id: 'root', name: 'Root' }, { id: 'wrapper', name: 'Wrapper' },
+    { id: 'choice', name: 'Choice', is_child_clothing_choice: true },
+    { id: 'boys', name: 'Boys', person_pack_age: 'child', person_pack_gender: 'male' },
+    { id: 'girls', name: 'Girls', person_pack_age: 'child', person_pack_gender: 'female' },
+    { id: 'nested', name: 'Nested' },
+  ];
+  const rows = [
+    { kit_id: 'root', sub_kit_id: 'wrapper', quantity: 2 },
+    { kit_id: 'wrapper', sub_kit_id: 'choice', quantity: 2 },
+    { kit_id: 'choice', sub_kit_id: 'boys', quantity: 1 },
+    { kit_id: 'choice', sub_kit_id: 'girls', quantity: 1 },
+    { kit_id: 'boys', sub_kit_id: 'nested', quantity: 1 },
+    { kit_id: 'nested', product_id: 'b', quantity: 1, products: { id: 'b', name: 'B', price_cents: 2000 } },
+    { kit_id: 'girls', product_id: 'g', quantity: 1, products: { id: 'g', name: 'G', price_cents: 2500 } },
+  ];
+  const [root] = buildKitResponses(kits, rows);
+  assert.equal(root.child_clothing_count, 4);
+  assert.equal(root.total_price_cents, 8000);
+  assert.equal(root.has_choice_price, true);
+});
