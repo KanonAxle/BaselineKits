@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const { resolveChildClothingKit } = require('../utils/childClothing');
 
 process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret';
 
@@ -9,12 +10,18 @@ const products = [
   { id: 'water', name: 'Water', price_cents: 1000, in_stock: true },
   { id: 'boys-shirt', name: 'Boys shirt', price_cents: 2000, in_stock: true, requires_sizing: true, sizes: ['S', 'M'] },
   { id: 'girls-shirt', name: 'Girls shirt', price_cents: 2500, in_stock: true, requires_sizing: true, sizes: ['S', 'M'] },
+  { id: 'mens-shirt', name: 'Mens shirt', price_cents: 3000, in_stock: true, requires_sizing: true, sizes: ['S', 'M'] },
+  { id: 'womens-shirt', name: 'Womens shirt', price_cents: 3500, in_stock: true, requires_sizing: true, sizes: ['S', 'M'] },
 ];
 const kits = [
   { id: 'family', name: 'Family', is_visible: true },
   { id: 'choice', name: 'Child Clothes', is_visible: false, is_child_clothing_choice: true },
   { id: 'boys', name: 'Boys', is_visible: false, person_pack_age: 'child', person_pack_gender: 'male' },
   { id: 'girls', name: 'Girls', is_visible: false, person_pack_age: 'child', person_pack_gender: 'female' },
+  { id: 'family-adults', name: 'Family with adults', is_visible: true },
+  { id: 'men', name: 'Men', is_visible: false, person_pack_age: 'adult', person_pack_gender: 'male' },
+  { id: 'women', name: 'Women', is_visible: false, person_pack_age: 'adult', person_pack_gender: 'female' },
+  { id: 'adults-only', name: 'Adults only', is_visible: true },
 ];
 const rows = [
   { id: '1', kit_id: 'family', sub_kit_id: 'choice', quantity: 2 },
@@ -23,6 +30,13 @@ const rows = [
   { id: '4', kit_id: 'choice', sub_kit_id: 'girls', quantity: 1 },
   { id: '5', kit_id: 'boys', product_id: 'boys-shirt', quantity: 1 },
   { id: '6', kit_id: 'girls', product_id: 'girls-shirt', quantity: 1 },
+  { id: '7', kit_id: 'family-adults', sub_kit_id: 'men', quantity: 1 },
+  { id: '8', kit_id: 'family-adults', sub_kit_id: 'women', quantity: 1 },
+  { id: '9', kit_id: 'family-adults', sub_kit_id: 'choice', quantity: 2 },
+  { id: '10', kit_id: 'men', product_id: 'mens-shirt', quantity: 1 },
+  { id: '11', kit_id: 'women', product_id: 'womens-shirt', quantity: 1 },
+  { id: '12', kit_id: 'adults-only', sub_kit_id: 'men', quantity: 1 },
+  { id: '13', kit_id: 'adults-only', sub_kit_id: 'women', quantity: 1 },
 ].map(row => ({ ...row, products: products.find(product => product.id === row.product_id) || null }));
 const saved = { orders: [], order_items: [] };
 const tables = {
@@ -66,6 +80,23 @@ app.use('/api', require('../routes/qa'));
 const token = jwt.sign({ userId: 'user' }, process.env.JWT_SECRET);
 const adminToken = jwt.sign({ role: 'admin' }, process.env.JWT_SECRET);
 
+test('repeated adult packs resolve once per configured person with their own sizes', () => {
+  const pack = {
+    type: 'kit', is_person_slot: true, person_pack_age: 'adult', person_pack_gender: 'male',
+    quantity: 1, items: [{ type: 'product', product_id: 'mens-shirt', name: 'Mens shirt', quantity: 1, price_cents: 3000, requires_sizing: true, sizes: ['S', 'M'], colors: [] }],
+  };
+  const kit = {
+    child_clothing_count: 0,
+    items: [{ type: 'kit', quantity: 2, items: [pack] }],
+  };
+  const people = [
+    { label: 'Adult 1', gender: 'male', sizes: { 'mens-shirt': { size: 'S' } } },
+    { label: 'Adult 2', gender: 'male', sizes: { 'mens-shirt': { size: 'M' } } },
+  ];
+  assert.deepEqual(resolveChildClothingKit(kit, people).map(item =>
+    [item.quantity, item.selected_options.person, item.selected_options.size]), [[1, 'Adult 1', 'S'], [1, 'Adult 2', 'M']]);
+});
+
 test('choice packs show starting prices, quote real selections, and persist fulfillment details', async () => {
   const server = app.listen(0);
   const base = `http://127.0.0.1:${server.address().port}/api`;
@@ -75,6 +106,7 @@ test('choice packs show starting prices, quote real selections, and persist fulf
       headers: { 'Content-Type': 'application/json', ...(auth ? { Authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify(body),
     });
+
     return { status: response.status, body: await response.json() };
   };
   const person = (i, gender, size = 'S') => ({
@@ -141,6 +173,56 @@ test('choice packs show starting prices, quote real selections, and persist fulf
       body: JSON.stringify({ name: 'Boys', person_pack_age: 'adult', person_pack_gender: 'male', items: [{ product_id: 'boys-shirt', quantity: 1 }] }),
     });
     assert.equal(changedOption.status, 409);
+  } finally {
+    server.close();
+  }
+});
+
+test('configured adult packs are required in quotes and both order routes', async () => {
+  const server = app.listen(0);
+  const base = `http://127.0.0.1:${server.address().port}/api`;
+  const post = async (path, body, authenticated = false) => {
+    const response = await fetch(base + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(authenticated ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify(body),
+    });
+    return { status: response.status, body: await response.json() };
+  };
+  const adult = (label, gender, product, size) => ({ label, gender, sizes: { [product]: { size } } });
+  const man = adult('Adult 1', 'male', 'mens-shirt', 'M');
+  const woman = adult('Adult 2', 'female', 'womens-shirt', 'S');
+  const children = [
+    { label: 'Child 1', gender: 'male', sizes: { 'boys-shirt': { size: 'S' } } },
+    { label: 'Child 2', gender: 'female', sizes: { 'girls-shirt': { size: 'M' } } },
+  ];
+  try {
+    const response = await fetch(`${base}/kits/family-adults`);
+    const kit = await response.json();
+    assert.deepEqual(kit.adult_pack_genders, ['male', 'female']);
+    const quote = people => post('/orders/quote-kit', { kit_id: 'family-adults', person_sizes: people });
+    assert.equal((await quote([man, ...children])).status, 400);
+    assert.equal((await quote([man, { ...woman, gender: 'male' }, ...children])).status, 400);
+    const complete = await quote([man, woman, ...children]);
+    assert.equal(complete.status, 200);
+    assert.equal(complete.body.merchandise_subtotal_cents, 11000);
+    const cart = people => post('/orders/from-cart', {
+      items: [{ type: 'kit', id: 'family-adults', price_cents: 11000, quantity: 1, personSizes: people }],
+      shipping_address: 'Address', shipping_country: 'US', terms_accepted: true,
+    }, true);
+    assert.equal((await cart([man, ...children])).status, 400);
+    const placed = await cart([man, woman, ...children]);
+    assert.equal(placed.status, 201);
+    assert.deepEqual(placed.body.items.filter(item => item.product_id === 'mens-shirt' || item.product_id === 'womens-shirt')
+      .map(item => [item.product_id, item.selected_options.person, item.selected_options.size]),
+    [['mens-shirt', 'Adult 1', 'M'], ['womens-shirt', 'Adult 2', 'S']]);
+    const direct = people => post('/orders', {
+      kit_id: 'family-adults', person_sizes: people, shipping_address: 'Address', shipping_country: 'US', terms_accepted: true,
+    }, true);
+    assert.equal((await direct([man, ...children])).status, 400);
+    assert.equal((await direct([man, woman, ...children])).status, 201);
+    assert.equal((await post('/orders/quote-kit', { kit_id: 'adults-only', person_sizes: [man] })).status, 400);
+    assert.equal((await post('/orders/quote-kit', { kit_id: 'adults-only', person_sizes: [man, woman] })).status, 200);
   } finally {
     server.close();
   }

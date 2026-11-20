@@ -8,14 +8,15 @@ class ChildClothingError extends Error {
 function resolveChildClothingKit(kit, people, customizations = {}) {
   if (!Array.isArray(people) || people.length > 20 || people.some(person =>
     !person || typeof person.label !== 'string' || typeof person.gender !== 'string')) {
-    throw new ChildClothingError('Complete sizing for every child in this kit.');
+    throw new ChildClothingError('Complete sizing for every person in this kit.');
   }
   const children = people.filter(person => person.label.startsWith('Child'));
-  if (children.length !== kit.child_clothing_count ||
-      children.some(child => !['male', 'female'].includes(child.gender.toLowerCase()))) {
+  if (kit.child_clothing_count > 0 && (children.length !== kit.child_clothing_count ||
+      children.some(child => !['male', 'female'].includes(child.gender.toLowerCase())))) {
     throw new ChildClothingError(`Choose boys or girls clothing for exactly ${kit.child_clothing_count} children.`);
   }
   let childIndex = 0;
+  const adultIndices = { male: 0, female: 0 };
   const output = [];
   const removed = Array.isArray(customizations.remove_items) ? customizations.remove_items : [];
 
@@ -74,6 +75,15 @@ function resolveChildClothingKit(kit, people, customizations = {}) {
         if (quantity > 0) addProduct(item, quantity, selectedPerson, isClothingChoice);
       } else if (item.is_child_clothing_choice) {
         walk(item, multiplier * item.quantity);
+      } else if (item.is_person_slot && item.person_pack_age === 'adult' &&
+                 ['male', 'female'].includes(item.person_pack_gender) && !selectedPerson) {
+        const gender = item.person_pack_gender;
+        const matching = people.filter(person => /^Adult(?:\s|$)/.test(person.label) && person.gender.toLowerCase() === gender);
+        for (let i = 0; i < multiplier * item.quantity; i++) {
+          const person = matching[adultIndices[gender]++];
+          if (!person) throw new ChildClothingError('Please complete sizing for all adult clothing packs included in this kit.');
+          walk(item, 1, person, isClothingChoice);
+        }
       } else if (item.is_person_slot) {
         const matching = (selectedPerson ? [selectedPerson] : people).filter(person =>
           (item.person_pack_age === 'child' ? person.label.startsWith('Child') : !person.label.startsWith('Child')) &&

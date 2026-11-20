@@ -131,6 +131,7 @@ export type KitSubKitItem = {
   person_pack_age: string | null;
   is_child_clothing_choice: boolean;
   child_clothing_count: number;
+  adult_pack_genders: string[];
   has_choice_price: boolean;
 };
 
@@ -147,6 +148,7 @@ export type Kit = {
   is_visible: boolean;
   is_child_clothing_choice: boolean;
   child_clothing_count: number;
+  adult_pack_genders: string[];
   has_choice_price: boolean;
   person_pack_gender: string | null;
   person_pack_age: string | null;
@@ -171,7 +173,7 @@ export type KitItemInput = {
 };
 
 export type KitInput = Partial<
-  Omit<Kit, 'id' | 'items' | 'total_price_cents' | 'child_clothing_count' | 'has_choice_price' | 'created_at'>
+  Omit<Kit, 'id' | 'items' | 'total_price_cents' | 'child_clothing_count' | 'adult_pack_genders' | 'has_choice_price' | 'created_at'>
 > & { items?: KitItemInput[]; created_at?: never };
 
 // ─── Quiz (Q&A) ────────────────────────────────────────────────────────────

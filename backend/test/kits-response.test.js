@@ -70,6 +70,24 @@ test('buildKitResponses expands nested kits and calculates prices without changi
   assert.equal(root.items[1].total_price_cents, undefined);
   assert.equal(root.items[1].price_cents, 2500);
   assert.equal(root.items[1].items[0].product_id, 'shirt');
+  assert.deepEqual(root.adult_pack_genders, ['male', 'male']);
+});
+
+test('adult requirements include quantities in nested regular kits, not children', () => {
+  const kits = [
+    { id: 'root', name: 'Root' }, { id: 'wrapper', name: 'Wrapper' },
+    { id: 'man', name: 'Man', person_pack_age: 'adult', person_pack_gender: 'male' },
+    { id: 'woman', name: 'Woman', person_pack_age: 'adult', person_pack_gender: 'female' },
+    { id: 'child', name: 'Child', person_pack_age: 'child', person_pack_gender: 'male' },
+  ];
+  const rows = [
+    { kit_id: 'root', sub_kit_id: 'wrapper', quantity: 2 },
+    { kit_id: 'root', sub_kit_id: 'child', quantity: 1 },
+    { kit_id: 'wrapper', sub_kit_id: 'man', quantity: 1 },
+    { kit_id: 'wrapper', sub_kit_id: 'woman', quantity: 1 },
+  ];
+  const [root] = buildKitResponses(kits, rows);
+  assert.deepEqual(root.adult_pack_genders, ['male', 'female', 'male', 'female']);
 });
 
 test('buildKitResponses preserves the depth limit for cyclic kit references', () => {

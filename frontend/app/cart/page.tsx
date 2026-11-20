@@ -8,6 +8,7 @@ import GoogleAddressAutocomplete from '../components/GoogleAddressAutocomplete';
 import { useCart, type CartItem } from '../../lib/cartContext';
 import { createCartOrder, createCheckout, getKit, getMe, getToken } from '../../lib/api';
 import { calculateShippingCents } from '../../lib/shippingPricing';
+import { hasRequiredAdultPacks } from '../../lib/kitSizing';
 
 function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -55,6 +56,7 @@ export default function CartPage() {
   const [error, setError] = useState('');
   const [kitSizingChecks, setKitSizingChecks] = useState<Record<string, KitSizingCheck>>({});
   const [kitChoicePrices, setKitChoicePrices] = useState<Record<string, boolean>>({});
+  const [kitAdultPacks, setKitAdultPacks] = useState<Record<string, string[]>>({});
   const [kitSizingRefresh, setKitSizingRefresh] = useState(0);
 
   function variantSummary(item: CartItem) {
@@ -117,9 +119,10 @@ export default function CartPage() {
         if (active) {
           setKitSizingChecks(current => ({
             ...current,
-            [item.id]: kitData.child_clothing_count > 0 || collectSizable(kitData.items || []).length > 0 ? 'required' : 'not-required',
+            [item.id]: kitData.child_clothing_count > 0 || kitData.adult_pack_genders.length > 0 || collectSizable(kitData.items || []).length > 0 ? 'required' : 'not-required',
           }));
           setKitChoicePrices(current => ({ ...current, [item.id]: kitData.has_choice_price }));
+          setKitAdultPacks(current => ({ ...current, [item.id]: kitData.adult_pack_genders }));
         }
       } catch {
         if (active) {
@@ -159,7 +162,7 @@ export default function CartPage() {
         setError('We could not check sizing requirements for a kit. Please retry the check before checkout.');
         return;
       }
-      if (kitSizingChecks[item.id] === 'required' && !item.sizingComplete) {
+      if (kitSizingChecks[item.id] === 'required' && (!item.sizingComplete || !hasRequiredAdultPacks(item.personSizes, kitAdultPacks[item.id] || []))) {
         router.push(`/sizing?kitIndex=${i}`);
         return;
       }
@@ -238,7 +241,7 @@ export default function CartPage() {
                   {variantSummary(item) && (
                     <span className="text-stone-400 text-xs">{variantSummary(item)}</span>
                   )}
-                  {item.type === 'kit' && kitSizingChecks[item.id] === 'required' && !item.sizingComplete && (
+                  {item.type === 'kit' && kitSizingChecks[item.id] === 'required' && (!item.sizingComplete || !hasRequiredAdultPacks(item.personSizes, kitAdultPacks[item.id] || [])) && (
                     <button
                       type="button"
                       onClick={() => router.push(`/sizing?kitIndex=${index}`)}
@@ -247,7 +250,7 @@ export default function CartPage() {
                       Sizing needed →
                     </button>
                   )}
-                  {item.type === 'kit' && kitSizingChecks[item.id] === 'required' && item.sizingComplete && (
+                  {item.type === 'kit' && kitSizingChecks[item.id] === 'required' && item.sizingComplete && hasRequiredAdultPacks(item.personSizes, kitAdultPacks[item.id] || []) && (
                     <button
                       type="button"
                       onClick={() => router.push(`/sizing?kitIndex=${index}`)}

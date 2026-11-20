@@ -48,6 +48,7 @@ function buildKitResponse(kitId, kitsById, itemsByKitId, depth = 0, insideChoice
           person_pack_age: subKit.person_pack_age || null,
           is_child_clothing_choice: subKit.is_child_clothing_choice || false,
           child_clothing_count: subKit.child_clothing_count,
+          adult_pack_genders: subKit.adult_pack_genders,
           has_choice_price: subKit.has_choice_price,
         });
       }
@@ -68,8 +69,16 @@ function buildKitResponse(kitId, kitsById, itemsByKitId, depth = 0, insideChoice
   const child_clothing_count = isChoice ? 1 : items.reduce(
     (sum, item) => sum + (item.child_clothing_count || 0) * item.quantity, 0
   );
+  const adult_pack_genders = isChoice || kit.person_pack_age ? [] : items.flatMap(item => {
+    if (item.type !== 'kit' || item.is_child_clothing_choice) return [];
+    if (item.person_pack_age === 'adult' && ['male', 'female'].includes(item.person_pack_gender)) {
+      return Array(item.quantity).fill(item.person_pack_gender);
+    }
+    if (item.is_person_slot) return [];
+    return Array.from({ length: item.quantity }, () => item.adult_pack_genders || []).flat();
+  });
 
-  return { ...kit, items, total_price_cents, child_clothing_count, has_choice_price: child_clothing_count > 0 };
+  return { ...kit, items, total_price_cents, child_clothing_count, adult_pack_genders, has_choice_price: child_clothing_count > 0 };
 }
 
 function buildKitResponses(kits, kitItemRows) {

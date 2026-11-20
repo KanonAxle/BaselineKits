@@ -112,6 +112,7 @@ function SizingPageContent() {
   const [loadingKit, setLoadingKit] = useState(true);
   const [kitError, setKitError] = useState('');
   const [choiceCount, setChoiceCount] = useState(0);
+  const [fixedAdultCount, setFixedAdultCount] = useState(0);
   const [quoteError, setQuoteError] = useState('');
   const [quoting, setQuoting] = useState(false);
 
@@ -137,8 +138,10 @@ function SizingPageContent() {
         const kitData = await getKit(cartItem.id);
         setKitRawItems(kitData.items || []);
         const fixedChildren = kitData.child_clothing_count || 0;
-        if (fixedChildren > 20) throw new Error('This kit has too many child clothing choices. Please contact us.');
+        const adultPacks = kitData.adult_pack_genders || [];
+        if (fixedChildren + adultPacks.length > 20) throw new Error('This kit has too many people for sizing. Please contact us.');
         setChoiceCount(fixedChildren);
+        setFixedAdultCount(adultPacks.length);
         let list: Person[] = [];
         let savedSizes: Array<Record<string, Record<string, string>>> = [];
         if (cartItem.personSizes?.length) {
@@ -163,7 +166,20 @@ function SizingPageContent() {
             // A stale local quiz result does not affect a kit selected directly.
           }
         }
-        if (!list.some(p => p.kind === 'adult')) {
+        if (adultPacks.length) {
+          const previousList = list;
+          const previousSizes = savedSizes;
+          const candidates = previousList.map((person, index) => ({ person, index }))
+            .filter(entry => entry.person.kind === 'adult');
+          const adults = adultPacks.map(gender => {
+            const index = candidates.findIndex(entry => entry.person.gender.toLowerCase() === gender);
+            return index < 0 ? { person: { kind: 'adult' as const, gender, label: '' }, index: -1 } : candidates.splice(index, 1)[0];
+          });
+          const children = previousList.map((person, index) => ({ person, index })).filter(entry => entry.person.kind === 'child');
+          const entries = [...adults, ...children];
+          list = entries.map(entry => entry.person);
+          savedSizes = entries.map(entry => previousSizes[entry.index] || {});
+        } else if (!list.some(p => p.kind === 'adult')) {
           list.unshift({ kind: 'adult', gender: 'male', label: '' });
           if (savedSizes.length) savedSizes.unshift({});
         }
@@ -267,11 +283,11 @@ function SizingPageContent() {
   // If kit loaded and no items require sizing at all, auto-complete and return to cart
   const allSizableItems = collectAllSizable(kitRawItems);
   useEffect(() => {
-    if (!loadingKit && !kitError && choiceCount === 0 && allSizableItems.length === 0) {
+    if (!loadingKit && !kitError && choiceCount === 0 && fixedAdultCount === 0 && allSizableItems.length === 0) {
       updateKitSizing(kitIndex, []);
       router.push('/cart');
     }
-  }, [loadingKit, kitError, choiceCount, allSizableItems.length, kitIndex, updateKitSizing, router]);
+  }, [loadingKit, kitError, choiceCount, fixedAdultCount, allSizableItems.length, kitIndex, updateKitSizing, router]);
 
   // ── Progress bar ─────────────────────────────────────────────
   const totalSteps = personList.length + 2; // group + N persons + review
@@ -297,7 +313,7 @@ function SizingPageContent() {
     );
   }
 
-  if (!loadingKit && choiceCount === 0 && allSizableItems.length === 0) {
+  if (!loadingKit && choiceCount === 0 && fixedAdultCount === 0 && allSizableItems.length === 0) {
     return null; // useEffect above handles redirect
   }
 
@@ -329,6 +345,7 @@ function SizingPageContent() {
             <p className="text-stone-500 text-sm mb-8">
               {choiceCount > 0 ? `This kit includes clothing for ${choiceCount} ${choiceCount === 1 ? 'child' : 'children'}. Choose boys' or girls' clothing for each child, then select sizes.` : 'Your kit includes items that require per-person sizing. Confirm child genders, then we will collect sizes for each person.'}
             </p>
+            {fixedAdultCount > 0 && <p className="text-stone-400 text-sm mb-6">The adult clothing packs shown are included in this kit and cannot be removed from sizing.</p>}
 
             <div className="flex flex-col gap-3 mb-6">
               {personList.map((person, idx) => (
@@ -361,7 +378,7 @@ function SizingPageContent() {
                       {person.gender}
                     </span>
                   )}
-                  {personList.length > 1 && !(choiceCount > 0 && person.kind === 'child') && (
+                  {personList.length > 1 && !(choiceCount > 0 && person.kind === 'child') && !(fixedAdultCount > 0 && person.kind === 'adult') && (
                     <button
                       type="button"
                       onClick={() => removePerson(idx)}

@@ -94,7 +94,16 @@ async function resolveKitItemsForOrder(kit_id, customizations, personSizes, dept
   if (depth === 0) {
     const kit = cachedKit || await getKitWithItems(kit_id);
     if (!kit) return [];
-    if (kit.child_clothing_count > 0) {
+    if (kit.adult_pack_genders.length) {
+      const adults = Array.isArray(personSizes) ? personSizes.filter(person =>
+        person && typeof person.label === 'string' && /^Adult(?:\s|$)/.test(person.label)) : [];
+      const genders = adults.map(person => typeof person.gender === 'string' ? person.gender.toLowerCase() : '').sort();
+      const required = [...kit.adult_pack_genders].sort();
+      if (genders.length !== required.length || genders.some((gender, index) => gender !== required[index])) {
+        throw new ChildClothingError('Please complete sizing for all adult clothing packs included in this kit.');
+      }
+    }
+    if (kit.child_clothing_count > 0 || kit.adult_pack_genders.length > 0) {
       const result = resolveChildClothingKit(kit, personSizes, customizations);
       for (const productId of customizations?.add_items || []) {
         const { data: product, error } = await supabase.from('products')
