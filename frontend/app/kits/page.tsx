@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import SiteFooter from '../components/SiteFooter';
 import { getKits } from '../../lib/api';
+import { CATALOG_SORT_OPTIONS, sortCatalog, type CatalogSort } from '../../lib/catalogSort';
 
 type Kit = {
   id: string;
@@ -12,14 +13,6 @@ type Kit = {
   has_choice_price: boolean;
   image_url?: string | null;
 };
-
-const SORT_OPTIONS = [
-  { value: 'featured', label: 'Featured' },
-  { value: 'price_asc', label: 'Price: Low to High' },
-  { value: 'price_desc', label: 'Price: High to Low' },
-  { value: 'name_asc', label: 'Name: A → Z' },
-  { value: 'name_desc', label: 'Name: Z → A' },
-];
 
 function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -30,7 +23,7 @@ export default function KitsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('featured');
+  const [sortBy, setSortBy] = useState<CatalogSort>('featured');
   useEffect(() => {
     getKits()
       .then(data => setKits(data))
@@ -40,12 +33,7 @@ export default function KitsPage() {
 
   const filteredKits = useMemo(() => {
     const query = search.trim().toLowerCase();
-    const result = kits.filter(kit => kit.name.toLowerCase().includes(query));
-    if (sortBy === 'price_asc') result.sort((a, b) => a.total_price_cents - b.total_price_cents);
-    if (sortBy === 'price_desc') result.sort((a, b) => b.total_price_cents - a.total_price_cents);
-    if (sortBy === 'name_asc') result.sort((a, b) => a.name.localeCompare(b.name));
-    if (sortBy === 'name_desc') result.sort((a, b) => b.name.localeCompare(a.name));
-    return result;
+    return sortCatalog(kits.filter(kit => kit.name.toLowerCase().includes(query)), sortBy, kit => kit.total_price_cents);
   }, [kits, search, sortBy]);
 
   const hasActiveFilters = search.trim() !== '' || sortBy !== 'featured';
@@ -78,13 +66,17 @@ export default function KitsPage() {
                 />
               </div>
               <select
+                aria-label="Sort kits"
                 value={sortBy}
-                onChange={event => setSortBy(event.target.value)}
+                onChange={event => {
+                  const option = CATALOG_SORT_OPTIONS.find(item => item.value === event.target.value);
+                  if (option) setSortBy(option.value);
+                }}
                 className={`bg-stone-800 border rounded px-3 py-2.5 text-sm focus:outline-none transition-colors ${
                   sortBy !== 'featured' ? 'border-orange-500 text-orange-400' : 'border-stone-700 text-stone-300'
                 }`}
               >
-                {SORT_OPTIONS.map(option => (
+                {CATALOG_SORT_OPTIONS.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>

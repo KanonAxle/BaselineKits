@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import SiteFooter from '../components/SiteFooter';
 import { getProducts } from '../../lib/api';
+import { CATALOG_SORT_OPTIONS, sortCatalog, type CatalogSort } from '../../lib/catalogSort';
 
 type Product = {
   id: string;
@@ -38,6 +39,7 @@ export default function ProductsPage() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
+  const [sortBy, setSortBy] = useState<CatalogSort>('featured');
 
   useEffect(() => {
     getProducts()
@@ -59,7 +61,7 @@ export default function ProductsPage() {
 
   const filteredProducts = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return products.filter(product => {
+    const matches = products.filter(product => {
       const matchesSearch = !query || [
         product.name,
         product.brand,
@@ -67,7 +69,8 @@ export default function ProductsPage() {
       ].some(value => value?.toLowerCase().includes(query));
       return matchesSearch && (category === 'all' || product.category === category);
     });
-  }, [products, search, category]);
+    return sortCatalog(matches, sortBy, product => product.price_cents);
+  }, [products, search, category, sortBy]);
 
   return (
     <main className="min-h-screen bg-stone-950 text-white">
@@ -88,6 +91,7 @@ export default function ProductsPage() {
               className="flex-1 bg-stone-800 border border-stone-700 rounded px-4 py-2.5 text-white text-sm placeholder-stone-600 focus:outline-none focus:border-orange-500"
             />
             <select
+              aria-label="Product category"
               value={category}
               onChange={event => setCategory(event.target.value)}
               className="bg-stone-800 border border-stone-700 rounded px-3 py-2.5 text-sm text-stone-300 focus:outline-none focus:border-orange-500"
@@ -95,6 +99,21 @@ export default function ProductsPage() {
               <option value="all">All Categories</option>
               {categories.map(value => (
                 <option key={value} value={value}>{CATEGORY_LABELS[value] || value}</option>
+              ))}
+            </select>
+            <select
+              aria-label="Sort products"
+              value={sortBy}
+              onChange={event => {
+                const option = CATALOG_SORT_OPTIONS.find(item => item.value === event.target.value);
+                if (option) setSortBy(option.value);
+              }}
+              className={`bg-stone-800 border rounded px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500 ${
+                sortBy !== 'featured' ? 'border-orange-500 text-orange-400' : 'border-stone-700 text-stone-300'
+              }`}
+            >
+              {CATALOG_SORT_OPTIONS.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
               ))}
             </select>
           </div>
