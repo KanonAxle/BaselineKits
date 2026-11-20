@@ -66,7 +66,7 @@ Keep staging and production credentials separate. The frontend uses the same-ori
 
 - Replace all draft placeholders in the Terms of Use and Privacy Policy, including business identity, contact details, shipping, returns, refunds, data retention, and customer privacy requests.
 - Have the policies reviewed for the business and the regions where it will sell. The current site explicitly labels both policies as drafts; do not launch paid checkout with unfinished policy text.
-- Current draft terms describe U.S.-only shipping, $14.95 shipping below a $300 merchandise subtotal and free shipping at $300 or more, variable order processing estimates, cancellations before fulfillment begins, and the return/refund rules provided by the business. They remain drafts pending review.
+- Current draft terms describe U.S.-only shipping, tiered shipping from $2.99 to $14.99 below a $300 merchandise subtotal and free shipping at $300 or more, variable order processing estimates, cancellations before fulfillment begins, and the return/refund rules provided by the business. They remain drafts pending review.
 - Shippo live rate quotes are not connected yet. Checkout currently uses the fixed shipping policy above; decide package dimensions before adding live rates. Pirate Ship does not offer an API for checkout rate quotes.
 - Confirm required Terms acceptance is recorded with each order and the optional marketing opt-in stays separate.
 - Configure `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_EMAIL`, and `PUBLIC_SITE_URL` in the backend environment. Verify the sending domain in Resend and use `BaselineKits <info@baselinekits.com>` only after the domain is authorized.

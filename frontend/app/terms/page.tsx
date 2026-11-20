@@ -27,7 +27,7 @@ const sections = [
   },
   {
     title: '5. Shipping, taxes, and delivery',
-    body: 'We currently ship within the United States only. Shipping is $14.95 for merchandise subtotals below $300 and free for merchandise subtotals of $300 or more, unless a different shipping or tax policy is stated for a specific order. Applicable sales tax will be calculated based on the shipping destination and the settings in effect at checkout. Order processing times vary based on product availability, customization, and order volume. We will provide an estimate when possible, but processing and shipping estimates are not guarantees and may change. We are not liable for delays caused by weather, carrier disruptions, inventory shortages, acts of third parties, or other circumstances beyond our reasonable control.',
+    body: 'We currently ship within the United States only. Shipping is $2.99 for merchandise subtotals under $15; $4.99 from $15 to under $30; $7.99 from $30 to under $50; $9.99 from $50 to under $100; $14.99 from $100 to under $300; and free at $300 or more, unless a different shipping or tax policy is stated for a specific order. Merchandise subtotals are calculated before shipping and tax. Applicable sales tax will be calculated based on the shipping destination and the settings in effect at checkout. Order processing times vary based on product availability, customization, and order volume. We will provide an estimate when possible, but processing and shipping estimates are not guarantees and may change. We are not liable for delays caused by weather, carrier disruptions, inventory shortages, acts of third parties, or other circumstances beyond our reasonable control.',
   },
   {
     title: '6. Cancellations, returns, and refunds',
@@ -61,7 +61,7 @@ export default function TermsPage() {
       <Navbar />
       <article className="max-w-3xl mx-auto px-6 py-16">
         <h1 className="text-3xl font-extrabold uppercase tracking-wide">Terms of Use</h1>
-        <p className="mt-2 text-sm text-stone-500">Effective October 19, 2026.</p>
+        <p className="mt-2 text-sm text-stone-500">Effective November 20, 2026.</p>
         <p className="mt-6 text-stone-300 leading-relaxed">
           These Terms of Use govern your use of the BaselineKits website, account features, product information, kit recommendations, and purchase transactions. BaselineKits is a DBA of Harrington Innovations LLC, and by using the site or placing an order, you agree to these terms and our Privacy Policy.
         </p>

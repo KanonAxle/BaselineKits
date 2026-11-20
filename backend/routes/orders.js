@@ -8,7 +8,7 @@ const { calculateShippingCents } = require('../utils/shippingPricing');
 const { isUsShippingCountry } = require('../utils/shippingCountry');
 const { getKitWithItems } = require('../utils/loadKit');
 const { ChildClothingError, resolveChildClothingKit } = require('../utils/childClothing');
-const TERMS_VERSION = '2026-10-19';
+const TERMS_VERSION = '2026-11-20';
 
 async function isPublicKit(id) {
   const { data, error } = await supabase.from('kits')

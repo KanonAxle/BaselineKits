@@ -6,6 +6,7 @@ const {
   formatStripeShippingAddress,
   getStripeShippingDetails,
 } = require('../utils/stripeTax');
+const { calculateShippingCents } = require('../utils/shippingPricing');
 
 test('Stripe Tax is enabled only by the explicit true setting', () => {
   assert.equal(isStripeTaxEnabled('true'), true);
@@ -33,6 +34,13 @@ test('Stripe Tax checkout represents the threshold shipping amount as free shipp
   const params = buildStripeTaxSessionParams(0);
   assert.equal(params.shipping_options[0].shipping_rate_data.fixed_amount.amount, 0);
   assert.equal(params.shipping_options[0].shipping_rate_data.display_name, 'Free shipping');
+});
+
+test('Stripe Tax uses each configured shipping tier', () => {
+  for (const [subtotal, expected] of [[1499, 299], [1500, 499], [3000, 799], [5000, 999], [10000, 1499], [30000, 0]]) {
+    const params = buildStripeTaxSessionParams(calculateShippingCents(subtotal));
+    assert.equal(params.shipping_options[0].shipping_rate_data.fixed_amount.amount, expected);
+  }
 });
 
 test('Stripe Tax shipping amount must be a non-negative whole number of cents', () => {
